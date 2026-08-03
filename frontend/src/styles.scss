@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root,
+  [tuiTheme="dark"] {
+    --tui-background-base: #000000; /* Back */
+    --tui-background-neutral-1: #121212cc; /* Blocks */
+    --tui-background-neutral-2: #161616cc; /* BlocksSecond */
+
+    --tui-border-normal: #323232; /* Stroke */
+
+    --tui-text-primary: #f3fdf8; /* Text */
+
+    --tui-primary: #00bc7d; /* Accent */
+
+    --tui-status-positive: #00bc7d; /* Active */
+    --tui-status-warning: #fe9a00; /* Upcoming */
+    --tui-status-info: #2b7fff; /* Finished */
+    --tui-status-negative: #ff2056; /* Cancelled */
+  }
+
+  body {
+    @apply bg-back text-text antialiased;
+    font-family: "Inter", sans-serif;
+  }
+}
