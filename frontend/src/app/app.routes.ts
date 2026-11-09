@@ -9,8 +9,13 @@ export const routes: Routes = [
   {
     path: 'catalog',
     loadComponent: () =>
-      import('./features/catalog/catalog.component').then(
-        (m) => m.CatalogComponent,
+      import('./features/catalog/catalog.component').then((m) => m.CatalogComponent),
+  },
+  {
+    path: 'catalog/ended',
+    loadComponent: () =>
+      import('./features/catalog/ended-catalog/ended-catalog.component').then(
+        (m) => m.EndedCatalogComponent,
       ),
   },
   {
@@ -21,18 +26,22 @@ export const routes: Routes = [
       ),
   },
   {
+    path: 'about',
+    loadComponent: () => import('./features/about/about.component').then((m) => m.AboutComponent),
+  },
+  {
+    path: 'rules',
+    loadComponent: () => import('./features/rules/rules.component').then((m) => m.RulesComponent),
+  },
+  {
     path: 'profile',
     loadComponent: () =>
-      import('./features/profile/profile.component').then(
-        (m) => m.ProfileComponent,
-      ),
+      import('./features/profile/profile.component').then((m) => m.ProfileComponent),
   },
   {
     path: 'admin/create',
     loadComponent: () =>
-      import('./features/admin/lot-create/lot-create.component').then(
-        (m) => m.LotCreateComponent,
-      ),
+      import('./features/admin/lot-create/lot-create.component').then((m) => m.LotCreateComponent),
   },
   {
     path: '**',

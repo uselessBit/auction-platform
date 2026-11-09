@@ -1,1 +1,41 @@
-<p>header works!</p>
+<header
+  class="sticky top-0 z-50 flex items-center justify-between bg-blocks px-4 py-2 outline outline-1 outline-stroke"
+>
+  <a routerLink="/">
+    <img src="assets/logo.webp" alt="Логотип SeconDrive" class="h-8" />
+  </a>
+
+  <nav
+    class="relative flex h-full gap-1 rounded-2xl bg-blocks-second p-2 outline outline-1 outline-stroke"
+  >
+    <div
+      class="pointer-events-none absolute bottom-2 top-2 rounded-lg bg-stroke transition-all duration-300 ease-in-out"
+      [style.left.px]="sliderPosition().left"
+      [style.width.px]="sliderPosition().width"
+      [style.opacity]="sliderPosition().opacity"
+    ></div>
+
+    @for (item of navItems; track item.route) {
+      <a
+        #navItem
+        (isActiveChange)="$event ? updateSlider(navItem) : hideSlider(navItem)"
+        [routerLink]="item.route"
+        routerLinkActive="font-semibold text-accent"
+        [attr.data-text]="item.label"
+        class="z-10 flex flex-col items-center justify-center px-4 py-2 text-xs transition-colors duration-300 ease-in-out after:invisible after:block after:h-0 after:overflow-hidden after:font-semibold after:content-[attr(data-text)]"
+        [routerLinkActiveOptions]="{ exact: true }"
+        >{{ item.label }}</a
+      >
+    }
+  </nav>
+
+  <a
+    routerLink="/profile"
+    tuiButton
+    iconStart="assets/icons/profile.svg"
+    appearance="brand"
+    routerLinkActive="brand-active"
+  >
+    Профиль
+  </a>
+</header>
