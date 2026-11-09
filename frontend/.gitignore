@@ -40,3 +40,11 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# AI Mentor & Agent rules (local only)
+GEMINI.md
+gemini.md
+AGENTS.md
+.gemini/
+.cursorrules
+.windsurfrules
