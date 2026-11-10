@@ -20,7 +20,7 @@ export const MOCK_LOTS: Lot[] = [
     bidStepByn: 200,
     status: 'active',
     endsAt: new Date(Date.now() + 1000 * 60 * 60 * 50).toISOString(), // ~2 дня 2 часа
-    isFavorite: false,
+    isFavorite: true,
   },
   {
     id: '19346',

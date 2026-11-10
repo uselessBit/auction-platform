@@ -1,0 +1,11 @@
+<div
+  class="rounded-full border p-4 shadow-md shadow-black/25 backdrop-blur-sm"
+  [class]="isFavorite() ? 'border-accent bg-accent' : 'border-stroke bg-blocks'"
+  (click)="toggleState($event)"
+>
+  <img
+    [src]="isFavorite() ? 'assets/icons/star-active.svg' : 'assets/icons/star.svg'"
+    alt="star"
+    class="h-4"
+  />
+</div>

@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'NBRB';
+  src: url('/assets/fonts/nbrb.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-byn {
+  font-family: 'NBRB', sans-serif;
+  line-height: 1;
+}
+
 @layer base {
   :root,
   [tuiTheme="dark"] {

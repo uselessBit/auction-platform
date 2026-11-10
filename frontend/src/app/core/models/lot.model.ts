@@ -1,5 +1,13 @@
 export type LotStatus = 'upcoming' | 'active' | 'finished' | 'sold' | 'cancelled';
 
+export const lotStatus: Record<LotStatus, string> = {
+  upcoming: 'Ожидает старта',
+  active: 'Идут торги',
+  finished: 'Завершён',
+  sold: 'Продан',
+  cancelled: 'Отменён',
+};
+
 export interface LotBid {
   readonly id: string;
   readonly bidderMasked: string; // "Участник ***2345"
