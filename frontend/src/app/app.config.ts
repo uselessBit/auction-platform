@@ -6,6 +6,8 @@ import { provideTaiga } from '@taiga-ui/core';
 import { API_CONFIG } from './core/api/api-config.token';
 import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 registerLocaleData(localeRu);
 
@@ -13,8 +15,9 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideRouter(routes, withComponentInputBinding()),
     provideClientHydration(),
-    { provide: LOCALE_ID, useValue: 'ru' },
     provideTaiga(),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    { provide: LOCALE_ID, useValue: 'ru' },
     {
       provide: API_CONFIG,
       useValue: {
