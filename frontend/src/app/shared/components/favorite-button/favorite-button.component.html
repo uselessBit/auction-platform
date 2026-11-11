@@ -1,0 +1,11 @@
+<button
+  class="rounded-full border p-3 shadow-md shadow-black/25 backdrop-blur-sm transition-transform duration-300 hover:scale-110 active:scale-90"
+  [class]="isFavorite() ? 'border-accent bg-accent' : 'border-stroke bg-blocks'"
+  (click)="toggleState($event)"
+>
+  <img
+    [src]="isFavorite() ? 'assets/icons/star-active.svg' : 'assets/icons/star.svg'"
+    alt="star"
+    class="h-4"
+  />
+</button>

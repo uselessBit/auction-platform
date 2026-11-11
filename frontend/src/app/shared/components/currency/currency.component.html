@@ -1,0 +1,4 @@
+<span class="inline-flex items-baseline gap-1" [class.opacity-50]="color() === 'cancelled'">
+  <span [class.line-through]="color() === 'cancelled'">{{ value() | number: '1.0-0' }}</span>
+  <span class="font-byn" [class]="colorClass()">BYN</span>
+</span>

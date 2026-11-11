@@ -1,7 +1,7 @@
 <header
-  class="sticky top-0 z-50 flex items-center justify-between bg-blocks px-4 py-2 outline outline-1 outline-stroke"
+  class="sticky top-0 z-50 flex items-center justify-between border-b border-stroke bg-blocks px-4 py-2 backdrop-blur-md"
 >
-  <a routerLink="/">
+  <a routerLink="/" class="transition-all duration-300 hover:opacity-80">
     <img src="assets/logo.webp" alt="Логотип SeconDrive" class="h-8" />
   </a>
 
@@ -20,9 +20,9 @@
         #navItem
         (isActiveChange)="$event ? updateSlider(navItem) : hideSlider(navItem)"
         [routerLink]="item.route"
-        routerLinkActive="font-semibold text-accent"
+        routerLinkActive="font-semibold !text-accent"
         [attr.data-text]="item.label"
-        class="z-10 flex flex-col items-center justify-center px-4 py-2 text-xs transition-colors duration-300 ease-in-out after:invisible after:block after:h-0 after:overflow-hidden after:font-semibold after:content-[attr(data-text)]"
+        class="z-10 flex flex-col items-center justify-center rounded-lg px-4 py-2 text-xs text-text/70 transition-colors duration-300 ease-out after:invisible after:block after:h-0 after:overflow-hidden after:font-semibold after:content-[attr(data-text)] hover:bg-stroke/30 hover:text-text active:bg-stroke/50"
         [routerLinkActiveOptions]="{ exact: true }"
         >{{ item.label }}</a
       >

@@ -1,0 +1,11 @@
+<div
+  class="inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs font-semibold shadow-md shadow-black/25 backdrop-blur-sm"
+  [class]="badgeClass()"
+>
+  <img
+    [src]="'assets/icons/' + status() + '.svg'"
+    [alt]="status()"
+    [class.animate-pulse]="status() === 'active'"
+  />
+  <span>{{ lotStatus[status()] }}</span>
+</div>

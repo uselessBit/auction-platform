@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: 'NBRB';
+  src: url('/assets/fonts/nbrb.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.font-byn {
+  font-family: 'NBRB', sans-serif;
+  line-height: 1;
+}
+
 @layer base {
   :root,
   [tuiTheme="dark"] {
@@ -14,8 +27,6 @@
     --tui-text-primary: #f3fdf8; /* Text */
 
     --tui-background-accent-1: #00bc7d; /* Accent */
-    --tui-background-accent-1-hover: #00d68f; /* Accent hover */
-    --tui-background-accent-1-pressed: #009e69; /* Accent pressed */
 
     --tui-status-positive: #00bc7d; /* Active */
     --tui-status-warning: #fe9a00; /* Upcoming */
@@ -37,7 +48,7 @@
   padding: 8px 24px;
   font-weight: 600;
   gap: 8px;
-  transition: all .3s ease-in-out;
+  transition: all .3s ease-out;
 
   &::before,
   &::after {
@@ -45,7 +56,12 @@
   }
 
   &:hover {
-    background: var(--tui-background-accent-1-hover);
+    opacity: 0.9;
+    scale: 1.05;
+  }
+
+  &:active {
+    scale: 0.95;
   }
 
   &.brand-active {
