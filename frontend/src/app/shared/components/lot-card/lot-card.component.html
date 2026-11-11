@@ -1,22 +1,27 @@
 <a [routerLink]="['/lots', lot().id]" class="block h-full">
   <article
-    class="flex h-full flex-col overflow-hidden rounded-[2rem] bg-blocks outline outline-1 outline-stroke"
+    class="group flex h-full flex-col overflow-hidden rounded-[2rem] bg-blocks outline outline-1 outline-stroke transition-all duration-300 ease-out hover:-translate-y-1"
   >
-    <div class="relative">
+    <div class="relative overflow-hidden">
       <img
         [src]="lot().images[0]"
         [alt]="lot().brand"
-        class="aspect-[4/3] w-full object-cover object-center"
+        class="aspect-[4/3] w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110"
       />
 
       <app-lot-status-badge class="absolute bottom-4 left-4" [status]="lot().status" />
-      <app-favorite-button class="absolute top-4 right-4" [isFavorite]="lot().isFavorite" />
+      <app-favorite-button class="absolute right-4 top-4" [isFavorite]="lot().isFavorite" />
     </div>
 
     <div class="flex flex-1 flex-col gap-2 p-4">
       <div>
         <h3 class="text-xs opacity-50">Лот № {{ lot().id }}</h3>
-        <h2 class="text-xl font-bold">{{ lot().brand }} {{ lot().model }}, {{ lot().year }}</h2>
+        <h2
+          class="text-xl font-bold transition-colors duration-300 ease-out"
+          [class]="titleHoverClass()"
+        >
+          {{ lot().brand }} {{ lot().model }}, {{ lot().year }}
+        </h2>
       </div>
 
       <div class="flex flex-col gap-1">

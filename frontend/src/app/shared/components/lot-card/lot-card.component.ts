@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
 import { Lot } from '../../../core/models/lot.model';
 import { LotTimerService } from '../../../core/services/lot-timer.service';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -32,4 +32,20 @@ export class LotCardComponent implements OnInit {
       this.lotTimer.start(this.lot().endsAt);
     }
   }
+
+  protected readonly titleHoverClass = computed(() => {
+    switch (this.lot().status) {
+      case 'upcoming':
+        return 'group-hover:text-upcoming';
+      case 'finished':
+        return 'group-hover:text-finished';
+      case 'sold':
+        return 'group-hover:text-sold';
+      case 'cancelled':
+        return 'group-hover:text-cancelled';
+      case 'active':
+      default:
+        return 'group-hover:text-active';
+    }
+  });
 }
