@@ -4,6 +4,7 @@ import { LotsService } from '../../../core/services/lots.service';
 import { AsyncPipe } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
+import { LotGalleryComponent } from './components/lot-gallery/lot-gallery.component';
 
 @Component({
   selector: 'app-lot-details',
@@ -11,7 +12,7 @@ import { switchMap } from 'rxjs';
   templateUrl: './lot-details.component.html',
   styleUrl: './lot-details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LotSpecsComponent, AsyncPipe],
+  imports: [LotSpecsComponent, AsyncPipe, LotGalleryComponent],
 })
 export class LotDetailsComponent {
   protected readonly id = input.required<string>({ alias: 'id' });

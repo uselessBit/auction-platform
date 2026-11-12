@@ -1,5 +1,10 @@
 @if (lot$ | async; as lot) {
-  <section class="mx-auto my-6 grid w-full max-w-layout grid-flow-row grid-cols-3 gap-6 px-6 animate-fade-in">
-    <app-lot-specs [lot]="lot" class="col-span-2"></app-lot-specs>
+  <section
+    class="animate-fade-in mx-auto my-6 grid w-full max-w-layout grid-flow-row grid-cols-3 gap-6 px-6"
+  >
+    <div class="col-span-2 flex flex-col gap-6">
+      <app-lot-gallery [lot]="lot"></app-lot-gallery>
+      <app-lot-specs [lot]="lot"></app-lot-specs>
+    </div>
   </section>
 }
