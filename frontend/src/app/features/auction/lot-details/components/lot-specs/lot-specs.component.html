@@ -1,10 +1,10 @@
 <article class="flex flex-col gap-2 rounded-[2rem] bg-blocks p-6 outline outline-1 outline-stroke">
   <h2 class="text-base font-semibold">Характеристики авто</h2>
 
-  <div class="grid grid-flow-row grid-cols-3 gap-2">
+  <div class="flex flex-wrap gap-2">
     @for (spec of specs(); track spec.label) {
       <div
-        class="flex justify-between rounded-lg border border-stroke bg-blocks-second p-3"
+        class="flex flex-[1_1_240px] justify-between rounded-lg border border-stroke bg-blocks-second p-3"
       >
         <div class="text-xs opacity-70">{{ spec.label }}</div>
         <div class="text-xs font-semibold">{{ spec.value }}</div>
@@ -12,7 +12,7 @@
     }
 
     <div
-      class="col-span-3 flex flex-col gap-1 rounded-lg border border-stroke bg-blocks-second p-3"
+      class="flex w-full flex-col gap-1 rounded-lg border border-stroke bg-blocks-second p-3"
     >
       <div class="text-xs opacity-70">Комментарий оценщика</div>
       <div class="text-xs">{{ lot().inspectorComment }}</div>

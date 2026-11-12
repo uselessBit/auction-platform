@@ -36,10 +36,6 @@ export class LotSpecsComponent {
       value: this.lot().transmission,
     },
     {
-      label: 'Локация',
-      value: this.lot().location,
-    },
-    {
       label: 'Двигатель',
       value: this.lot().engine,
     },
@@ -50,6 +46,10 @@ export class LotSpecsComponent {
     {
       label: 'Дата добавления',
       value: `${this.datePipe.transform(this.lot().createdAt, 'd MMMM y')}`,
+    },
+    {
+      label: 'Локация',
+      value: this.lot().location,
     },
   ]);
 }
