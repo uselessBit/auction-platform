@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LotCardComponent } from '../../shared/components/lot-card/lot-card.component';
 import { LotsService } from '../../core/services/lots.service';
 import { Lot } from '../../core/models/lot.model';
-import { Observable } from 'rxjs';
+import { NEVER, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
