@@ -23,18 +23,19 @@ import { FavoriteButtonComponent } from '../favorite-button/favorite-button.comp
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LotCardComponent implements OnInit {
-  readonly lot = input.required<Lot>();
+  readonly lot = input<Lot | null>(null);
 
   readonly lotTimer = inject(LotTimerService);
 
   ngOnInit() {
-    if (this.lot().status === 'active' || this.lot().status === 'upcoming') {
-      this.lotTimer.start(this.lot().endsAt);
+    const currentLot = this.lot();
+    if (currentLot && (currentLot.status === 'active' || currentLot.status === 'upcoming')) {
+      this.lotTimer.start(currentLot.endsAt);
     }
   }
 
   protected readonly titleHoverClass = computed(() => {
-    switch (this.lot().status) {
+    switch (this.lot()?.status) {
       case 'upcoming':
         return 'group-hover:text-upcoming';
       case 'finished':
