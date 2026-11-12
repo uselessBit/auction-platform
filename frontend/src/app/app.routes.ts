@@ -48,6 +48,7 @@ export const routes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'catalog',
+    loadComponent: () =>
+      import('./features/not-found/not-found.component').then((m) => m.NotFoundComponent),
   },
 ];
