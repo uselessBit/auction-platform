@@ -4,10 +4,12 @@ import { LotCardComponent } from '../../../shared/components/lot-card/lot-card.c
 import { LotsService } from '../../../core/services/lots.service';
 import { map, Observable } from 'rxjs';
 import { Lot } from '../../../core/models/lot.model';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { TuiButton } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-ended-catalog',
-  imports: [AsyncPipe, LotCardComponent],
+  imports: [AsyncPipe, LotCardComponent, RouterLink, RouterLinkActive, TuiButton],
   templateUrl: './ended-catalog.component.html',
   styleUrl: './ended-catalog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

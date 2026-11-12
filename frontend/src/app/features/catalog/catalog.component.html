@@ -1,7 +1,27 @@
-<section class="mx-auto my-6 grid w-full max-w-layout grid-flow-row grid-cols-3 gap-6 px-6">
+<section
+  class="mx-auto my-6 grid w-full max-w-layout grid-flow-row grid-cols-3 gap-6 px-6 has-[.empty-state]:my-auto"
+>
   @if (activeLots$ | async; as lots) {
     @for (lot of lots; track lot.id) {
       <app-lot-card [lot]="lot"></app-lot-card>
+    } @empty {
+      <div
+        class="empty-state animate-fade-in col-span-3 flex flex-col items-center justify-center gap-4"
+      >
+        <img src="/assets/icons/car.svg" alt="car-icon" />
+
+        <div class="flex flex-col items-center gap-1">
+          <h2 class="text-xl font-semibold">Активных аукционов пока нет</h2>
+          <p class="text-center text-sm opacity-70">
+            Новые лоты уже проходят диагностику и скоро появятся на торгах.<br />Загляните позже или
+            изучите архив недавних сделок.
+          </p>
+        </div>
+
+        <a routerLink="/catalog/ended" tuiButton appearance="brand" routerLinkActive="brand-active">
+          Смотреть архив торгов
+        </a>
+      </div>
     }
   } @else {
     @for (i of [1, 2, 3, 4, 5, 6]; track i) {
