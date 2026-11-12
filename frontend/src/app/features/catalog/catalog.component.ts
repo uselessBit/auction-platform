@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { LotCardComponent } from '../../shared/components/lot-card/lot-card.component';
 import { LotsService } from '../../core/services/lots.service';
 import { Lot } from '../../core/models/lot.model';
-import { NEVER, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 @Component({
@@ -15,5 +15,9 @@ import { AsyncPipe } from '@angular/common';
 })
 export class CatalogComponent {
   private lotsService = inject(LotsService);
-  lots$: Observable<Lot[]> = this.lotsService.getLots();
+  activeLots$: Observable<Lot[]> = this.lotsService
+    .getLots()
+    .pipe(
+      map((lots) => lots.filter((lot) => lot.status === 'active' || lot.status === 'upcoming')),
+    );
 }
