@@ -42,7 +42,7 @@ export interface LotDetails extends Lot {
   readonly transmission: string; // 'АКПП'
   readonly driveType: string; // 'Полный (AWD)'
   readonly location: string; // 'Минск, ул. Бабушкина, 39'
-  readonly createdAt: string; // '11 мая 2026'
+  readonly createdAt: string; // ISO 8601 строка, например '2026-05-11T12:00:00.000Z'
   readonly inspectorComment: string; // Описание повреждений оценщика
   readonly bids: readonly LotBid[]; // История ставок
 }
