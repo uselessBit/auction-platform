@@ -4,6 +4,7 @@ import { LotStatus, lotStatus } from '../../../core/models/lot.model';
 @Component({
   selector: 'app-lot-status-badge',
   imports: [],
+  standalone: true,
   templateUrl: './lot-status-badge.component.html',
   styleUrl: './lot-status-badge.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

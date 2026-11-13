@@ -8,11 +8,11 @@ import { LotGalleryComponent } from './components/lot-gallery/lot-gallery.compon
 
 @Component({
   selector: 'app-lot-details',
+  imports: [LotSpecsComponent, AsyncPipe, LotGalleryComponent],
   standalone: true,
   templateUrl: './lot-details.component.html',
   styleUrl: './lot-details.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [LotSpecsComponent, AsyncPipe, LotGalleryComponent],
 })
 export class LotDetailsComponent {
   protected readonly id = input.required<string>({ alias: 'id' });

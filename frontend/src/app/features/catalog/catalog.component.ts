@@ -9,8 +9,8 @@ import { TuiButton } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-catalog',
-  standalone: true,
   imports: [LotCardComponent, AsyncPipe, RouterLink, RouterLinkActive, TuiButton],
+  standalone: true,
   templateUrl: './catalog.component.html',
   styleUrl: './catalog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

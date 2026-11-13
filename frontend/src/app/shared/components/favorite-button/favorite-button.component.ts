@@ -4,6 +4,7 @@ import { TuiButton } from '@taiga-ui/core';
 @Component({
   selector: 'app-favorite-button',
   imports: [TuiButton],
+  standalone: true,
   templateUrl: './favorite-button.component.html',
   styleUrl: './favorite-button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

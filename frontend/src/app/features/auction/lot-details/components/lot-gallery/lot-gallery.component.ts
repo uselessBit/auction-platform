@@ -26,6 +26,7 @@ import { FloatingBadgeComponent } from '../../../../../shared/components/floatin
     NgOptimizedImage,
     FloatingBadgeComponent,
   ],
+  standalone: true,
   providers: [tuiCopyOptionsProvider({ icon: '/assets/icons/copy.svg' })],
   templateUrl: './lot-gallery.component.html',
   styleUrl: './lot-gallery.component.scss',

@@ -6,6 +6,7 @@ import { DatePipe } from '@angular/common';
   selector: 'app-lot-specs',
   imports: [],
   providers: [DatePipe],
+  standalone: true,
   templateUrl: './lot-specs.component.html',
   styleUrl: './lot-specs.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

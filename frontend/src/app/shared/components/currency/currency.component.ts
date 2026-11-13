@@ -5,6 +5,7 @@ import { LotStatus } from '../../../core/models/lot.model';
 @Component({
   selector: 'app-currency',
   imports: [DecimalPipe],
+  standalone: true,
   templateUrl: './currency.component.html',
   styleUrl: './currency.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

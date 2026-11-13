@@ -17,6 +17,7 @@ import { FavoriteButtonComponent } from '../favorite-button/favorite-button.comp
     LotStatusBadgeComponent,
     FavoriteButtonComponent,
   ],
+  standalone: true,
   providers: [LotTimerService],
   templateUrl: './lot-card.component.html',
   styleUrl: './lot-card.component.scss',
