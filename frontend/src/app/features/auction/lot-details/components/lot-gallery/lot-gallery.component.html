@@ -1,56 +1,95 @@
 <article class="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-stroke">
-  <img [src]="lot().images[0]" alt="" class="h-full w-full object-cover object-center" />
+  <tui-carousel
+    #carousel
+    [max]="lot().images.length - 1"
+    [min]="0"
+    [(index)]="index"
+    class="h-full w-full"
+  >
+    <section *tuiItem="let i" class="h-full w-full relative">
+      <img
+        [ngSrc]="lot().images[i]"
+        fill
+        alt="{{ lot().brand }} {{ lot().model }}, фото {{ i + 1 }}"
+        class="object-cover object-center"
+      />
+    </section>
+  </tui-carousel>
 
-  <div class="absolute left-6 top-6 flex gap-2">
+  <div class="pointer-events-none absolute left-6 top-6 flex gap-2">
     <app-lot-status-badge [status]="lot().status"></app-lot-status-badge>
 
     <div class="chip font-semibold">VIN: {{ lot().vin }}</div>
   </div>
 
-  <div class="absolute right-4 top-4 flex gap-4">
-    <button tuiButton appearance="brand-rounded" iconStart="/assets/icons/zoom-in.svg">
-    </button>
+  <div class="pointer-events-none absolute right-4 top-4 flex gap-4">
+    <button
+      tuiButton
+      appearance="brand-rounded"
+      type="button"
+      iconStart="/assets/icons/zoom-in.svg"
+      aria-label="Приблизить"
+      class="pointer-events-auto"
+    ></button>
 
     <button
-      class="rounded-full border border-stroke bg-blocks p-3 shadow-md shadow-black/25 backdrop-blur-sm transition-transform duration-300 hover:scale-110 active:scale-90"
-    >
-      <img src="/assets/icons/share.svg" alt="" />
-    </button>
+      tuiButton
+      appearance="brand-rounded"
+      type="button"
+      iconStart="/assets/icons/share.svg"
+      aria-label="Поделиться"
+      class="pointer-events-auto"
+    ></button>
 
-    <app-favorite-button [isFavorite]="lot()?.isFavorite ?? false"></app-favorite-button>
-  </div>
-
-  <div class="absolute w-full top-1/2 flex justify-between px-6 -translate-y-1/2">
-    <button
-      class="rounded-full border border-stroke bg-blocks p-3 shadow-md shadow-black/25 backdrop-blur-sm transition-transform duration-300 hover:scale-110 active:scale-90"
-    >
-      <img src="/assets/icons/arrow-left.svg" alt="" />
-    </button>
-
-    <button
-      class="rounded-full border border-stroke bg-blocks p-3 shadow-md shadow-black/25 backdrop-blur-sm transition-transform duration-300 hover:scale-110 active:scale-90"
-    >
-      <img src="/assets/icons/arrow-right.svg" alt="" />
-    </button>
-  </div>
-
-  <div class="chip absolute top-6 left-1/2 -translate-x-1/2 w-14 text-center font-semibold">
-    1/7
+    <app-favorite-button
+      [isFavorite]="lot().isFavorite ?? false"
+      class="pointer-events-auto"
+    ></app-favorite-button>
   </div>
 
   <div
-    class="absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"
+    class="pointer-events-none absolute inset-y-0 flex w-full items-center justify-between px-6"
   >
-    <h1 class="text-5xl font-bold">{{ lot()?.brand }} {{ lot()?.model }}, {{ lot()?.year }}</h1>
+    <button
+      tuiButton
+      appearance="brand-rounded"
+      type="button"
+      iconStart="/assets/icons/arrow-left.svg"
+      aria-label="Предыдущее фото"
+      [disabled]="index() === 0"
+      (click)="carousel.prev()"
+      class="pointer-events-auto"
+    ></button>
+
+    <button
+      tuiButton
+      appearance="brand-rounded"
+      type="button"
+      iconStart="/assets/icons/arrow-right.svg"
+      aria-label="Следующее фото"
+      [disabled]="index() === (lot().images.length - 1)"
+      (click)="carousel.next()"
+      class="pointer-events-auto"
+    ></button>
+  </div>
+
+  <div class="chip absolute left-1/2 top-6 w-14 -translate-x-1/2 text-center font-semibold">
+    {{ index() + 1 }}/{{ lot().images.length }}
+  </div>
+
+  <div
+    class="pointer-events-none absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"
+  >
+    <h1 class="text-5xl font-bold">{{ lot().brand }} {{ lot().model }}, {{ lot().year }}</h1>
 
     <div class="flex flex-col gap-1">
       <ul class="flex flex-wrap gap-1">
-        <li class="chip">{{ lot()?.engine }}</li>
-        <li class="chip">{{ lot()?.fuelType }}</li>
-        <li class="chip">{{ lot()?.mileageKm | number: '1.0-0' }} км</li>
-        <li class="chip">{{ lot()?.isCustomsCleared ? 'Растаможен' : 'Не растаможен' }}</li>
-        <li class="chip chip--muted">{{ lot()?.damagePrimary }}</li>
-        <li class="chip chip--muted">{{ lot()?.runAndDrive }}</li>
+        <li class="chip">{{ lot().engine }}</li>
+        <li class="chip">{{ lot().fuelType }}</li>
+        <li class="chip">{{ lot().mileageKm | number: '1.0-0' }} км</li>
+        <li class="chip">{{ lot().isCustomsCleared ? 'Растаможен' : 'Не растаможен' }}</li>
+        <li class="chip chip--muted">{{ lot().damagePrimary }}</li>
+        <li class="chip chip--muted">{{ lot().runAndDrive }}</li>
       </ul>
     </div>
   </div>
