@@ -47,9 +47,11 @@ export class LotGalleryComponent {
   }
 
   protected copyVin() {
-    this.clipboard.copy(this.lot().vin);
-    this.isVinCopied.set(true);
-    setTimeout(() => this.isVinCopied.set(false), 1200);
+    if (!this.isVinCopied()) {
+      this.clipboard.copy(this.lot().vin);
+      this.isVinCopied.set(true);
+      setTimeout(() => this.isVinCopied.set(false), 1200);
+    }
   }
 
   private copyLink() {

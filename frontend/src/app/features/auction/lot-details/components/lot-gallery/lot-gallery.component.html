@@ -19,31 +19,33 @@
   <div class="pointer-events-none absolute left-6 top-6 flex gap-2">
     <app-lot-status-badge [status]="lot().status"></app-lot-status-badge>
 
-    <div class="chip pointer-events-auto relative flex gap-1 font-semibold">
-      <span>VIN:</span>
+    <div class="relative flex justify-center items-center">
+      <div class="chip pointer-events-auto flex gap-1 font-semibold">
+        <span>VIN:</span>
 
-      <span class="group flex items-center justify-center">
-        <button
-          type="button"
-          aria-label="Скопировать VIN"
-          (click)="copyVin()"
-          class="transition-opacity duration-300 group-hover:opacity-70"
-        >
-          <span>{{ lot().vin }}</span>
-        </button>
+        <span class="group flex items-center justify-center">
+          <button
+            type="button"
+            aria-label="Скопировать VIN"
+            (click)="copyVin()"
+            class="transition-opacity duration-300 group-hover:opacity-70"
+          >
+            <span>{{ lot().vin }}</span>
+          </button>
 
-        <span
-          class="pointer-events-none absolute right-0 h-full w-1/2 rounded-lg bg-gradient-to-l from-blocks-second/100 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        >
-          <img
-            src="/assets/icons/copy.svg"
-            alt=""
-            class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          />
+          <span
+            class="pointer-events-none absolute right-0 h-full w-1/2 rounded-lg bg-gradient-to-l from-blocks-second/100 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          >
+            <img
+              src="/assets/icons/copy.svg"
+              alt=""
+              class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            />
+          </span>
         </span>
+      </div>
 
-        <app-floating-badge text="VIN скопирован" [visible]="isVinCopied()" />
-      </span>
+      <app-floating-badge text="VIN скопирован" [visible]="isVinCopied()" />
     </div>
   </div>
 
@@ -106,7 +108,7 @@
   </div>
 
   <div
-    class="pointer-events-none absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"
+    class="absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"
   >
     <h1 class="text-5xl font-bold">{{ lot().brand }} {{ lot().model }}, {{ lot().year }}</h1>
 
