@@ -3,7 +3,8 @@ import { LotDetails } from '../../../../../core/models/lot.model';
 import { LotStatusBadgeComponent } from '../../../../../shared/components/lot-status-badge/lot-status-badge.component';
 import { DecimalPipe, NgOptimizedImage } from '@angular/common';
 import { FavoriteButtonComponent } from '../../../../../shared/components/favorite-button/favorite-button.component';
-import { TuiButton, TuiCarousel } from '@taiga-ui/core';
+import { TuiButton, TuiCarousel, tuiNotificationOptionsProvider } from '@taiga-ui/core';
+import { TuiCopy, tuiCopyOptionsProvider } from '@taiga-ui/kit';
 
 @Component({
   selector: 'app-lot-gallery',
@@ -14,6 +15,13 @@ import { TuiButton, TuiCarousel } from '@taiga-ui/core';
     TuiButton,
     TuiCarousel,
     NgOptimizedImage,
+    TuiCopy,
+  ],
+  providers: [
+    tuiCopyOptionsProvider({ icon: '/assets/icons/copy.svg' }),
+    tuiNotificationOptionsProvider({
+      icon: '/assets/icons/check.svg',
+    }),
   ],
   templateUrl: './lot-gallery.component.html',
   styleUrl: './lot-gallery.component.scss',

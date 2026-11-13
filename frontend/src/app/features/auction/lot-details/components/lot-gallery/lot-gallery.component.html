@@ -6,7 +6,7 @@
     [(index)]="index"
     class="h-full w-full"
   >
-    <section *tuiItem="let i" class="h-full w-full relative">
+    <section *tuiItem="let i" class="relative h-full w-full">
       <img
         [ngSrc]="lot().images[i]"
         fill
@@ -19,7 +19,12 @@
   <div class="pointer-events-none absolute left-6 top-6 flex gap-2">
     <app-lot-status-badge [status]="lot().status"></app-lot-status-badge>
 
-    <div class="chip font-semibold">VIN: {{ lot().vin }}</div>
+    <div class="chip pointer-events-auto font-semibold">
+      VIN:
+      <tui-copy
+        ><span>{{ lot().vin }}</span>
+      </tui-copy>
+    </div>
   </div>
 
   <div class="pointer-events-none absolute right-4 top-4 flex gap-4">
@@ -47,9 +52,7 @@
     ></app-favorite-button>
   </div>
 
-  <div
-    class="pointer-events-none absolute inset-y-0 flex w-full items-center justify-between px-6"
-  >
+  <div class="pointer-events-none absolute inset-y-0 flex w-full items-center justify-between px-6">
     <button
       tuiButton
       appearance="brand-rounded"
@@ -67,7 +70,7 @@
       type="button"
       iconStart="/assets/icons/arrow-right.svg"
       aria-label="Следующее фото"
-      [disabled]="index() === (lot().images.length - 1)"
+      [disabled]="index() === lot().images.length - 1"
       (click)="carousel.next()"
       class="pointer-events-auto"
     ></button>
