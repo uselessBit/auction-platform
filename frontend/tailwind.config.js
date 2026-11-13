@@ -5,6 +5,7 @@ module.exports = {
     extend: {
       maxWidth: {
         layout: '1260px',
+        dialog: '860px',
       },
       colors: {
         accent: {

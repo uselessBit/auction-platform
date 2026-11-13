@@ -1,0 +1,91 @@
+<dialog
+  #dlg
+  class="h-full w-full max-w-dialog bg-transparent backdrop:bg-black/80 backdrop:backdrop-blur-lg"
+  (close)="isOpen.set(false)"
+  (click)="onBackdropClick($event)"
+  (keydown.arrowLeft)="prev()"
+  (keydown.arrowRight)="next()"
+  tabindex="-1"
+>
+  @if (isOpen()) {
+    <div
+      class="pointer-events-none relative flex h-full w-full flex-col items-center justify-between"
+    >
+      <div
+        class="pointer-events-auto z-10 flex w-full items-center justify-between gap-1 rounded-2xl border border-stroke bg-blocks p-2"
+      >
+        <h2 class="pl-2 text-lg font-bold">
+          {{ title() }}
+        </h2>
+
+        <button
+          tuiButton
+          appearance="brand-square"
+          type="button"
+          iconStart="/assets/icons/x.svg"
+          aria-label="Закрыть"
+          (click)="close()"
+        ></button>
+      </div>
+
+      <div class="flex min-h-0 w-full flex-1 items-center justify-center py-4">
+        @for (i of [index()]; track i) {
+          <img
+            [src]="images()[i]"
+            [alt]="'Фото ' + (i + 1)"
+            class="animate-fade-in border-soild pointer-events-auto max-h-full max-w-full rounded-2xl border border-stroke object-contain"
+          />
+        }
+      </div>
+
+      <div
+        class="pointer-events-auto z-10 flex w-fit gap-0.5 overflow-x-auto rounded-2xl border border-stroke bg-blocks p-2"
+      >
+        @for (img of images(); track $index) {
+          <button
+            type="button"
+            (click)="index.set($index)"
+            class="group aspect-[4/3] w-16 shrink-0 overflow-hidden rounded-lg border border-solid p-0.5 transition-[border-color,transform] duration-300 hover:scale-105"
+            [class.border-accent]="$index === index()"
+            [class.border-transparent]="$index !== index()"
+            [class.scale-105]="$index === index()"
+          >
+            <div class="relative h-full w-full">
+              <img
+                [ngSrc]="img"
+                fill
+                alt=""
+                class="rounded-md object-cover transition-opacity duration-300 group-hover:opacity-90"
+                [class.opacity-50]="$index !== index()"
+              />
+            </div>
+          </button>
+        }
+      </div>
+
+      <div class="absolute inset-y-0 z-10 flex w-full items-center justify-between px-6">
+        <button
+          tuiButton
+          appearance="brand-rounded"
+          type="button"
+          iconStart="/assets/icons/arrow-left.svg"
+          aria-label="Предыдущее фото"
+          [disabled]="index() === 0"
+          class="pointer-events-auto"
+          (click)="prev()"
+        ></button>
+
+        <button
+          tuiButton
+          appearance="brand-rounded"
+          type="button"
+          iconStart="/assets/icons/arrow-right.svg"
+          aria-label="Следующее фото"
+          [disabled]="index() === images().length - 1"
+          class="pointer-events-auto"
+          (click)="next()"
+        ></button>
+      </div>
+    </div>
+  }
+</dialog>

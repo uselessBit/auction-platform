@@ -15,6 +15,10 @@
   line-height: 1;
 }
 
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
 @layer base {
   :root,
   [tuiTheme='dark'] {
@@ -62,7 +66,15 @@
 }
 
 [tuiAppearance][data-appearance='brand-rounded'] {
-  @apply size-10 rounded-full border border-stroke bg-blocks-second shadow-md backdrop-blur-sm shadow-black/25 transition-[transform,background-color,border-color,opacity] duration-300 ease-in-out;
+  @apply rounded-full;
+}
+[tuiAppearance][data-appearance='brand-square'] {
+  @apply rounded-lg;
+}
+
+[tuiAppearance][data-appearance='brand-rounded'],
+[tuiAppearance][data-appearance='brand-square'] {
+  @apply size-10 border border-solid border-stroke bg-blocks-second p-0 shadow-md shadow-black/25 backdrop-blur-sm transition-[transform,background-color,border-color,opacity] duration-300 ease-in-out;
 
   &::before,
   &::after {
@@ -87,7 +99,7 @@
 }
 
 .chip {
-  @apply whitespace-nowrap rounded-lg border border-stroke bg-blocks-second px-2 py-1 text-xs backdrop-blur-sm;
+  @apply whitespace-nowrap rounded-lg border border-solid border-stroke bg-blocks-second px-2 py-1 text-xs backdrop-blur-sm;
 
   &--muted {
     @apply opacity-50;

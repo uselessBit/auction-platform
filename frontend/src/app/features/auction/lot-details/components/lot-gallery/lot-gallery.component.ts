@@ -14,6 +14,7 @@ import { TuiButton, TuiCarousel } from '@taiga-ui/core';
 import { tuiCopyOptionsProvider } from '@taiga-ui/kit';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { FloatingBadgeComponent } from '../../../../../shared/components/floating-badge/floating-badge.component';
+import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.component';
 
 @Component({
   selector: 'app-lot-gallery',
@@ -25,6 +26,7 @@ import { FloatingBadgeComponent } from '../../../../../shared/components/floatin
     TuiCarousel,
     NgOptimizedImage,
     FloatingBadgeComponent,
+    LotImageViewerComponent,
   ],
   standalone: true,
   providers: [tuiCopyOptionsProvider({ icon: '/assets/icons/copy.svg' })],

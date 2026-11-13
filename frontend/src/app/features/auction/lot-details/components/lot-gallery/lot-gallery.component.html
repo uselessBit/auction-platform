@@ -1,4 +1,4 @@
-<article class="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-stroke">
+<article class="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-solid border-stroke">
   <tui-carousel
     #carousel
     [max]="lot().images.length - 1"
@@ -57,6 +57,7 @@
       iconStart="/assets/icons/zoom-in.svg"
       aria-label="Приблизить"
       class="pointer-events-auto"
+      (click)="viewer.open(index())"
     ></button>
 
     <div class="relative flex items-center justify-center">
@@ -124,3 +125,5 @@
     </div>
   </div>
 </article>
+
+<app-lot-image-viewer [images]="lot().images" [title]="lot().brand + ' ' + lot().model + ', ' + lot().year" #viewer />
