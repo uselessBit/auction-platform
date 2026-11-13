@@ -41,32 +41,44 @@
 }
 
 [tuiAppearance][data-appearance='brand'] {
-  background: var(--tui-background-accent-1, #00bc7d);
-  border-radius: 8px;
-  font-size: 12px;
-  height: 32px;
-  padding: 8px 24px;
-  font-weight: 600;
-  gap: 8px;
-  transition: all 0.3s ease-out;
+  @apply h-8 gap-2 rounded-lg bg-accent px-6 py-2 text-xs font-semibold transition-all duration-300 ease-in-out;
 
   &::before,
   &::after {
-    font-size: 12px;
+    @apply text-xs;
   }
 
   &:hover {
-    opacity: 0.9;
-    scale: 1.05;
+    @apply scale-105 opacity-90;
   }
 
   &:active {
-    scale: 0.95;
+    @apply scale-95;
   }
 
   &.brand-active {
-    background: var(--tui-border-normal);
-    color: var(--tui-background-accent-1);
+    @apply bg-stroke text-accent;
+  }
+}
+
+[tuiAppearance][data-appearance='brand-rounded'] {
+  @apply size-10 rounded-full bg-accent transition-all duration-300 ease-in-out;
+
+  &::before,
+  &::after {
+    @apply text-base;
+  }
+
+  &:hover {
+    @apply scale-110;
+  }
+
+  &:active {
+    @apply scale-90;
+  }
+
+  &.brand-active {
+    @apply bg-stroke text-accent;
   }
 }
 
@@ -89,7 +101,7 @@
   }
 }
 
-@layer utilitiesХ {
+@layer utilities {
   .animate-fade-in {
     animation: fadeIn 0.3s ease-in-out;
     will-change: opacity, transform;
