@@ -2,8 +2,9 @@
   tuiButton
   appearance="brand-rounded"
   [iconStart]="isFavorite() ? 'assets/icons/star-active.svg' : 'assets/icons/star.svg'"
-  [class]="isFavorite() ? 'border-accent bg-accent' : 'border-stroke bg-blocks'"
+  [class.brand-rounded-active]="isFavorite()"
+  [attr.aria-pressed]="isFavorite()"
+  aria-label="В избранное"
   (click)="toggleState($event)"
-  aria-label="Add to favorite button"
->
-</button>
+  type="button"
+></button>

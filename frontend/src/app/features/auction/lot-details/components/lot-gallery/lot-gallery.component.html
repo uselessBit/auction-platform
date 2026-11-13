@@ -8,10 +8,7 @@
   </div>
 
   <div class="absolute right-4 top-4 flex gap-4">
-    <button
-      class="rounded-full border border-stroke bg-blocks p-3 shadow-md shadow-black/25 backdrop-blur-sm transition-transform duration-300 hover:scale-110 active:scale-90"
-    >
-      <img src="/assets/icons/zoom-in.svg" alt=""/>
+    <button tuiButton appearance="brand-rounded" iconStart="/assets/icons/zoom-in.svg">
     </button>
 
     <button
@@ -20,7 +17,7 @@
       <img src="/assets/icons/share.svg" alt="" />
     </button>
 
-    <app-favorite-button [isFavorite]="lot()?.isFavorite"></app-favorite-button>
+    <app-favorite-button [isFavorite]="lot()?.isFavorite ?? false"></app-favorite-button>
   </div>
 
   <div class="absolute w-full top-1/2 flex justify-between px-6 -translate-y-1/2">

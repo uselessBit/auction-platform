@@ -9,7 +9,7 @@ import { TuiButton } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class FavoriteButtonComponent {
-  readonly isFavorite = input<boolean | undefined>(false);
+  readonly isFavorite = input<boolean>(false);
   readonly toggle = output<void>();
 
   toggleState(event: MouseEvent): void {
