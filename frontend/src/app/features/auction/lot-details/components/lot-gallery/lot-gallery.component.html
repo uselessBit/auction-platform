@@ -19,11 +19,31 @@
   <div class="pointer-events-none absolute left-6 top-6 flex gap-2">
     <app-lot-status-badge [status]="lot().status"></app-lot-status-badge>
 
-    <div class="chip pointer-events-auto font-semibold">
-      VIN:
-      <tui-copy
-        ><span>{{ lot().vin }}</span>
-      </tui-copy>
+    <div class="chip pointer-events-auto relative flex gap-1 font-semibold">
+      <span>VIN:</span>
+
+      <span class="group flex items-center justify-center">
+        <button
+          type="button"
+          aria-label="Скопировать VIN"
+          (click)="copyVin()"
+          class="transition-opacity duration-300 group-hover:opacity-70"
+        >
+          <span>{{ lot().vin }}</span>
+        </button>
+
+        <span
+          class="pointer-events-none absolute right-0 h-full w-1/2 rounded-lg bg-gradient-to-l from-blocks-second/100 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        >
+          <img
+            src="/assets/icons/copy.svg"
+            alt=""
+            class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          />
+        </span>
+
+        <app-floating-badge text="VIN скопирован" [visible]="isVinCopied()" />
+      </span>
     </div>
   </div>
 
@@ -37,14 +57,19 @@
       class="pointer-events-auto"
     ></button>
 
-    <button
-      tuiButton
-      appearance="brand-rounded"
-      type="button"
-      iconStart="/assets/icons/share.svg"
-      aria-label="Поделиться"
-      class="pointer-events-auto"
-    ></button>
+    <div class="relative flex items-center justify-center">
+      <button
+        tuiButton
+        appearance="brand-rounded"
+        type="button"
+        iconStart="/assets/icons/share.svg"
+        aria-label="Поделиться"
+        class="pointer-events-auto"
+        (click)="shareLot()"
+      ></button>
+
+      <app-floating-badge text="Ссылка скопирована" [visible]="isLinkCopied()" />
+    </div>
 
     <app-favorite-button
       [isFavorite]="lot().isFavorite ?? false"

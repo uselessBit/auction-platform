@@ -1,0 +1,12 @@
+<div
+  class="pointer-events-none absolute top-full mt-2 flex w-max items-center gap-2 whitespace-nowrap rounded-lg border border-stroke bg-blocks-second px-4 py-2 text-xs shadow-md backdrop-blur-md transition-all duration-300 ease-in-out"
+  [class.opacity-100]="visible()"
+  [class.opacity-0]="!visible()"
+  [class.translate-y-0]="visible()"
+  [class.-translate-y-4]="!visible()"
+  [class.scale-100]="visible()"
+  [class.scale-50]="!visible()"
+>
+  <img src="/assets/icons/check.svg" alt="" class="z-10 shrink-0" />
+  <span class="z-10 text-nowrap font-semibold">{{ text() }}</span>
+</div>
