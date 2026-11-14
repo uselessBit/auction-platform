@@ -26,6 +26,7 @@ export class HeaderComponent {
   private activeEl: HTMLElement | null = null;
 
   readonly sliderPosition = signal({ left: 0, width: 0, opacity: 0 });
+
   updateSlider(el: HTMLElement) {
     this.activeEl = el;
     this.sliderPosition.set({ left: el.offsetLeft, width: el.offsetWidth, opacity: 1 });
