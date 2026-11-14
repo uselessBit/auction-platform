@@ -5,10 +5,11 @@ import { AsyncPipe } from '@angular/common';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { LotGalleryComponent } from './components/lot-gallery/lot-gallery.component';
+import { LotPriceChartComponent } from './components/lot-price-chart/lot-price-chart.component';
 
 @Component({
   selector: 'app-lot-details',
-  imports: [LotSpecsComponent, AsyncPipe, LotGalleryComponent],
+  imports: [LotSpecsComponent, AsyncPipe, LotGalleryComponent, LotPriceChartComponent],
   standalone: true,
   templateUrl: './lot-details.component.html',
   styleUrl: './lot-details.component.scss',

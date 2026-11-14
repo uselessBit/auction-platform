@@ -95,6 +95,12 @@ body:has(dialog[open]) {
   }
 }
 
+tui-hint[tuiAppearance][role='tooltip'] {
+  background: var(--tui-border-normal);
+  color: var(--tui-text-primary);
+  font-family: 'NBRB', 'Inter', sans-serif;
+}
+
 .chip {
   @apply whitespace-nowrap rounded-lg border border-solid border-stroke bg-blocks-second px-2 py-1 text-xs backdrop-blur-sm;
 

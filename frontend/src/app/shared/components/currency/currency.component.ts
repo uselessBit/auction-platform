@@ -12,7 +12,7 @@ import { LotStatus } from '../../../core/models/lot.model';
 })
 export class CurrencyComponent {
   readonly value = input.required<number>();
-  readonly color = input<LotStatus>('active');
+  readonly color = input<LotStatus | 'stroke'>('active');
 
   protected readonly colorClass = computed(() => {
     switch (this.color()) {
@@ -24,6 +24,8 @@ export class CurrencyComponent {
         return 'text-sold';
       case 'cancelled':
         return 'text-cancelled';
+      case 'stroke':
+        return 'text-stroke';
       case 'active':
       default:
         return 'text-active';

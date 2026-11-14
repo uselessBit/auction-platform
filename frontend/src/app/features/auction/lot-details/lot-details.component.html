@@ -4,6 +4,9 @@
   >
     <div class="col-span-2 flex flex-col gap-6">
       <app-lot-gallery [lot]="lot"></app-lot-gallery>
+      @if (lot.bids.length > 1) {
+        <app-lot-price-chart [lot]="lot"></app-lot-price-chart>
+      }
       <app-lot-specs [lot]="lot"></app-lot-specs>
     </div>
   </section>

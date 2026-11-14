@@ -1,0 +1,33 @@
+<article class="h-full min-h-96 w-full rounded-[2rem] outline outline-1 outline-stroke bg-blocks p-6">
+  <div class="flex h-full flex-col gap-4">
+    <div class="flex justify-between">
+      <h2 class="text-base font-semibold">График изменения ставок</h2>
+      <h3 class="text-xs text-stroke">
+        Минимальный шаг: <app-currency [value]="lot().bidStepByn" color="stroke" />
+      </h3>
+    </div>
+
+    <tui-axes
+      class="axes flex-1"
+      [axisYLabels]="axisYLabels()"
+      [horizontalLines]="horizontalLines"
+      [horizontalLinesHandler]="horizontalLinesHandler"
+      [verticalLines]="verticalLines"
+      [verticalLinesHandler]="verticalLinesHandler"
+    >
+      <tui-line-chart
+        class="text-accent"
+        [dots]="true"
+        [filled]="true"
+        [smoothingFactor]="60"
+        [height]="heightY()"
+        [value]="points()"
+        [width]="widthX()"
+        [x]="0"
+        [y]="minY()"
+        [tuiHintContent]="hintContent"
+        [yStringify]="yStringify"
+      />
+    </tui-axes>
+  </div>
+</article>
