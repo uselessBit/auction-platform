@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { Lot } from '../../../core/models/lot.model';
 import { LotTimerService } from '../../../core/services/lot-timer.service';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -23,16 +23,18 @@ import { FavoriteButtonComponent } from '../favorite-button/favorite-button.comp
   styleUrl: './lot-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LotCardComponent implements OnInit {
+export class LotCardComponent {
+  protected readonly lotTimer = inject(LotTimerService);
+
   readonly lot = input<Lot | null>(null);
 
-  readonly lotTimer = inject(LotTimerService);
-
-  ngOnInit() {
-    const currentLot = this.lot();
-    if (currentLot && (currentLot.status === 'active' || currentLot.status === 'upcoming')) {
-      this.lotTimer.start(currentLot.endsAt);
-    }
+  constructor() {
+    effect(() => {
+      const currentLot = this.lot();
+      if (currentLot && (currentLot.status === 'active' || currentLot.status === 'upcoming')) {
+        this.lotTimer.start(currentLot.endsAt);
+      }
+    });
   }
 
   protected readonly titleHoverClass = computed(() => {
