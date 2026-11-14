@@ -49,9 +49,12 @@ export class LotImageViewerComponent {
   }
 
   protected close(): void {
+    this.dialog().nativeElement.close();
+  }
+
+  protected onClose(): void {
     this.resetZoom();
     this.isOpen.set(false);
-    this.dialog().nativeElement.close();
   }
 
   protected prev(): void {

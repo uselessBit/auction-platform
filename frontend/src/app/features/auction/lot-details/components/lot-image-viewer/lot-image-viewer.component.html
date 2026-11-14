@@ -1,7 +1,7 @@
 <dialog
   #dlg
   class="h-full w-full bg-transparent backdrop:bg-black/80 backdrop:backdrop-blur-lg"
-  (close)="close()"
+  (close)="onClose()"
   (click)="onBackdropClick($event)"
   (keydown.arrowLeft)="prev()"
   (keydown.arrowRight)="next()"
@@ -15,36 +15,48 @@
       class="pointer-events-none relative flex h-full w-full flex-col items-center justify-between"
     >
       <div
-        class="pointer-events-auto z-10 flex w-full max-w-dialog items-center justify-between gap-1 rounded-2xl border border-stroke bg-blocks p-2 backdrop-blur-md"
+        class="relative pointer-events-auto z-10 flex w-full max-w-dialog items-center justify-between gap-1 rounded-2xl border border-stroke bg-blocks p-2 backdrop-blur-md"
       >
+        <div class="chip absolute left-1/2 top-1/2 w-14 -translate-x-1/2 -translate-y-1/2 text-center font-semibold">
+          {{ index() + 1 }}/{{ images().length }}
+        </div>
+
         <h2 class="pl-2 text-lg font-bold">
           {{ title() }}
         </h2>
 
-        <div class="flex gap-2">
-          <button
-            tuiButton
-            appearance="brand-square"
-            type="button"
-            iconStart="/assets/icons/zoom-out.svg"
-            [disabled]="!isZoom()"
-            aria-label="Отдалить"
-            (click)="zoomOut()"
-          ></button>
+        <div class="flex items-center gap-2">
+          <div class="flex gap-1 border border-solid border-stroke bg-blocks p-1 rounded-lg">
+            <button
+              tuiButton
+              appearance="brand-transparent"
+              type="button"
+              iconStart="/assets/icons/zoom-out.svg"
+              [disabled]="!isZoom()"
+              aria-label="Отдалить"
+              (click)="zoomOut()"
+            ></button>
 
-          <div class="chip flex items-center justify-center opacity-70">
-            {{ currentScale() * 100 }}%
+            <div class="flex items-center justify-center opacity-70 w-8 text-center text-xs">
+              {{ currentScale() * 100 }}%
+            </div>
+
+            <button
+              tuiButton
+              appearance="brand-transparent"
+              type="button"
+              iconStart="/assets/icons/zoom-in.svg"
+              [disabled]="currentScale() >= maxScale"
+              aria-label="Приблизить"
+              (click)="zoomIn()"
+            ></button>
           </div>
 
-          <button
-            tuiButton
-            appearance="brand-square"
-            type="button"
-            iconStart="/assets/icons/zoom-in.svg"
-            [disabled]="currentScale() >= maxScale"
-            aria-label="Приблизить"
-            (click)="zoomIn()"
-          ></button>
+          <div class="flex items-center gap-1 opacity-70">
+            <div class="chip flex h-fit items-center justify-center">ESC</div>
+
+            <div class="text-xs">закрыть</div>
+          </div>
 
           <button
             tuiButton
@@ -78,7 +90,7 @@
                 [class.cursor-grab]="isZoom() && !isDragging()"
                 [class.cursor-grabbing]="isDragging()"
                 [class.transition-none]="isDragging()"
-                class="animate-fade-in border-solid pointer-events-auto max-h-full max-w-full rounded-2xl border border-stroke object-contain transition-[scale,translate] duration-300"
+                class="animate-fade-in pointer-events-auto max-h-full max-w-full rounded-2xl border border-solid border-stroke object-contain transition-[scale,translate] duration-300"
               />
             </div>
           }
