@@ -35,13 +35,14 @@ import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.co
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LotGalleryComponent {
-  readonly lot = input.required<LotDetails>();
-  readonly index = signal<number>(0);
-  readonly isLinkCopied = signal<boolean>(false);
-  readonly isVinCopied = signal<boolean>(false);
-
   private document = inject(DOCUMENT);
   private clipboard = inject(Clipboard);
+
+  readonly lot = input.required<LotDetails>();
+
+  protected readonly index = signal<number>(0);
+  protected readonly isLinkCopied = signal<boolean>(false);
+  protected readonly isVinCopied = signal<boolean>(false);
 
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
   private readonly win = this.document.defaultView;

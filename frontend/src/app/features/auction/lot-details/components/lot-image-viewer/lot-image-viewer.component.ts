@@ -20,9 +20,9 @@ import { TuiButton } from '@taiga-ui/core';
 })
 export class LotImageViewerComponent {
   readonly images = input.required<readonly string[]>();
-  readonly title = input.required<string>();
-  protected readonly index = signal<number>(0);
+
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dlg');
+  protected readonly index = signal<number>(0);
 
   protected readonly currentScale = signal<number>(1);
   protected readonly imagePan = signal({ x: 0, y: 0 });
@@ -30,6 +30,7 @@ export class LotImageViewerComponent {
 
   protected readonly isOpen = signal<boolean>(false);
   protected readonly isZoom = computed(() => this.currentScale() > 1);
+  protected readonly isClosing = signal<boolean>(false);
 
   private startX = 0;
   private startY = 0;
@@ -49,12 +50,22 @@ export class LotImageViewerComponent {
   }
 
   protected close(): void {
-    this.dialog().nativeElement.close();
+    if (this.isClosing()) {
+      return;
+    }
+    this.isClosing.set(true);
   }
 
   protected onClose(): void {
+    this.isClosing.set(false);
     this.resetZoom();
     this.isOpen.set(false);
+  }
+
+  protected onAnimationEnd(event: AnimationEvent): void {
+    if (event.target === this.dialog().nativeElement && this.isClosing()) {
+      this.dialog().nativeElement.close();
+    }
   }
 
   protected prev(): void {

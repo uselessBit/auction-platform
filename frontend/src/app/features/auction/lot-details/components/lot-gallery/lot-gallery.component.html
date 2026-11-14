@@ -1,4 +1,6 @@
-<article class="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-solid border-stroke">
+<article
+  class="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-solid border-stroke"
+>
   <tui-carousel
     #carousel
     [max]="lot().images.length - 1"
@@ -11,7 +13,8 @@
         [ngSrc]="lot().images[i]"
         fill
         alt="{{ lot().brand }} {{ lot().model }}, фото {{ i + 1 }}"
-        class="object-cover object-center"
+        class="cursor-pointer object-cover object-center"
+        (click)="viewer.open(index())"
       />
     </section>
   </tui-carousel>
@@ -19,7 +22,7 @@
   <div class="pointer-events-none absolute left-6 top-6 flex gap-2">
     <app-lot-status-badge [status]="lot().status"></app-lot-status-badge>
 
-    <div class="relative flex justify-center items-center">
+    <div class="relative flex items-center justify-center">
       <div class="chip pointer-events-auto flex gap-1 font-semibold">
         <span>VIN:</span>
 
@@ -109,11 +112,13 @@
   </div>
 
   <div
-    class="absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"
+    class="pointer-events-none absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"
   >
-    <h1 class="text-5xl font-bold">{{ lot().brand }} {{ lot().model }}, {{ lot().year }}</h1>
+    <h1 class="pointer-events-auto w-fit text-5xl font-bold">
+      {{ lot().brand }} {{ lot().model }}, {{ lot().year }}
+    </h1>
 
-    <div class="flex flex-col gap-1">
+    <div class="pointer-events-auto flex flex-col gap-1">
       <ul class="flex flex-wrap gap-1">
         <li class="chip">{{ lot().engine }}</li>
         <li class="chip">{{ lot().fuelType }}</li>
@@ -126,4 +131,4 @@
   </div>
 </article>
 
-<app-lot-image-viewer [images]="lot().images" [title]="lot().brand + ' ' + lot().model + ', ' + lot().year" #viewer />
+<app-lot-image-viewer [images]="lot().images" #viewer />

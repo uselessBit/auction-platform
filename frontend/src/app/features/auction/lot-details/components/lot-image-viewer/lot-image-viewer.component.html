@@ -1,35 +1,39 @@
 <dialog
   #dlg
-  class="h-full w-full bg-transparent backdrop:bg-black/80 backdrop:backdrop-blur-lg"
+  class="m-0 h-full max-h-none w-full max-w-none border-none bg-transparent p-4 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
+  [class.is-closing]="isClosing()"
+  (cancel)="$event.preventDefault(); close()"
+  (animationend)="onAnimationEnd($event)"
   (close)="onClose()"
   (click)="onBackdropClick($event)"
   (keydown.arrowLeft)="prev()"
   (keydown.arrowRight)="next()"
+  (keydown.code.minus)="zoomOut()"
+  (keydown.code.numpadsubtract)="zoomOut()"
+  (keydown.code.equal)="zoomIn()"
+  (keydown.code.shift.equal)="zoomIn()"
+  (keydown.code.numpadadd)="zoomIn()"
   (mousemove)="isZoom() && mousemove($event)"
   (mouseup)="isZoom() && mouseup()"
   (mouseleave)="mouseup()"
   tabindex="-1"
 >
   @if (isOpen()) {
-    <div
-      class="pointer-events-none relative flex h-full w-full flex-col items-center justify-between"
-    >
-      <div
-        class="relative pointer-events-auto z-10 flex w-full max-w-dialog items-center justify-between gap-1 rounded-2xl border border-stroke bg-blocks p-2 backdrop-blur-md"
-      >
-        <div class="chip absolute left-1/2 top-1/2 w-14 -translate-x-1/2 -translate-y-1/2 text-center font-semibold">
+    <div class="pointer-events-none h-full w-full p-1">
+      <div class="relative h-full w-full">
+        <div
+          class="chip viewer-top absolute left-1/2 top-0 z-10 w-14 -translate-x-1/2 text-center font-semibold"
+        >
           {{ index() + 1 }}/{{ images().length }}
         </div>
 
-        <h2 class="pl-2 text-lg font-bold">
-          {{ title() }}
-        </h2>
-
-        <div class="flex items-center gap-2">
-          <div class="flex gap-1 border border-solid border-stroke bg-blocks p-1 rounded-lg">
+        <div
+          class="viewer-top pointer-events-auto absolute right-0 z-10 flex items-center gap-2 rounded-full bg-blocks pr-1 backdrop-blur-md"
+        >
+          <div class="flex gap-1 rounded-full p-1">
             <button
               tuiButton
-              appearance="brand-transparent"
+              appearance="brand-rounded"
               type="button"
               iconStart="/assets/icons/zoom-out.svg"
               [disabled]="!isZoom()"
@@ -37,13 +41,13 @@
               (click)="zoomOut()"
             ></button>
 
-            <div class="flex items-center justify-center opacity-70 w-8 text-center text-xs">
+            <div class="flex w-8 items-center justify-center text-center text-xs opacity-70">
               {{ currentScale() * 100 }}%
             </div>
 
             <button
               tuiButton
-              appearance="brand-transparent"
+              appearance="brand-rounded"
               type="button"
               iconStart="/assets/icons/zoom-in.svg"
               [disabled]="currentScale() >= maxScale"
@@ -60,93 +64,93 @@
 
           <button
             tuiButton
-            appearance="brand-square"
+            appearance="brand-rounded"
             type="button"
             iconStart="/assets/icons/x.svg"
             aria-label="Закрыть"
             (click)="close()"
           ></button>
         </div>
-      </div>
 
-      <div class="fixed inset-0 overflow-hidden">
+        <div class="viewer-stage fixed inset-0 overflow-hidden">
+          <div
+            class="flex h-full w-full py-24 transition-transform duration-300 ease-in-out"
+            [style.transform]="'translateX(-' + index() * 100 + '%)'"
+          >
+            @for (image of images(); track image) {
+              <div class="flex h-full w-full shrink-0 items-center justify-center">
+                <img
+                  [src]="image"
+                  [alt]="'Фото ' + ($index + 1)"
+                  [style.scale]="$index === index() ? currentScale() : 1"
+                  [style.translate]="
+                    $index === index() && isZoom()
+                      ? imagePan().x + 'px ' + imagePan().y + 'px'
+                      : '0px 0px'
+                  "
+                  draggable="false"
+                  (mousedown)="isZoom() && mousedown($event)"
+                  [class.cursor-grab]="isZoom() && !isDragging()"
+                  [class.cursor-grabbing]="isDragging()"
+                  [class.transition-none]="isDragging()"
+                  class="pointer-events-auto max-h-full max-w-full rounded-2xl border border-solid border-stroke object-contain transition-[scale,translate] duration-300"
+                />
+              </div>
+            }
+          </div>
+        </div>
+
         <div
-          class="flex h-full w-full py-24 transition-transform duration-300 ease-in-out"
-          [style.transform]="'translateX(-' + index() * 100 + '%)'"
+          class="viewer-bottom pointer-events-auto absolute bottom-0 left-1/2 z-10 flex w-fit -translate-x-1/2 gap-0.5 overflow-x-auto rounded-xl border border-stroke bg-blocks p-1 backdrop-blur-md"
         >
-          @for (image of images(); track image) {
-            <div class="flex h-full w-full shrink-0 items-center justify-center">
-              <img
-                [src]="image"
-                [alt]="'Фото ' + ($index + 1)"
-                [style.scale]="$index === index() ? currentScale() : 1"
-                [style.translate]="
-                  $index === index() && isZoom()
-                    ? imagePan().x + 'px ' + imagePan().y + 'px'
-                    : '0px 0px'
-                "
-                draggable="false"
-                (mousedown)="isZoom() && mousedown($event)"
-                [class.cursor-grab]="isZoom() && !isDragging()"
-                [class.cursor-grabbing]="isDragging()"
-                [class.transition-none]="isDragging()"
-                class="animate-fade-in pointer-events-auto max-h-full max-w-full rounded-2xl border border-solid border-stroke object-contain transition-[scale,translate] duration-300"
-              />
-            </div>
+          @for (img of images(); track $index) {
+            <button
+              type="button"
+              (click)="navChangeIndex($index)"
+              class="group aspect-[4/3] w-16 shrink-0 overflow-hidden rounded-lg border border-solid p-0.5 transition-[border-color,transform] duration-300 hover:scale-105"
+              [class.border-accent]="$index === index()"
+              [class.border-transparent]="$index !== index()"
+              [class.scale-105]="$index === index()"
+            >
+              <div class="relative h-full w-full">
+                <img
+                  [ngSrc]="img"
+                  fill
+                  alt=""
+                  class="rounded-md object-cover transition-opacity duration-300 group-hover:opacity-90"
+                  [class.opacity-50]="$index !== index()"
+                />
+              </div>
+            </button>
           }
         </div>
-      </div>
 
-      <div
-        class="pointer-events-auto z-10 flex w-fit gap-0.5 overflow-x-auto rounded-2xl border border-stroke bg-blocks p-2 backdrop-blur-md"
-      >
-        @for (img of images(); track $index) {
-          <button
-            type="button"
-            (click)="navChangeIndex($index)"
-            class="group aspect-[4/3] w-16 shrink-0 overflow-hidden rounded-lg border border-solid p-0.5 transition-[border-color,transform] duration-300 hover:scale-105"
-            [class.border-accent]="$index === index()"
-            [class.border-transparent]="$index !== index()"
-            [class.scale-105]="$index === index()"
-          >
-            <div class="relative h-full w-full">
-              <img
-                [ngSrc]="img"
-                fill
-                alt=""
-                class="rounded-md object-cover transition-opacity duration-300 group-hover:opacity-90"
-                [class.opacity-50]="$index !== index()"
-              />
-            </div>
-          </button>
+        @if (!isZoom()) {
+          <div class="absolute inset-y-0 z-10 flex w-full items-center justify-between px-6">
+            <button
+              tuiButton
+              appearance="brand-rounded"
+              type="button"
+              iconStart="/assets/icons/arrow-left.svg"
+              aria-label="Предыдущее фото"
+              [disabled]="index() === 0"
+              class="pointer-events-auto"
+              (click)="prev()"
+            ></button>
+
+            <button
+              tuiButton
+              appearance="brand-rounded"
+              type="button"
+              iconStart="/assets/icons/arrow-right.svg"
+              aria-label="Следующее фото"
+              [disabled]="index() === images().length - 1"
+              class="pointer-events-auto"
+              (click)="next()"
+            ></button>
+          </div>
         }
       </div>
-
-      @if (!isZoom()) {
-        <div class="absolute inset-y-0 z-10 flex w-full items-center justify-between px-6">
-          <button
-            tuiButton
-            appearance="brand-rounded"
-            type="button"
-            iconStart="/assets/icons/arrow-left.svg"
-            aria-label="Предыдущее фото"
-            [disabled]="index() === 0"
-            class="pointer-events-auto"
-            (click)="prev()"
-          ></button>
-
-          <button
-            tuiButton
-            appearance="brand-rounded"
-            type="button"
-            iconStart="/assets/icons/arrow-right.svg"
-            aria-label="Следующее фото"
-            [disabled]="index() === images().length - 1"
-            class="pointer-events-auto"
-            (click)="next()"
-          ></button>
-        </div>
-      }
     </div>
   }
 </dialog>
