@@ -1,27 +1,51 @@
 import { AuthResponse, AuthTokens, User } from '../models/auth.model';
 
 export const MOCK_USER_VERIFIED: User = {
-  id: 'u-101',
-  email: 'alexander@secondrive.by',
-  name: 'Александр Иванов',
+  id: 'f47ac10b-58cc-4372-a567-0e02b2c32345',
+  email: 'alex.novik@yandex.by',
+  phone: '+375291234567',
   role: 'user',
   kycStatus: 'approved',
+  isPhoneVerified: true,
+  isEmailVerified: true,
+  isBlocked: false,
+  createdAt: '2026-01-15T10:00:00.000Z',
 };
 
 export const MOCK_USER_NEW: User = {
-  id: 'u-102',
+  id: 'a2c4e6f8-1122-4334-8556-778899004120',
   email: 'novice@mail.ru',
-  name: 'Дмитрий Смирнов',
+  phone: '+375292223344',
   role: 'user',
   kycStatus: 'pending',
+  isPhoneVerified: true,
+  isEmailVerified: true,
+  isBlocked: false,
+  createdAt: '2026-05-10T14:20:00.000Z',
+};
+
+export const MOCK_USER_UNVERIFIED: User = {
+  id: 'b3d5f7a9-2233-4455-9667-889900115501',
+  email: 'unverified@mail.ru',
+  phone: '+375447654321',
+  role: 'user',
+  kycStatus: 'none',
+  isPhoneVerified: false,
+  isEmailVerified: true,
+  isBlocked: false,
+  createdAt: '2026-06-01T09:15:00.000Z',
 };
 
 export const MOCK_ADMIN: User = {
-  id: 'u-admin',
+  id: '00000000-0000-4000-8000-000000000001',
   email: 'admin@secondrive.by',
-  name: 'Главный Администратор',
+  phone: '+375290000001',
   role: 'admin',
   kycStatus: 'approved',
+  isPhoneVerified: true,
+  isEmailVerified: true,
+  isBlocked: false,
+  createdAt: '2025-12-01T00:00:00.000Z',
 };
 
 export const MOCK_TOKENS: AuthTokens = {

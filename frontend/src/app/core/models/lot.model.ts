@@ -8,12 +8,13 @@ export const lotStatus: Record<LotStatus, string> = {
   cancelled: 'Отменён',
 };
 
-export interface LotBid {
+export interface Bid {
   readonly id: string;
-  readonly bidderMasked: string; // "Участник ***2345"
-  readonly isCurrentUser: boolean;
-  readonly amountByn: number;
-  readonly createdAt: string;
+  readonly userId: string;
+  readonly lotId: string;
+  readonly amount: number;
+  readonly createdAt: string; // ISO 8601
+  readonly isMyBid: boolean;
 }
 
 export interface Lot {
@@ -44,7 +45,7 @@ export interface LotDetails extends Lot {
   readonly location: string; // 'Минск, ул. Бабушкина, 39'
   readonly createdAt: string; // ISO 8601 строка, например '2026-05-11T12:00:00.000Z'
   readonly inspectorComment: string; // Описание повреждений оценщика
-  readonly bids: readonly LotBid[]; // История ставок
+  readonly bids: readonly Bid[]; // История ставок (от новых к старым)
 }
 
 export type BidStatusType =

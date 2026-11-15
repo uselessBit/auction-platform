@@ -9,7 +9,7 @@ import {
   TuiLineHandler,
 } from '@taiga-ui/addon-charts';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
-import { LotDetails, LotBid } from '../../../../../core/models/lot.model';
+import { LotDetails, Bid } from '../../../../../core/models/lot.model';
 
 @Component({
   selector: 'app-lot-price-chart',
@@ -22,18 +22,18 @@ import { LotDetails, LotBid } from '../../../../../core/models/lot.model';
 export class LotPriceChartComponent {
   readonly lot = input.required<LotDetails>();
 
-  protected readonly bids = computed<readonly LotBid[]>(() => this.lot().bids.toReversed());
+  protected readonly bids = computed<readonly Bid[]>(() => this.lot().bids.toReversed());
   protected readonly len = computed<number>(() => this.bids().length);
 
   protected readonly horizontalLines: number = 4;
   protected readonly verticalLines: number = 5;
 
   protected readonly points = computed<readonly TuiPoint[]>(() =>
-    this.bids().map((bid, id) => [id, bid.amountByn]),
+    this.bids().map((bid, id) => [id, bid.amount]),
   );
-  protected readonly minY = computed<number>(() => this.bids()[0].amountByn);
+  protected readonly minY = computed<number>(() => this.bids()[0].amount);
   protected readonly heightY = computed<number>(
-    () => this.bids()[this.len() - 1].amountByn - this.minY(),
+    () => this.bids()[this.len() - 1].amount - this.minY(),
   );
   protected readonly widthX = computed<number>(() => Math.max(this.len() - 1, 1));
   protected readonly axisYLabels = computed<readonly string[]>(() => {

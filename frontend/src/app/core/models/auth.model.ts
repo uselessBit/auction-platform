@@ -1,19 +1,24 @@
 export type KycStatus = 'none' | 'pending' | 'approved' | 'rejected';
+export type UserRole = 'user' | 'admin' | 'b2b';
 
 export interface User {
-  id: string;
-  email: string;
-  name: string;
-  role: 'user' | 'admin';
-  kycStatus: KycStatus;
+  readonly id: string;
+  readonly email: string;
+  readonly phone: string;
+  readonly role: UserRole;
+  readonly kycStatus: KycStatus;
+  readonly isPhoneVerified: boolean;
+  readonly isEmailVerified: boolean;
+  readonly isBlocked: boolean;
+  readonly createdAt: string; // ISO 8601
 }
 
 export interface AuthTokens {
-  accessToken: string;
-  refreshToken: string;
+  readonly accessToken: string;
+  readonly refreshToken: string;
 }
 
 export interface AuthResponse {
-  user: User;
-  tokens: AuthTokens;
+  readonly user: User;
+  readonly tokens: AuthTokens;
 }
