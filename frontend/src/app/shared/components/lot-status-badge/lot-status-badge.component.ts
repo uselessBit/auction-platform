@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { LotStatus, lotStatus } from '../../../core/models/lot.model';
+import { TuiIcon } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-lot-status-badge',
-  imports: [],
+  imports: [TuiIcon],
   standalone: true,
   templateUrl: './lot-status-badge.component.html',
   styleUrl: './lot-status-badge.component.scss',

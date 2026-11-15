@@ -10,7 +10,7 @@ import { LotDetails } from '../../../../../core/models/lot.model';
 import { LotStatusBadgeComponent } from '../../../../../shared/components/lot-status-badge/lot-status-badge.component';
 import { DecimalPipe, DOCUMENT, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { FavoriteButtonComponent } from '../../../../../shared/components/favorite-button/favorite-button.component';
-import { TuiButton, TuiCarousel } from '@taiga-ui/core';
+import { TuiButton, TuiCarousel, TuiIcon } from '@taiga-ui/core';
 import { tuiCopyOptionsProvider } from '@taiga-ui/kit';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { FloatingBadgeComponent } from '../../../../../shared/components/floating-badge/floating-badge.component';
@@ -27,6 +27,7 @@ import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.co
     NgOptimizedImage,
     FloatingBadgeComponent,
     LotImageViewerComponent,
+    TuiIcon,
   ],
   standalone: true,
   providers: [tuiCopyOptionsProvider({ icon: '/assets/icons/copy.svg' })],
