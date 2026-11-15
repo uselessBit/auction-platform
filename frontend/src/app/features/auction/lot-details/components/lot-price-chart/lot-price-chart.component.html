@@ -16,7 +16,7 @@
       [verticalLinesHandler]="verticalLinesHandler"
     >
       <tui-line-chart
-        class="text-accent"
+        [class]="chartClass()"
         [dots]="true"
         [filled]="true"
         [smoothingFactor]="60"
