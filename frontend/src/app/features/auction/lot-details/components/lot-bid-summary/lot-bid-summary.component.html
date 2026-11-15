@@ -1,6 +1,76 @@
-<article class="flex flex-col gap-2 rounded-[2rem] bg-blocks p-6 outline outline-1 outline-stroke">
-  <h2 class="text-base font-semibold opacity-50">Текущая ставка</h2>
-  <h1 class="text-5xl font-bold"><app-currency [value]="lot().currentBidByn" [color]="lot().status" /></h1>
+<article class="flex flex-col gap-4 rounded-[2rem] bg-blocks p-6 outline outline-1 outline-stroke">
+  <div class="flex">
+    <div class="flex flex-1 flex-col gap-1">
+      <h2 class="text-base font-semibold opacity-50">{{ timerConfig().title }}</h2>
+      <h1 class="text-5xl font-bold">
+        <app-currency
+          [value]="lot().status === 'upcoming' ? lot().startPriceByn : lot().currentBidByn"
+          [color]="lot().status"
+        />
+      </h1>
 
-  <app-bid-status-badge status="leading" />
+      <app-bid-status-badge [status]="bidStatus()" />
+    </div>
+
+    @if (lot().status === 'active' || lot().status === 'upcoming' || lot().status === 'finished') {
+      <div
+        class="flex w-full max-w-24 flex-col items-center justify-center gap-1 whitespace-nowrap rounded-lg border"
+        [class]="timerConfig().container"
+      >
+        <tui-icon
+          [icon]="'/assets/icons/' + lot().status + '-date.svg'"
+          class="mb-1 text-2xl"
+          [class]="timerConfig().text"
+        />
+
+        <div class="text-base font-semibold">
+          @if (lot().status === 'finished') {
+            {{ lot().endsAt | date: 'dd.MM.yyyy' }}
+          } @else {
+            {{ lotTimer.timeLeft() }}
+          }
+        </div>
+
+        <div class="text-xs font-semibold" [class]="timerConfig().text">
+          {{ timerConfig().subtitle }}
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (
+    (lot().status === 'active' || lot().status === 'finished' || lot().status === 'sold') &&
+    lot().bids.length > 0
+  ) {
+    <div class="min-h-px bg-stroke"></div>
+
+    <div class="flex flex-1 flex-col gap-2">
+      <h2 class="text-base font-semibold">
+        {{ lot().status === 'active' ? 'Текущий лидер торгов' : 'Победитель торгов' }}
+      </h2>
+
+      <div class="flex items-center gap-1">
+        <div
+          class="flex size-8 items-center justify-center rounded-lg border border-stroke bg-blocks-second"
+          [class]="timerConfig().text"
+        >
+          <tui-icon icon="/assets/icons/profile.svg" class="text-xs" />
+        </div>
+
+        <div class="inline-flex flex-col text-xs">
+          <span
+            >Участник {{ lot().bids[0].userId | mask: 4 : 3 }}
+            @if (lot().bids[0].isMyBid) {
+              <span [class]="timerConfig().text">(вы)</span>
+            } @else {
+              <span class="text-stroke">(не вы)</span>
+            }
+          </span>
+          <span class="text-stroke">{{
+            lot().bids[0].createdAt | date: 'dd.MM.yyyy HH:mm:ss'
+          }}</span>
+        </div>
+      </div>
+    </div>
+  }
 </article>
