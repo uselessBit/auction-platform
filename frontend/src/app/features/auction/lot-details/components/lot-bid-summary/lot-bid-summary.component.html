@@ -1,0 +1,6 @@
+<article class="flex flex-col gap-2 rounded-[2rem] bg-blocks p-6 outline outline-1 outline-stroke">
+  <h2 class="text-base font-semibold opacity-50">Текущая ставка</h2>
+  <h1 class="text-5xl font-bold"><app-currency [value]="lot().currentBidByn" [color]="lot().status" /></h1>
+
+  <app-bid-status-badge status="leading" />
+</article>

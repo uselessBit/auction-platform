@@ -46,3 +46,18 @@ export interface LotDetails extends Lot {
   readonly inspectorComment: string; // Описание повреждений оценщика
   readonly bids: readonly LotBid[]; // История ставок
 }
+
+export type BidStatusType =
+  | 'leading' //             Ваша ставка лидирует         (text-active)
+  | 'no_bids' //             Вы еще не делали ставок      (text-sold)
+  | 'outbid' //              Вас перебили                 (text-upcoming)
+  | 'deposit_required' //    Требуется депозит            (text-cancelled)
+  | 'kyc_required' //        Профиль не подтвержден       (text-finished)
+  | 'contacts_unverified' // Контакты не подтверждены     (text-finished)
+  | 'kyc_pending' //         Документы на проверке        (text-upcoming)
+  | 'awaiting_start' //      Ожидайте старта аукциона     (text-upcoming)
+  | 'awaiting_payment' //    Ожидает оплаты               (text-finished)
+  | 'auction_cancelled' //   Торги аннулированы           (text-cancelled)
+  | 'lot_lost' //            Лот проигран                 (text-cancelled)
+  | 'deal_closed' //         Сделка закрыта               (text-sold)
+  | 'auth_required'; //      Войдите, чтобы делать ставки (text-sold)
