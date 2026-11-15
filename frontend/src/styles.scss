@@ -15,6 +15,10 @@
   line-height: 1;
 }
 
+:root {
+  --header-height: 4rem;
+}
+
 body:has(dialog[open]) {
   overflow: hidden;
 }
