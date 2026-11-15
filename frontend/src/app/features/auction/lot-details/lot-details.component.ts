@@ -8,6 +8,7 @@ import { LotGalleryComponent } from './components/lot-gallery/lot-gallery.compon
 import { LotPriceChartComponent } from './components/lot-price-chart/lot-price-chart.component';
 import { LotBidSummaryComponent } from './components/lot-bid-summary/lot-bid-summary.component';
 import { LotBidsListComponent } from './components/lot-bids-list/lot-bids-list.component';
+import { LotBidPanelComponent } from './components/lot-bid-panel/lot-bid-panel.component';
 
 @Component({
   selector: 'app-lot-details',
@@ -18,6 +19,7 @@ import { LotBidsListComponent } from './components/lot-bids-list/lot-bids-list.c
     LotPriceChartComponent,
     LotBidSummaryComponent,
     LotBidsListComponent,
+    LotBidPanelComponent,
   ],
   standalone: true,
   templateUrl: './lot-details.component.html',

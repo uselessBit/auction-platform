@@ -19,6 +19,9 @@
       @if (lot.status === 'upcoming' || lot.status === 'cancelled') {
         <app-lot-specs [lot]="lot"></app-lot-specs>
       }
+      @if (lot.status === 'active') {
+        <app-lot-bid-panel [lot]="lot"></app-lot-bid-panel>
+      }
       @if (lot.bids.length > 0) {
         <app-lot-bids-list [bids]="lot.bids" [status]="lot.status"></app-lot-bids-list>
       }

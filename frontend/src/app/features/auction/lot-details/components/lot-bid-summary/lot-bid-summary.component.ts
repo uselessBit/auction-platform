@@ -6,9 +6,9 @@ import { LotTimerService } from '../../../../../core/services/lot-timer.service'
 import { AuthService } from '../../../../../core/services/auth.service';
 import { TuiIcon } from '@taiga-ui/core';
 import { DatePipe } from '@angular/common';
-import { KycStatus } from '../../../../../core/models/auth.model';
 import { MaskPipe } from '../../../../../shared/pipes/mask-pipe';
 import { FinanceService } from '../../../../../core/services/finance.service';
+import { resolveBidStatus } from '../../utils/bid-status.util';
 
 interface BidSummaryConfig {
   readonly text: string;
@@ -50,19 +50,6 @@ const BID_SUMMARY_CONFIG: Readonly<Record<LotStatus, BidSummaryConfig>> = {
   },
 };
 
-const BID_STATUS_CONFIG: Readonly<Record<Exclude<LotStatus, 'active'>, BidStatusType>> = {
-  upcoming: 'awaiting_start',
-  finished: 'awaiting_payment',
-  sold: 'deal_closed',
-  cancelled: 'auction_cancelled',
-};
-
-const KYC_STATUS_CONFIG: Readonly<Record<Exclude<KycStatus, 'approved'>, BidStatusType>> = {
-  none: 'kyc_required',
-  rejected: 'kyc_required',
-  pending: 'kyc_pending',
-};
-
 @Component({
   selector: 'app-lot-bid-summary',
   imports: [CurrencyComponent, BidStatusBadgeComponent, TuiIcon, DatePipe, MaskPipe],
@@ -82,42 +69,13 @@ export class LotBidSummaryComponent {
   protected readonly timerConfig = computed<BidSummaryConfig>(
     () => BID_SUMMARY_CONFIG[this.lot().status],
   );
-  protected readonly bidStatus = computed<BidStatusType>(() => {
-    const status = this.lot().status;
-    if (status !== 'active') {
-      return BID_STATUS_CONFIG[status];
-    }
-
-    const user = this.authService.currentUser();
-    if (!user) {
-      return 'auth_required';
-    }
-    if (!user.isPhoneVerified || !user.isEmailVerified) {
-      return 'contacts_unverified';
-    }
-    if (user.kycStatus !== 'approved') {
-      return KYC_STATUS_CONFIG[user.kycStatus];
-    }
-
-    const holds = this.financeService.currentHolds();
-    if (
-      !holds.some(
-        (hold) =>
-          hold.lotId === this.lot().id && hold.userId === user.id && hold.status === 'pre_auth',
-      )
-    ) {
-      return 'deposit_required';
-    }
-
-    const bids = this.lot().bids;
-    if (!bids.some((bid) => bid.isMyBid)) {
-      return 'no_bids';
-    }
-    if (bids[0].isMyBid) {
-      return 'leading';
-    }
-    return 'outbid';
-  });
+  protected readonly bidStatus = computed<BidStatusType>(() =>
+    resolveBidStatus(
+      this.lot(),
+      this.authService.currentUser(),
+      this.financeService.currentHolds(),
+    ),
+  );
 
   constructor() {
     effect(() => {
