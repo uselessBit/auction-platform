@@ -7,6 +7,7 @@ import { switchMap } from 'rxjs';
 import { LotGalleryComponent } from './components/lot-gallery/lot-gallery.component';
 import { LotPriceChartComponent } from './components/lot-price-chart/lot-price-chart.component';
 import { LotBidSummaryComponent } from './components/lot-bid-summary/lot-bid-summary.component';
+import { LotBidsListComponent } from './components/lot-bids-list/lot-bids-list.component';
 
 @Component({
   selector: 'app-lot-details',
@@ -16,6 +17,7 @@ import { LotBidSummaryComponent } from './components/lot-bid-summary/lot-bid-sum
     LotGalleryComponent,
     LotPriceChartComponent,
     LotBidSummaryComponent,
+    LotBidsListComponent,
   ],
   standalone: true,
   templateUrl: './lot-details.component.html',
