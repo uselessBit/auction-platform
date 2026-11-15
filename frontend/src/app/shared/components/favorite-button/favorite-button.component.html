@@ -1,7 +1,7 @@
 <button
   tuiButton
   appearance="brand-rounded"
-  [iconStart]="isFavorite() ? 'assets/icons/star-active.svg' : 'assets/icons/star.svg'"
+  [iconStart]="'/assets/icons/star' + (isFavorite() ? '-active' : '') + '.svg'"
   [class.brand-rounded-active]="isFavorite()"
   [attr.aria-pressed]="isFavorite()"
   aria-label="В избранное"

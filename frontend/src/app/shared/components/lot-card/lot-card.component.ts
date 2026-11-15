@@ -6,6 +6,7 @@ import { CurrencyComponent } from '../currency/currency.component';
 import { RouterLink } from '@angular/router';
 import { LotStatusBadgeComponent } from '../lot-status-badge/lot-status-badge.component';
 import { FavoriteButtonComponent } from '../favorite-button/favorite-button.component';
+import { TuiIcon } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-lot-card',
@@ -16,6 +17,7 @@ import { FavoriteButtonComponent } from '../favorite-button/favorite-button.comp
     RouterLink,
     LotStatusBadgeComponent,
     FavoriteButtonComponent,
+    TuiIcon,
   ],
   standalone: true,
   providers: [LotTimerService],
@@ -50,6 +52,18 @@ export class LotCardComponent {
       case 'active':
       default:
         return 'group-hover:text-active';
+    }
+  });
+
+  protected readonly imageDateClass = computed(() => {
+    switch (this.lot()?.status) {
+      case 'upcoming':
+        return 'text-upcoming';
+      case 'finished':
+        return 'text-finished';
+      case 'active':
+      default:
+        return 'text-active';
     }
   });
 }

@@ -1,7 +1,5 @@
 @if (!lot()) {
-  <article
-    class="h-[515px] animate-pulse overflow-hidden rounded-[2rem] bg-blocks"
-  ></article>
+  <article class="h-[515px] animate-pulse overflow-hidden rounded-[2rem] bg-blocks"></article>
 } @else {
   <a [routerLink]="['/lots', lot()!.id]" class="animate-fade-in block h-full">
     <article
@@ -15,7 +13,10 @@
         />
 
         <app-lot-status-badge class="absolute bottom-4 left-4" [status]="lot()!.status" />
-        <app-favorite-button class="absolute right-4 top-4" [isFavorite]="lot()?.isFavorite ?? false" />
+        <app-favorite-button
+          class="absolute right-4 top-4"
+          [isFavorite]="lot()?.isFavorite ?? false"
+        />
       </div>
 
       <div class="flex flex-1 flex-col gap-2 p-4">
@@ -70,7 +71,8 @@
             </div>
 
             <div class="inline-flex items-center gap-2 pr-4 text-base font-semibold">
-              <img [src]="'assets/icons/' + lot()?.status + '-date.svg'" [alt]="lot()?.status" />
+              <tui-icon [icon]="'/assets/icons/' + lot()?.status + '-date.svg'" class="text-base" [class]="imageDateClass()" />
+
               <span>
                 @if (lot()?.status === 'finished') {
                   {{ lot()?.endsAt | date: 'dd.MM.yyyy' }}
@@ -85,6 +87,7 @@
             class="mt-auto flex flex-col items-center justify-center rounded-2xl border border-stroke bg-blocks-second px-4 py-3"
           >
             <div class="text-xs font-semibold opacity-50">Итоговая цена</div>
+
             <div class="text-3xl font-bold">
               <app-currency [value]="lot()!.currentBidByn" [color]="lot()!.status" />
             </div>

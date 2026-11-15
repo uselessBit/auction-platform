@@ -1,8 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { TuiIcon } from '@taiga-ui/core';
 
 @Component({
   selector: 'app-floating-badge',
-  imports: [],
+  imports: [TuiIcon],
   standalone: true,
   templateUrl: './floating-badge.component.html',
   styleUrl: './floating-badge.component.scss',
