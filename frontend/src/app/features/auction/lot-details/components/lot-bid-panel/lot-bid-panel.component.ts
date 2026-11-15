@@ -3,9 +3,10 @@ import { CurrencyComponent } from '../../../../../shared/components/currency/cur
 import { LotDetails } from '../../../../../core/models/lot.model';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { FinanceService } from '../../../../../core/services/finance.service';
-import { TuiButton, TuiInput } from '@taiga-ui/core';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { TuiButton } from '@taiga-ui/core';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
+import { TuiInputNumber } from '@taiga-ui/kit';
 
 const QUICK_BID_CONFIG: { label: string; steps: number }[] = [
   { label: 'Минимальный шаг', steps: 1 },
@@ -16,7 +17,7 @@ const QUICK_BID_CONFIG: { label: string; steps: number }[] = [
 
 @Component({
   selector: 'app-lot-bid-panel',
-  imports: [CurrencyComponent, TuiButton, TuiInput, ReactiveFormsModule, DecimalPipe],
+  imports: [CurrencyComponent, TuiButton, ReactiveFormsModule, DecimalPipe, TuiInputNumber],
   standalone: true,
   templateUrl: './lot-bid-panel.component.html',
   styleUrl: './lot-bid-panel.component.scss',
@@ -35,5 +36,8 @@ export class LotBidPanelComponent {
     })),
   );
   protected readonly minBid = computed(() => this.lot().currentBidByn + this.lot().bidStepByn);
-  protected amountControl = new FormControl();
+  protected amountControl = new FormControl<number | null>(null, [
+    Validators.required,
+    Validators.min(10000),
+  ]);
 }

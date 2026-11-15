@@ -24,11 +24,13 @@
       <tui-textfield tuiTextfieldSize="s" class="flex-1" tuiTextfieldAppearance="brand-input">
         <input
           [placeholder]="'От ' + (minBid() | number: '1.0-0') + ' BYN'"
-          tuiInput
+          tuiInputNumber
           [formControl]="amountControl"
+          [max]="1000000000"
         />
       </tui-textfield>
-      <button tuiButton appearance="brand">Поставить</button>
+
+      <button tuiButton appearance="brand" [disabled]="amountControl.invalid">Поставить</button>
     </div>
   </div>
 </article>
