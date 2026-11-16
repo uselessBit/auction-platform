@@ -4,7 +4,14 @@ import { API_CONFIG } from '../api/api-config.token';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthTokens, User } from '../models/auth.model';
 import { delay, map, Observable, of, tap, throwError } from 'rxjs';
-import { MOCK_AUTH_RESPONSE, MOCK_TOKENS, MOCK_USER_VERIFIED } from '../mock/users.mock';
+import {
+  MOCK_AUTH_RESPONSE,
+  MOCK_TOKENS,
+  MOCK_USER_NEW,
+  MOCK_USER_NO_DEPOSIT,
+  MOCK_USER_UNVERIFIED,
+  MOCK_USER_VERIFIED,
+} from '../mock/users.mock';
 import { FinanceService } from './finance.service';
 
 @Injectable({
@@ -17,7 +24,7 @@ export class AuthService {
 
   private readonly financeService = inject(FinanceService);
 
-  readonly currentUser = signal<User | null>(MOCK_USER_VERIFIED);
+  readonly currentUser = signal<User | null>(null);
   readonly isAuthenticated = computed(() => !!this.currentUser());
 
   getAccessToken(): string | null {
