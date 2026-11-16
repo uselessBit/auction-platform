@@ -1,36 +1,103 @@
 <article class="flex flex-col gap-4 rounded-[2rem] bg-blocks p-6 outline outline-1 outline-stroke">
-  <div class="flex flex-col gap-1">
-    <h2 class="text-base font-semibold">Быстрая ставка</h2>
+  @if (canBid()) {
+    <div class="flex flex-col gap-1">
+      <h2 class="text-base font-semibold">Быстрая ставка</h2>
 
-    <div class="grid h-40 grid-cols-2 grid-rows-2 gap-2">
-      @for (bid of quickBids(); track bid.label) {
+      <div class="grid h-40 grid-cols-2 grid-rows-2 gap-2">
+        @for (bid of quickBids(); track bid.label) {
+          <button
+            type="button"
+            class="flex flex-col justify-center rounded-lg border border-stroke bg-blocks-second transition-[background-color] duration-300 ease-in-out hover:bg-stroke"
+          >
+            <span class="text-xs opacity-70">{{ bid.label }}</span>
+            <span class="text-xl font-semibold">+ <app-currency [value]="bid.amount" /></span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div class="h-px bg-stroke"></div>
+
+    <div class="flex flex-col gap-1">
+      <h2 class="text-base font-semibold">Своя ставка</h2>
+
+      <div class="flex gap-2">
+        <tui-textfield tuiTextfieldSize="s" class="flex-1" tuiTextfieldAppearance="brand-input">
+          <input
+            [placeholder]="'От ' + (minBid() | number: '1.0-0') + ' BYN'"
+            tuiInputNumber
+            [formControl]="amountControl"
+            [max]="1000000000"
+          />
+        </tui-textfield>
+
+        <button type="button" tuiButton appearance="brand" [disabled]="isSubmitDisabled()">
+          Поставить
+        </button>
+      </div>
+    </div>
+  } @else if (blockedConfig(); as config) {
+    <div class="flex flex-col gap-1">
+      <h2 class="text-base font-semibold">Правила аукциона</h2>
+
+      <div class="grid h-20 grid-cols-2 gap-2">
+        <div
+          class="flex flex-col items-center justify-center rounded-lg border border-stroke bg-blocks"
+        >
+          <div class="text-xs opacity-70">Минимальный шаг</div>
+          <div class="text-xl font-semibold">+ <app-currency [value]="lot().bidStepByn" /></div>
+        </div>
+        <div
+          class="flex flex-col items-center justify-center rounded-lg border border-stroke bg-blocks"
+        >
+          <div class="text-xs opacity-70">Стартовая цена</div>
+          <div class="text-xl font-semibold"><app-currency [value]="lot().startPriceByn" /></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="h-px bg-stroke"></div>
+
+    <div class="flex flex-col gap-1">
+      <h2 class="text-base font-semibold">{{ config.title }}</h2>
+
+      <p class="text-xs opacity-70">{{ config.description }}</p>
+
+      @if (config.extraNote) {
+        <p class="mt-1 text-xs opacity-70">{{ config.extraNote }}</p>
+      }
+
+      @if (bidStatus() === 'deposit_required') {
+        <div class="mx-auto text-xl">
+          <app-currency [value]="lot().startPriceByn" />
+          <span> * 10% = </span>
+          <app-currency [value]="depositAmount()" />
+        </div>
+      }
+
+      @if (bidStatus() !== 'kyc_pending') {
         <button
           type="button"
-          class="flex flex-col justify-center rounded-lg border border-stroke bg-blocks-second transition-[background-color] duration-300 ease-in-out hover:bg-stroke"
+          tuiButton
+          appearance="brand"
+          class="my-1"
         >
-          <span class="text-xs opacity-70">{{ bid.label }}</span>
-          <span class="text-xl font-semibold">+ <app-currency [value]="bid.amount" /></span>
+          {{
+            bidStatus() === 'deposit_required'
+              ? config.actionLabel + ' ' + (depositAmount() | number: '1.0-0') + ' BYN'
+              : config.actionLabel
+          }}
         </button>
+      } @else {
+        <div class="bg-active-back text-xs border border-active py-2 flex justify-center items-center rounded-lg text-active font-semibold my-1">
+          {{ config.actionLabel }}
+        </div>
       }
+
+      <div class="flex items-center justify-center gap-1 opacity-50">
+        <tui-icon [icon]="config.hintIcon" class="text-xs" />
+        <span class="whitespace-nowrap text-xs italic">{{ config.hint }}</span>
+      </div>
     </div>
-  </div>
-
-  <div class="h-px bg-stroke"></div>
-
-  <div class="flex flex-col gap-1">
-    <h2 class="text-base font-semibold">Своя ставка</h2>
-
-    <div class="flex gap-2">
-      <tui-textfield tuiTextfieldSize="s" class="flex-1" tuiTextfieldAppearance="brand-input">
-        <input
-          [placeholder]="'От ' + (minBid() | number: '1.0-0') + ' BYN'"
-          tuiInputNumber
-          [formControl]="amountControl"
-          [max]="1000000000"
-        />
-      </tui-textfield>
-
-      <button tuiButton appearance="brand" [disabled]="amountControl.invalid">Поставить</button>
-    </div>
-  </div>
+  }
 </article>
