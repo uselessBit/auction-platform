@@ -38,6 +38,16 @@
     }
   </div>
 
+  @if (lot().status === 'upcoming') {
+    <div class="min-h-px bg-stroke"></div>
+
+    <app-lot-auction-rules
+      [bidStepByn]="lot().bidStepByn"
+      [startPriceByn]="lot().startPriceByn"
+      [color]="lot().status"
+    />
+  }
+
   @if (
     (lot().status === 'active' || lot().status === 'finished' || lot().status === 'sold') &&
     lot().bids.length > 0
@@ -60,10 +70,12 @@
         <div class="inline-flex flex-col text-xs">
           <span
             >Участник {{ lot().bids[0].userId | mask: 4 : 3 }}
-            @if (lot().bids[0].isMyBid) {
-              <span [class]="timerConfig().text">(вы)</span>
-            } @else {
-              <span class="text-stroke">(не вы)</span>
+            @if (isAuthenticated()) {
+              @if (isLeaderCurrentUser()) {
+                <span [class]="timerConfig().text">(вы)</span>
+              } @else {
+                <span class="text-stroke">(не вы)</span>
+              }
             }
           </span>
           <span class="text-stroke">{{

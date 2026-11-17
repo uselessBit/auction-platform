@@ -44,10 +44,10 @@ export function resolveBidStatus(
   }
 
   const bids = lot.bids;
-  if (!bids.some((bid) => bid.isMyBid)) {
+  if (!bids.some((bid) => bid.userId === user.id)) {
     return 'no_bids';
   }
-  if (bids[0].isMyBid) {
+  if (bids[0].userId === user.id) {
     return 'leading';
   }
   return 'outbid';

@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 import { MaskPipe } from '../../../../../shared/pipes/mask-pipe';
 import { FinanceService } from '../../../../../core/services/finance.service';
 import { resolveBidStatus } from '../../utils/bid-status.util';
+import { LotAuctionRulesComponent } from '../lot-auction-rules/lot-auction-rules.component';
 
 interface BidSummaryConfig {
   readonly text: string;
@@ -52,7 +53,14 @@ const BID_SUMMARY_CONFIG: Readonly<Record<LotStatus, BidSummaryConfig>> = {
 
 @Component({
   selector: 'app-lot-bid-summary',
-  imports: [CurrencyComponent, BidStatusBadgeComponent, TuiIcon, DatePipe, MaskPipe],
+  imports: [
+    CurrencyComponent,
+    BidStatusBadgeComponent,
+    TuiIcon,
+    DatePipe,
+    MaskPipe,
+    LotAuctionRulesComponent,
+  ],
   providers: [LotTimerService],
   standalone: true,
   templateUrl: './lot-bid-summary.component.html',
@@ -76,6 +84,12 @@ export class LotBidSummaryComponent {
       this.financeService.currentHolds(),
     ),
   );
+  protected readonly isAuthenticated = this.authService.isAuthenticated;
+  protected readonly isLeaderCurrentUser = computed(() => {
+    const user = this.authService.currentUser();
+    const leaderBid = this.lot().bids[0];
+    return !!user && !!leaderBid && leaderBid.userId === user.id;
+  });
 
   constructor() {
     effect(() => {
