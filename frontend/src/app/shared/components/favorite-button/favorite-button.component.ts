@@ -13,7 +13,7 @@ export class FavoriteButtonComponent {
   readonly isFavorite = input<boolean>(false);
   readonly toggle = output<void>();
 
-  toggleState(event: MouseEvent): void {
+  protected toggleState(event: MouseEvent): void {
     event.stopPropagation();
     event.preventDefault();
 

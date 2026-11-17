@@ -36,8 +36,8 @@ import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.co
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LotGalleryComponent {
-  private document = inject(DOCUMENT);
-  private clipboard = inject(Clipboard);
+  private readonly document = inject(DOCUMENT);
+  private readonly clipboard = inject(Clipboard);
 
   readonly lot = input.required<LotDetails>();
 
@@ -64,7 +64,7 @@ export class LotGalleryComponent {
     setTimeout(() => this.isLinkCopied.set(false), 1200);
   }
 
-  async shareLot() {
+  protected async shareLot() {
     if (!this.isBrowser || !this.win || this.isLinkCopied()) {
       return;
     }

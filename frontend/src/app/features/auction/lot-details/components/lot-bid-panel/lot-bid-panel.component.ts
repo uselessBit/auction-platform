@@ -14,7 +14,7 @@ import { BidStatusType, LotDetails } from '../../../../../core/models/lot.model'
 import { AuthService } from '../../../../../core/services/auth.service';
 import { FinanceService } from '../../../../../core/services/finance.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DecimalPipe } from '@angular/common';
 import { TuiInputNumber } from '@taiga-ui/kit';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -123,6 +123,7 @@ const CONFIRM_DIALOG_CONFIG: Readonly<Record<ConfirmDialog, ConfirmDialogConfig>
     TuiIcon,
     LotAuctionRulesComponent,
     ConfirmDialogComponent,
+    FormsModule,
   ],
   standalone: true,
   templateUrl: './lot-bid-panel.component.html',

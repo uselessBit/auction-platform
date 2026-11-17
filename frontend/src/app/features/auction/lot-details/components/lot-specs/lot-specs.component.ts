@@ -15,7 +15,7 @@ export class LotSpecsComponent {
   private readonly datePipe = inject(DatePipe);
   readonly lot = input.required<LotDetails>();
 
-  readonly specs = computed(() => [
+  protected readonly specs = computed(() => [
     {
       label: 'Год выпуска',
       value: this.lot().year,
