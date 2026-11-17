@@ -8,7 +8,10 @@ import { LotGalleryComponent } from './components/lot-gallery/lot-gallery.compon
 import { LotPriceChartComponent } from './components/lot-price-chart/lot-price-chart.component';
 import { LotBidSummaryComponent } from './components/lot-bid-summary/lot-bid-summary.component';
 import { LotBidsListComponent } from './components/lot-bids-list/lot-bids-list.component';
-import { LotBidPanelComponent } from './components/lot-bid-panel/lot-bid-panel.component';
+import {
+  BlockedBidStatus,
+  LotBidPanelComponent,
+} from './components/lot-bid-panel/lot-bid-panel.component';
 
 @Component({
   selector: 'app-lot-details',
@@ -33,4 +36,12 @@ export class LotDetailsComponent {
   protected readonly lot$ = toObservable(this.id).pipe(
     switchMap((id) => this.lotsService.getLotById(id)),
   );
+
+  protected onBidSubmit(amount: number): void {
+    console.info('Ставка подтверждена:', amount);
+  }
+
+  protected onBlockedAction(status: BlockedBidStatus): void {
+    console.info('Запрошено действие для статуса:', status);
+  }
 }

@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
 import { BidStatusType, LotDetails } from '../../../../../core/models/lot.model';
 import { AuthService } from '../../../../../core/services/auth.service';
@@ -9,6 +19,8 @@ import { DecimalPipe } from '@angular/common';
 import { TuiInputNumber } from '@taiga-ui/kit';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { resolveBidStatus } from '../../utils/bid-status.util';
+import { LotAuctionRulesComponent } from '../lot-auction-rules/lot-auction-rules.component';
+import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
 
 interface QuickBidConfig {
   readonly label: string;
@@ -22,7 +34,7 @@ const QUICK_BID_CONFIG: readonly QuickBidConfig[] = [
   { label: 'Десять шагов', steps: 10 },
 ];
 
-type BlockedBidStatus = Extract<
+export type BlockedBidStatus = Extract<
   BidStatusType,
   'auth_required' | 'contacts_unverified' | 'kyc_required' | 'kyc_pending' | 'deposit_required'
 >;
@@ -79,6 +91,27 @@ const BLOCKED_BID_CONFIG: Readonly<Record<BlockedBidStatus, BlockedBidConfig>> =
   },
 };
 
+type ConfirmDialog = 'bid' | 'deposit';
+
+interface ConfirmDialogConfig {
+  readonly title: string;
+  readonly confirmLabel: string;
+  readonly cancelLabel: string;
+}
+
+const CONFIRM_DIALOG_CONFIG: Readonly<Record<ConfirmDialog, ConfirmDialogConfig>> = {
+  bid: {
+    title: 'Подтверждение ставки',
+    confirmLabel: 'Подтвердить',
+    cancelLabel: 'Отмена',
+  },
+  deposit: {
+    title: 'Подтверждение депозита',
+    confirmLabel: 'Перейти в банк',
+    cancelLabel: 'Отмена',
+  },
+};
+
 @Component({
   selector: 'app-lot-bid-panel',
   imports: [
@@ -88,6 +121,8 @@ const BLOCKED_BID_CONFIG: Readonly<Record<BlockedBidStatus, BlockedBidConfig>> =
     DecimalPipe,
     TuiInputNumber,
     TuiIcon,
+    LotAuctionRulesComponent,
+    ConfirmDialogComponent,
   ],
   standalone: true,
   templateUrl: './lot-bid-panel.component.html',
@@ -99,6 +134,8 @@ export class LotBidPanelComponent {
   private readonly financeService = inject(FinanceService);
 
   readonly lot = input.required<LotDetails>();
+  readonly bidSubmit = output<number>();
+  readonly blockedAction = output<BlockedBidStatus>();
 
   protected readonly quickBids = computed(() =>
     QUICK_BID_CONFIG.map((bid) => ({
@@ -136,11 +173,66 @@ export class LotBidPanelComponent {
   private isBlockedStatus(status: BidStatusType): status is BlockedBidStatus {
     return status in BLOCKED_BID_CONFIG;
   }
+  protected readonly pendingAction = signal<{ type: ConfirmDialog; amount: number } | null>(null);
+  protected readonly dialogConfig = computed(() => {
+    const action = this.pendingAction();
+    return action ? CONFIRM_DIALOG_CONFIG[action.type] : null;
+  });
+  private readonly confirmDialog = viewChild.required(ConfirmDialogComponent);
 
   constructor() {
     effect(() => {
       this.amountControl.setValidators([Validators.required, Validators.min(this.minBid())]);
       this.amountControl.updateValueAndValidity();
     });
+  }
+
+  protected onCustomBid(): void {
+    if (this.amountControl.invalid || this.amountControl.value === null) {
+      return;
+    }
+
+    this.pendingAction.set({ type: 'bid', amount: this.amountControl.value });
+    this.confirmDialog().open();
+  }
+
+  protected onQuickBid(value: number): void {
+    this.pendingAction.set({ type: 'bid', amount: this.lot().currentBidByn + value });
+    this.confirmDialog().open();
+  }
+
+  protected onBlockedAction(): void {
+    const status = this.bidStatus();
+    if (!this.isBlockedStatus(status) || status === 'kyc_pending') {
+      return;
+    }
+
+    if (status === 'deposit_required') {
+      this.pendingAction.set({ type: 'deposit', amount: this.depositAmount() });
+      this.confirmDialog().open();
+    } else {
+      this.blockedAction.emit(status);
+    }
+  }
+
+  protected onDialogConfirm(): void {
+    const action = this.pendingAction();
+    if (!action) {
+      return;
+    }
+
+    if (action.type === 'bid') {
+      this.bidSubmit.emit(action.amount);
+      this.amountControl.reset();
+    }
+    if (action.type === 'deposit') {
+      this.blockedAction.emit('deposit_required');
+    }
+
+    this.pendingAction.set(null);
+  }
+
+  protected onDialogCancel(): void {
+    this.pendingAction.set(null);
   }
 }
