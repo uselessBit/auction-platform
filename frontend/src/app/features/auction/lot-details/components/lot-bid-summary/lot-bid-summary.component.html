@@ -1,0 +1,85 @@
+<article class="flex flex-col gap-4 rounded-[2rem] bg-blocks p-6 outline outline-1 outline-stroke">
+  <div class="flex">
+    <div class="flex flex-1 flex-col gap-1">
+      <h2 class="text-base font-semibold opacity-50">{{ timerConfig().title }}</h2>
+      <h1 class="text-5xl font-bold">
+        <app-currency
+          [value]="lot().status === 'upcoming' ? lot().startPriceByn : lot().currentBidByn"
+          [color]="lot().status"
+        />
+      </h1>
+
+      <app-bid-status-badge [status]="bidStatus()" />
+    </div>
+
+    @if (hasDateBlock()) {
+      <div
+        class="flex w-full max-w-24 flex-col items-center justify-center gap-1 whitespace-nowrap rounded-lg border"
+        [class]="statusConfig().containerClass"
+      >
+        <tui-icon
+          [icon]="'/assets/icons/' + lot().status + '-date.svg'"
+          class="mb-1 text-2xl"
+          [class]="statusConfig().textClass"
+        />
+
+        <div class="text-base font-semibold">
+          @if (lot().status === 'finished') {
+            {{ lot().endsAt | date: 'dd.MM.yyyy' }}
+          } @else {
+            {{ lotTimer.timeLeft() }}
+          }
+        </div>
+
+        <div class="text-xs font-semibold" [class]="statusConfig().textClass">
+          {{ timerConfig().subtitle }}
+        </div>
+      </div>
+    }
+  </div>
+
+  @if (lot().status === 'upcoming') {
+    <div class="min-h-px bg-stroke"></div>
+
+    <app-lot-auction-rules
+      [bidStepByn]="lot().bidStepByn"
+      [startPriceByn]="lot().startPriceByn"
+      [color]="lot().status"
+    />
+  }
+
+  @if (hasLeader()) {
+    <div class="min-h-px bg-stroke"></div>
+
+    <div class="flex flex-1 flex-col gap-2">
+      <h2 class="text-base font-semibold">
+        {{ lot().status === 'active' ? 'Текущий лидер торгов' : 'Победитель торгов' }}
+      </h2>
+
+      <div class="flex items-center gap-1">
+        <div
+          class="flex size-8 items-center justify-center rounded-lg border border-stroke bg-blocks-second"
+          [class]="statusConfig().textClass"
+        >
+          <tui-icon icon="/assets/icons/profile.svg" class="text-xs" />
+        </div>
+
+        <div class="inline-flex flex-col text-xs">
+          <span
+            >Участник {{ lot().bids[0].userId | mask: 4 : 3 }}
+            @if (isAuthenticated()) {
+              @if (isLeaderCurrentUser()) {
+                <span [class]="statusConfig().textClass">(вы)</span>
+              } @else {
+                <span class="text-stroke">(не вы)</span>
+              }
+            }
+          </span>
+          <span class="text-stroke">{{
+            lot().bids[0].createdAt | date: 'dd.MM.yyyy HH:mm:ss'
+          }}</span>
+        </div>
+      </div>
+    </div>
+  }
+</article>

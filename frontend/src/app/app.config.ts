@@ -8,6 +8,8 @@ import { registerLocaleData } from '@angular/common';
 import localeRu from '@angular/common/locales/ru';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { TUI_DEFAULT_LANGUAGE } from '@taiga-ui/i18n/tokens';
+import { TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n/languages/russian';
 
 registerLocaleData(localeRu);
 
@@ -25,6 +27,10 @@ export const appConfig: ApplicationConfig = {
         wsUrl: 'wss://api.secondrive.by/ws',
         antiSniperExtendMinutes: 3,
       },
+    },
+    {
+      provide: TUI_DEFAULT_LANGUAGE,
+      useValue: TUI_RUSSIAN_LANGUAGE,
     },
   ],
 };

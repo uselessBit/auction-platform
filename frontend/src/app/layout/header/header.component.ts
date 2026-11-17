@@ -16,22 +16,22 @@ interface NavItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
-  readonly navItems: NavItem[] = [
+  protected readonly navItems: NavItem[] = [
     { label: 'Активные лоты', route: '/catalog' },
     { label: 'Завершённые лоты', route: '/catalog/ended' },
     { label: 'О компании', route: '/about' },
     { label: 'Правила', route: '/rules' },
   ];
+  protected readonly sliderPosition = signal({ left: 0, width: 0, opacity: 0 });
 
   private activeEl: HTMLElement | null = null;
 
-  readonly sliderPosition = signal({ left: 0, width: 0, opacity: 0 });
-  updateSlider(el: HTMLElement) {
+  protected updateSlider(el: HTMLElement): void {
     this.activeEl = el;
     this.sliderPosition.set({ left: el.offsetLeft, width: el.offsetWidth, opacity: 1 });
   }
 
-  hideSlider(el: HTMLElement) {
+  protected hideSlider(el: HTMLElement): void {
     if (this.activeEl === el) {
       this.activeEl = null;
       this.sliderPosition.update((prev) => ({ ...prev, opacity: 0 }));

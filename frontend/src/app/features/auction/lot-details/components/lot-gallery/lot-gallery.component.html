@@ -1,0 +1,133 @@
+<article
+  class="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-solid border-stroke"
+>
+  <tui-carousel
+    #carousel
+    [max]="lot().images.length - 1"
+    [min]="0"
+    [(index)]="index"
+    class="h-full w-full"
+  >
+    <section *tuiItem="let i" class="relative h-full w-full">
+      <img
+        [ngSrc]="lot().images[i]"
+        fill
+        alt="{{ lot().brand }} {{ lot().model }}, фото {{ i + 1 }}"
+        class="cursor-pointer object-cover object-center"
+        (click)="viewer.open(index())"
+      />
+    </section>
+  </tui-carousel>
+
+  <div class="pointer-events-none absolute left-6 top-6 flex gap-2">
+    <app-lot-status-badge [status]="lot().status"></app-lot-status-badge>
+
+    <div class="relative flex items-center justify-center">
+      <div class="chip pointer-events-auto flex gap-1 font-semibold">
+        <span>VIN:</span>
+
+        <span class="group flex items-center justify-center">
+          <button
+            type="button"
+            aria-label="Скопировать VIN"
+            (click)="copyVin()"
+            class="transition-opacity duration-300 group-hover:opacity-70"
+          >
+            <span>{{ lot().vin }}</span>
+          </button>
+
+          <span
+            class="pointer-events-none absolute right-0 h-full w-1/2 rounded-lg bg-gradient-to-l from-blocks-second/100 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          >
+            <tui-icon
+              icon="/assets/icons/copy.svg"
+              class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            />
+          </span>
+        </span>
+      </div>
+
+      <app-floating-badge text="VIN скопирован" [visible]="isVinCopied()" />
+    </div>
+  </div>
+
+  <div class="pointer-events-none absolute right-4 top-4 flex gap-4">
+    <button
+      tuiButton
+      appearance="brand-rounded"
+      type="button"
+      iconStart="/assets/icons/zoom-in.svg"
+      aria-label="Приблизить"
+      class="pointer-events-auto"
+      (click)="viewer.open(index())"
+    ></button>
+
+    <div class="relative flex items-center justify-center">
+      <button
+        tuiButton
+        appearance="brand-rounded"
+        type="button"
+        iconStart="/assets/icons/share.svg"
+        aria-label="Поделиться"
+        class="pointer-events-auto"
+        (click)="shareLot()"
+      ></button>
+
+      <app-floating-badge text="Ссылка скопирована" [visible]="isLinkCopied()" />
+    </div>
+
+    <app-favorite-button
+      [isFavorite]="lot().isFavorite ?? false"
+      class="pointer-events-auto"
+    ></app-favorite-button>
+  </div>
+
+  <div class="pointer-events-none absolute inset-y-0 flex w-full items-center justify-between px-6">
+    <button
+      tuiButton
+      appearance="brand-rounded"
+      type="button"
+      iconStart="/assets/icons/arrow-left.svg"
+      aria-label="Предыдущее фото"
+      [disabled]="index() === 0"
+      (click)="carousel.prev()"
+      class="pointer-events-auto"
+    ></button>
+
+    <button
+      tuiButton
+      appearance="brand-rounded"
+      type="button"
+      iconStart="/assets/icons/arrow-right.svg"
+      aria-label="Следующее фото"
+      [disabled]="index() === lot().images.length - 1"
+      (click)="carousel.next()"
+      class="pointer-events-auto"
+    ></button>
+  </div>
+
+  <div class="chip absolute left-1/2 top-6 w-14 -translate-x-1/2 text-center font-semibold">
+    {{ index() + 1 }}/{{ lot().images.length }}
+  </div>
+
+  <div
+    class="pointer-events-none absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"
+  >
+    <h1 class="pointer-events-auto w-fit text-5xl font-bold">
+      {{ lot().brand }} {{ lot().model }}, {{ lot().year }}
+    </h1>
+
+    <div class="pointer-events-auto flex flex-col gap-1">
+      <ul class="flex flex-wrap gap-1">
+        <li class="chip">{{ lot().engine }}</li>
+        <li class="chip">{{ lot().fuelType }}</li>
+        <li class="chip">{{ lot().mileageKm | number: '1.0-0' }} км</li>
+        <li class="chip">{{ lot().isCustomsCleared ? 'Растаможен' : 'Не растаможен' }}</li>
+        <li class="chip chip--muted">{{ lot().damagePrimary }}</li>
+        <li class="chip chip--muted">{{ lot().runAndDrive }}</li>
+      </ul>
+    </div>
+  </div>
+</article>
+
+<app-lot-image-viewer [images]="lot().images" #viewer />

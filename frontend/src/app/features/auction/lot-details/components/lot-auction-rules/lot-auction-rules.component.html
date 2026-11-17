@@ -1,0 +1,22 @@
+<div class="flex flex-col gap-1">
+  <h2 class="text-base font-semibold">Правила аукциона</h2>
+
+  <div class="grid h-20 grid-cols-2 gap-2">
+    <div
+      class="flex flex-col items-center justify-center rounded-lg border border-stroke bg-blocks"
+    >
+      <div class="text-xs opacity-70">Минимальный шаг</div>
+      <div class="text-xl font-semibold">
+        + <app-currency [value]="bidStepByn()" [color]="color()" />
+      </div>
+    </div>
+    <div
+      class="flex flex-col items-center justify-center rounded-lg border border-stroke bg-blocks"
+    >
+      <div class="text-xs opacity-70">Стартовая цена</div>
+      <div class="text-xl font-semibold">
+        <app-currency [value]="startPriceByn()" [color]="color()" />
+      </div>
+    </div>
+  </div>
+</div>

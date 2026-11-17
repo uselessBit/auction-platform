@@ -1,79 +1,83 @@
-@if (!lot()) {
-  <article
-    class="h-[515px] animate-pulse overflow-hidden rounded-[2rem] bg-blocks"
-  ></article>
-} @else {
-  <a [routerLink]="['/lots', lot()!.id]" class="animate-fade-in block h-full">
+@if (lot(); as currentLot) {
+  <a [routerLink]="['/lots', currentLot.id]" class="animate-fade-in block h-full">
     <article
       class="group flex h-full flex-col overflow-hidden rounded-[2rem] bg-blocks outline outline-1 outline-stroke transition-all duration-300 ease-out hover:-translate-y-1"
     >
       <div class="relative aspect-[4/3] w-full overflow-hidden">
         <img
-          [src]="lot()!.images[0]"
-          [alt]="lot()?.brand"
+          [src]="currentLot.images[0]"
+          [alt]="currentLot.brand"
           class="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110"
         />
 
-        <app-lot-status-badge class="absolute bottom-4 left-4" [status]="lot()!.status" />
-        <app-favorite-button class="absolute right-4 top-4" [isFavorite]="lot()?.isFavorite" />
+        <app-lot-status-badge class="absolute bottom-4 left-4" [status]="currentLot.status" />
+        <app-favorite-button
+          class="absolute right-4 top-4"
+          [isFavorite]="currentLot.isFavorite ?? false"
+        />
       </div>
 
       <div class="flex flex-1 flex-col gap-2 p-4">
         <div>
-          <h3 class="text-xs opacity-50">Лот № {{ lot()?.id }}</h3>
+          <h3 class="text-xs opacity-50">Лот № {{ currentLot.id }}</h3>
           <h2
             class="text-xl font-bold transition-colors duration-300 ease-out"
-            [class]="titleHoverClass()"
+            [class]="statusConfig()?.hoverTextClass"
           >
-            {{ lot()?.brand }} {{ lot()?.model }}, {{ lot()?.year }}
+            {{ currentLot.brand }} {{ currentLot.model }}, {{ currentLot.year }}
           </h2>
         </div>
 
         <div class="flex flex-col gap-1">
           <ul class="flex flex-wrap gap-1">
-            <li class="chip">{{ lot()?.engine }}</li>
-            <li class="chip">{{ lot()?.fuelType }}</li>
-            <li class="chip">{{ lot()?.mileageKm | number: '1.0-0' }} км</li>
-            <li class="chip">{{ lot()?.isCustomsCleared ? 'Растаможен' : 'Не растаможен' }}</li>
+            <li class="chip">{{ currentLot.engine }}</li>
+            <li class="chip">{{ currentLot.fuelType }}</li>
+            <li class="chip">{{ currentLot.mileageKm | number: '1.0-0' }} км</li>
+            <li class="chip">{{ currentLot.isCustomsCleared ? 'Растаможен' : 'Не растаможен' }}</li>
           </ul>
 
           <ul class="flex flex-wrap gap-1">
-            <li class="chip chip--muted">{{ lot()?.damagePrimary }}</li>
-            <li class="chip chip--muted">{{ lot()?.runAndDrive }}</li>
+            <li class="chip chip--muted">{{ currentLot.damagePrimary }}</li>
+            <li class="chip chip--muted">{{ currentLot.runAndDrive }}</li>
           </ul>
         </div>
 
-        @if (
-          lot()?.status === 'active' || lot()?.status === 'upcoming' || lot()?.status === 'finished'
-        ) {
+        @if (hasDateBlock()) {
           <div
             class="mt-auto flex items-center justify-between rounded-2xl border border-stroke bg-blocks-second px-4 py-3"
           >
             <div>
               <div class="text-xs font-semibold opacity-50">
-                @if (lot()?.status === 'active') {
+                @if (currentLot.status === 'active') {
                   Текущая ставка
-                } @else if (lot()?.status === 'upcoming') {
+                } @else if (currentLot.status === 'upcoming') {
                   Начальная цена
-                } @else if (lot()?.status === 'finished') {
+                } @else if (currentLot.status === 'finished') {
                   Итоговая цена
                 }
               </div>
               <div class="text-3xl font-bold">
                 <app-currency
                   [value]="
-                    lot()!.status === 'upcoming' ? lot()!.startPriceByn : lot()!.currentBidByn
+                    currentLot.status === 'upcoming'
+                      ? currentLot.startPriceByn
+                      : currentLot.currentBidByn
                   "
-                  [color]="lot()!.status"
+                  [color]="currentLot.status"
                 />
               </div>
             </div>
 
             <div class="inline-flex items-center gap-2 pr-4 text-base font-semibold">
-              <img [src]="'assets/icons/' + lot()?.status + '-date.svg'" [alt]="lot()?.status" />
+              <tui-icon
+                [icon]="'/assets/icons/' + currentLot.status + '-date.svg'"
+                class="text-base"
+                [class]="statusConfig()?.textClass"
+              />
+
               <span>
-                @if (lot()?.status === 'finished') {
-                  {{ lot()?.endsAt | date: 'dd.MM.yyyy' }}
+                @if (currentLot.status === 'finished') {
+                  {{ currentLot.endsAt | date: 'dd.MM.yyyy' }}
                 } @else {
                   {{ lotTimer.timeLeft() }}
                 }
@@ -85,12 +89,15 @@
             class="mt-auto flex flex-col items-center justify-center rounded-2xl border border-stroke bg-blocks-second px-4 py-3"
           >
             <div class="text-xs font-semibold opacity-50">Итоговая цена</div>
+
             <div class="text-3xl font-bold">
-              <app-currency [value]="lot()!.currentBidByn" [color]="lot()!.status" />
+              <app-currency [value]="currentLot.currentBidByn" [color]="currentLot.status" />
             </div>
           </div>
         }
       </div>
     </article>
   </a>
+} @else {
+  <article class="h-[515px] animate-pulse overflow-hidden rounded-[2rem] bg-blocks"></article>
 }

@@ -1,0 +1,35 @@
+<dialog
+  #dlg
+  class="border-none bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
+  [class.is-closing]="isClosing()"
+  (cancel)="$event.preventDefault(); onCancel()"
+  (animationend)="onAnimationEnd($event)"
+  (close)="onClose()"
+  (click)="onBackdropClick($event)"
+>
+  <div
+    class="dialog-stage relative flex max-w-dialog flex-col items-center gap-4 rounded-[2rem] border border-stroke bg-blocks p-6 text-center"
+  >
+    <h3 class="px-10 text-base font-semibold">{{ title() }}</h3>
+    <div class="text-xs opacity-70"><ng-content /></div>
+
+    <div class="flex w-full gap-4">
+      <button type="button" tuiButton appearance="brand-secondary" class="flex-1" (click)="onCancel()">
+        {{ cancelLabel() }}
+      </button>
+      <button type="button" tuiButton appearance="brand" class="flex-1" (click)="onConfirm()">
+        {{ confirmLabel() }}
+      </button>
+    </div>
+
+    <div class="absolute right-4 top-4">
+      <button
+        type="button"
+        tuiButton
+        appearance="brand-rounded-flat"
+        iconStart="/assets/icons/x.svg"
+        (click)="onCancel()"
+      ></button>
+    </div>
+  </div>
+</dialog>

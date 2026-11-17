@@ -1,0 +1,32 @@
+.axes {
+  --tui-text-secondary: var(--tui-border-normal);
+
+  ::ng-deep {
+    .t-grid,
+    .t-line {
+      border-style: none;
+    }
+
+    .t-labels-y,
+    .t-hint {
+      font-family: 'NBRB', 'Inter', sans-serif;
+    }
+
+    .t-hint {
+      background: var(--tui-border-normal);
+      border-radius: 0.375rem;
+    }
+
+    .t-dot {
+      background: var(--tui-border-normal);
+      box-shadow: 0 0 0 2px currentColor;
+      inline-size: 0.3rem;
+      block-size: 0.3rem;
+      margin: -0.15rem;
+    }
+
+    .t-svg stop:first-child {
+      stop-opacity: 0.2;
+    }
+  }
+}

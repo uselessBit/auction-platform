@@ -1,19 +1,12 @@
 export type LotStatus = 'upcoming' | 'active' | 'finished' | 'sold' | 'cancelled';
 
-export const lotStatus: Record<LotStatus, string> = {
-  upcoming: 'Ожидает старта',
-  active: 'Идут торги',
-  finished: 'Завершён',
-  sold: 'Продан',
-  cancelled: 'Отменён',
-};
-
-export interface LotBid {
+export interface Bid {
   readonly id: string;
-  readonly bidderMasked: string; // "Участник ***2345"
-  readonly isCurrentUser: boolean;
-  readonly amountByn: number;
-  readonly createdAt: string;
+  readonly userId: string;
+  readonly lotId: string;
+  readonly amount: number;
+  readonly createdAt: string; // ISO 8601
+  readonly isMyBid: boolean;
 }
 
 export interface Lot {
@@ -42,7 +35,35 @@ export interface LotDetails extends Lot {
   readonly transmission: string; // 'АКПП'
   readonly driveType: string; // 'Полный (AWD)'
   readonly location: string; // 'Минск, ул. Бабушкина, 39'
-  readonly createdAt: string; // '11 мая 2026'
+  readonly createdAt: string; // ISO 8601 строка, например '2026-05-11T12:00:00.000Z'
   readonly inspectorComment: string; // Описание повреждений оценщика
-  readonly bids: readonly LotBid[]; // История ставок
+  readonly bids: readonly Bid[]; // История ставок (от новых к старым)
 }
+
+export type BidStatusType =
+  | 'leading' //             Ваша ставка лидирует         (text-active)
+  | 'no_bids' //             Вы еще не делали ставок      (text-sold)
+  | 'outbid' //              Вас перебили                 (text-upcoming)
+  | 'deposit_required' //    Требуется депозит            (text-cancelled)
+  | 'kyc_required' //        Профиль не подтвержден       (text-finished)
+  | 'contacts_unverified' // Контакты не подтверждены     (text-finished)
+  | 'kyc_pending' //         Документы на проверке        (text-upcoming)
+  | 'awaiting_start' //      Ожидайте старта аукциона     (text-upcoming)
+  | 'awaiting_payment' //    Ожидает оплаты               (text-finished)
+  | 'auction_cancelled' //   Торги аннулированы           (text-cancelled)
+  | 'lot_lost' //            Лот проигран                 (text-cancelled)
+  | 'deal_closed' //         Сделка закрыта               (text-sold)
+  | 'auth_required'; //      Войдите, чтобы делать ставки (text-sold)
+
+export const ACTIVE_CATALOG_STATUSES: ReadonlySet<LotStatus> = new Set(['active', 'upcoming']);
+export const ENDED_CATALOG_STATUSES: ReadonlySet<LotStatus> = new Set([
+  'finished',
+  'sold',
+  'cancelled',
+]);
+export const DATE_VISIBLE_STATUSES: ReadonlySet<LotStatus> = new Set([
+  'active',
+  'upcoming',
+  'finished',
+]);
+export const BID_HISTORY_STATUSES: ReadonlySet<LotStatus> = new Set(['active', 'finished', 'sold']);
