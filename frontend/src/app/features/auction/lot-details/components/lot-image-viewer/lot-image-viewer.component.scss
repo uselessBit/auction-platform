@@ -2,16 +2,6 @@ $ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 $ease-in-quad: cubic-bezier(0.4, 0, 1, 1);
 
 dialog[open] {
-  animation: backdrop-fade-in 0.35s $ease-out-expo;
-
-  &::backdrop {
-    animation: backdrop-fade-in 0.35s $ease-out-expo;
-  }
-
-  .viewer-stage {
-    animation: stage-in 0.35s $ease-out-expo;
-  }
-
   .viewer-top {
     animation: slide-down-in 0.35s $ease-out-expo;
   }
@@ -21,16 +11,6 @@ dialog[open] {
   }
 
   &.is-closing {
-    animation: backdrop-fade-out 0.22s $ease-in-quad forwards;
-
-    &::backdrop {
-      animation: backdrop-fade-out 0.22s $ease-in-quad forwards;
-    }
-
-    .viewer-stage {
-      animation: stage-out 0.22s $ease-in-quad forwards;
-    }
-
     .viewer-top {
       animation: slide-up-out 0.22s $ease-in-quad forwards;
     }
@@ -41,49 +21,7 @@ dialog[open] {
   }
 }
 
-@keyframes backdrop-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
 
-@keyframes backdrop-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@keyframes stage-in {
-  from {
-    opacity: 0;
-    scale: 0.92;
-    filter: blur(8px);
-  }
-  to {
-    opacity: 1;
-    scale: 1;
-    filter: blur(0);
-  }
-}
-
-@keyframes stage-out {
-  from {
-    opacity: 1;
-    scale: 1;
-    filter: blur(0);
-  }
-  to {
-    opacity: 0;
-    scale: 0.94;
-    filter: blur(6px);
-  }
-}
 
 @keyframes slide-down-in {
   from {

@@ -1,3 +1,5 @@
+@use 'dialogs';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -93,8 +95,16 @@ body:has(dialog[open]) {
 }
 
 [tuiAppearance][data-appearance='brand'] {
+  @apply bg-accent;
+}
+[tuiAppearance][data-appearance='brand-secondary'] {
+  @apply border border-solid border-stroke bg-blocks-second;
+}
+
+[tuiAppearance][data-appearance='brand'],
+[tuiAppearance][data-appearance='brand-secondary'] {
   font-family: 'NBRB', 'Inter', sans-serif;
-  @apply h-8 gap-2 rounded-lg bg-accent px-6 py-2 text-xs font-semibold transition-all duration-300 ease-in-out;
+  @apply h-8 gap-2 rounded-lg px-6 py-2 text-xs font-semibold transition-all duration-300 ease-in-out;
 
   &::before,
   &::after {
@@ -124,7 +134,20 @@ body:has(dialog[open]) {
 }
 
 [tuiAppearance][data-appearance='brand-rounded'] {
-  @apply size-10 rounded-full border border-solid border-stroke bg-blocks-second p-0 shadow-md shadow-black/25 backdrop-blur-sm transition-[transform,background-color,border-color,opacity] duration-300 ease-in-out;
+  @apply size-10 border border-solid border-stroke bg-blocks-second shadow-md shadow-black/25 backdrop-blur-sm;
+}
+
+[tuiAppearance][data-appearance='brand-rounded-flat'] {
+  @apply size-8;
+
+  &:hover {
+    @apply bg-text/5;
+  }
+}
+
+[tuiAppearance][data-appearance='brand-rounded-flat'],
+[tuiAppearance][data-appearance='brand-rounded'] {
+  @apply rounded-full p-0 transition-[transform,background-color,border-color,opacity] duration-300 ease-in-out;
 
   &::before,
   &::after {
