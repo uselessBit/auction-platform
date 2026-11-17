@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { LotStatus } from '../../../core/models/lot.model';
+import { LOT_STATUS_CONFIG } from '../../config/lot-status.config';
 
 @Component({
   selector: 'app-currency',
@@ -15,20 +16,10 @@ export class CurrencyComponent {
   readonly color = input<LotStatus | 'stroke'>('active');
 
   protected readonly colorClass = computed(() => {
-    switch (this.color()) {
-      case 'upcoming':
-        return 'text-upcoming';
-      case 'finished':
-        return 'text-finished';
-      case 'sold':
-        return 'text-sold';
-      case 'cancelled':
-        return 'text-cancelled';
-      case 'stroke':
-        return 'text-stroke';
-      case 'active':
-      default:
-        return 'text-active';
+    const color = this.color();
+    if (color === 'stroke') {
+      return 'text-stroke';
     }
+    return LOT_STATUS_CONFIG[color].textClass;
   });
 }

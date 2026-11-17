@@ -4,14 +4,7 @@ import { MaskPipe } from '../../../../../shared/pipes/mask-pipe';
 import { Bid, LotStatus } from '../../../../../core/models/lot.model';
 import { TuiIcon } from '@taiga-ui/core';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
-
-const ICON_COLOR_CONFIG: Readonly<Record<LotStatus, string>> = {
-  active: 'text-active',
-  finished: 'text-finished',
-  sold: 'text-sold',
-  cancelled: 'text-cancelled',
-  upcoming: 'text-upcoming',
-};
+import { LOT_STATUS_CONFIG } from '../../../../../shared/config/lot-status.config';
 
 @Component({
   selector: 'app-lot-bids-list',
@@ -25,5 +18,5 @@ export class LotBidsListComponent {
   readonly bids = input.required<readonly Bid[]>();
   readonly status = input.required<LotStatus>();
 
-  protected readonly iconClass = computed<string>(() => ICON_COLOR_CONFIG[this.status()]);
+  protected readonly iconClass = computed<string>(() => LOT_STATUS_CONFIG[this.status()].textClass);
 }

@@ -12,15 +12,15 @@
       <app-bid-status-badge [status]="bidStatus()" />
     </div>
 
-    @if (lot().status === 'active' || lot().status === 'upcoming' || lot().status === 'finished') {
+    @if (hasDateBlock()) {
       <div
         class="flex w-full max-w-24 flex-col items-center justify-center gap-1 whitespace-nowrap rounded-lg border"
-        [class]="timerConfig().container"
+        [class]="statusConfig().containerClass"
       >
         <tui-icon
           [icon]="'/assets/icons/' + lot().status + '-date.svg'"
           class="mb-1 text-2xl"
-          [class]="timerConfig().text"
+          [class]="statusConfig().textClass"
         />
 
         <div class="text-base font-semibold">
@@ -31,7 +31,7 @@
           }
         </div>
 
-        <div class="text-xs font-semibold" [class]="timerConfig().text">
+        <div class="text-xs font-semibold" [class]="statusConfig().textClass">
           {{ timerConfig().subtitle }}
         </div>
       </div>
@@ -48,10 +48,7 @@
     />
   }
 
-  @if (
-    (lot().status === 'active' || lot().status === 'finished' || lot().status === 'sold') &&
-    lot().bids.length > 0
-  ) {
+  @if (hasLeader()) {
     <div class="min-h-px bg-stroke"></div>
 
     <div class="flex flex-1 flex-col gap-2">
@@ -62,7 +59,7 @@
       <div class="flex items-center gap-1">
         <div
           class="flex size-8 items-center justify-center rounded-lg border border-stroke bg-blocks-second"
-          [class]="timerConfig().text"
+          [class]="statusConfig().textClass"
         >
           <tui-icon icon="/assets/icons/profile.svg" class="text-xs" />
         </div>
@@ -72,7 +69,7 @@
             >Участник {{ lot().bids[0].userId | mask: 4 : 3 }}
             @if (isAuthenticated()) {
               @if (isLeaderCurrentUser()) {
-                <span [class]="timerConfig().text">(вы)</span>
+                <span [class]="statusConfig().textClass">(вы)</span>
               } @else {
                 <span class="text-stroke">(не вы)</span>
               }

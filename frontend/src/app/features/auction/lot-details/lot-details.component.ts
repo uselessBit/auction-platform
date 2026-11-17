@@ -12,6 +12,7 @@ import {
   BlockedBidStatus,
   LotBidPanelComponent,
 } from './components/lot-bid-panel/lot-bid-panel.component';
+import { BID_HISTORY_STATUSES } from '../../../core/models/lot.model';
 
 @Component({
   selector: 'app-lot-details',
@@ -36,6 +37,7 @@ export class LotDetailsComponent {
   protected readonly lot$ = toObservable(this.id).pipe(
     switchMap((id) => this.lotsService.getLotById(id)),
   );
+  protected readonly bidHistoryStatuses = BID_HISTORY_STATUSES;
 
   protected onBidSubmit(amount: number): void {
     console.info('Ставка подтверждена:', amount);

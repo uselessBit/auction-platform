@@ -9,15 +9,8 @@ import {
   TuiLineHandler,
 } from '@taiga-ui/addon-charts';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
-import { LotDetails, Bid, LotStatus } from '../../../../../core/models/lot.model';
-
-const CHART_STATUS_CONFIG: Readonly<Record<LotStatus, string>> = {
-  active: 'text-active',
-  finished: 'text-finished',
-  sold: 'text-sold',
-  cancelled: 'text-cancelled',
-  upcoming: 'text-upcoming',
-};
+import { LotDetails, Bid } from '../../../../../core/models/lot.model';
+import { LOT_STATUS_CONFIG } from '../../../../../shared/config/lot-status.config';
 
 @Component({
   selector: 'app-lot-price-chart',
@@ -55,7 +48,9 @@ export class LotPriceChartComponent {
     });
   });
 
-  protected readonly chartClass = computed<string>(() => CHART_STATUS_CONFIG[this.lot().status]);
+  protected readonly chartClass = computed<string>(
+    () => LOT_STATUS_CONFIG[this.lot().status].textClass,
+  );
 
   protected readonly horizontalLinesHandler = TUI_ALWAYS_DASHED;
   protected readonly verticalLinesHandler: TuiLineHandler = (index, total) =>

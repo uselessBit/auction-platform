@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { LotStatus, lotStatus } from '../../../core/models/lot.model';
+import { LotStatus } from '../../../core/models/lot.model';
 import { TuiIcon } from '@taiga-ui/core';
+import { LOT_STATUS_CONFIG } from '../../config/lot-status.config';
 
 @Component({
   selector: 'app-lot-status-badge',
@@ -13,20 +14,6 @@ import { TuiIcon } from '@taiga-ui/core';
 export class LotStatusBadgeComponent {
   readonly status = input.required<LotStatus>();
 
-  protected readonly lotStatus = lotStatus;
-
-  protected readonly badgeClass = computed(() => {
-    switch (this.status()) {
-      case 'active':
-        return 'border-active bg-active-back text-active';
-      case 'upcoming':
-        return 'border-upcoming bg-upcoming-back text-upcoming';
-      case 'finished':
-        return 'border-finished bg-finished-back text-finished';
-      case 'sold':
-        return 'border-sold bg-sold-back text-sold';
-      case 'cancelled':
-        return 'border-cancelled bg-cancelled-back text-cancelled';
-    }
-  });
+  protected readonly lotStatus = computed(() => LOT_STATUS_CONFIG[this.status()].label);
+  protected readonly badgeClass = computed(() => LOT_STATUS_CONFIG[this.status()].badgeClass);
 }

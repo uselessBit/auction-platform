@@ -3,7 +3,7 @@ import { AsyncPipe } from '@angular/common';
 import { LotCardComponent } from '../../../shared/components/lot-card/lot-card.component';
 import { LotsService } from '../../../core/services/lots.service';
 import { map, Observable } from 'rxjs';
-import { Lot } from '../../../core/models/lot.model';
+import { ENDED_CATALOG_STATUSES, Lot } from '../../../core/models/lot.model';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TuiButton } from '@taiga-ui/core';
 
@@ -16,14 +16,8 @@ import { TuiButton } from '@taiga-ui/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EndedCatalogComponent {
-  private lotsService = inject(LotsService);
-  endedLots$: Observable<Lot[]> = this.lotsService
+  private readonly lotsService = inject(LotsService);
+  protected readonly endedLots$: Observable<Lot[]> = this.lotsService
     .getLots()
-    .pipe(
-      map((lots) =>
-        lots.filter(
-          (lot) => lot.status === 'finished' || lot.status === 'cancelled' || lot.status === 'sold',
-        ),
-      ),
-    );
+    .pipe(map((lots) => lots.filter((lot) => ENDED_CATALOG_STATUSES.has(lot.status))));
 }

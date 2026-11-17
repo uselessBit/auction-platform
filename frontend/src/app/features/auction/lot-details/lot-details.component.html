@@ -9,7 +9,7 @@
       @if (lot.bids.length > 1) {
         <app-lot-price-chart [lot]="lot"></app-lot-price-chart>
       }
-      @if (lot.status === 'active' || lot.status === 'finished' || lot.status === 'sold') {
+      @if (bidHistoryStatuses.has(lot.status)) {
         <app-lot-specs [lot]="lot"></app-lot-specs>
       }
     </div>
@@ -18,13 +18,13 @@
       class="sticky top-[calc(var(--header-height)+1.5rem)] col-span-1 flex flex-col gap-6 self-start"
     >
       <app-lot-bid-summary [lot]="lot"></app-lot-bid-summary>
-      @if (lot.status === 'upcoming' || lot.status === 'cancelled') {
+      @if (!bidHistoryStatuses.has(lot.status)) {
         <app-lot-specs [lot]="lot"></app-lot-specs>
       }
       @if (lot.status === 'active') {
         <app-lot-bid-panel [lot]="lot" (bidSubmit)="onBidSubmit($event)" (blockedAction)="onBlockedAction($event)"></app-lot-bid-panel>
       }
-      @if (lot.bids.length > 0) {
+      @if (bidHistoryStatuses.has(lot.status) && lot.bids.length > 0) {
         <app-lot-bids-list [bids]="lot.bids" [status]="lot.status"></app-lot-bids-list>
       }
     </div>

@@ -1,13 +1,5 @@
 export type LotStatus = 'upcoming' | 'active' | 'finished' | 'sold' | 'cancelled';
 
-export const lotStatus: Record<LotStatus, string> = {
-  upcoming: 'Ожидает старта',
-  active: 'Идут торги',
-  finished: 'Завершён',
-  sold: 'Продан',
-  cancelled: 'Отменён',
-};
-
 export interface Bid {
   readonly id: string;
   readonly userId: string;
@@ -62,3 +54,16 @@ export type BidStatusType =
   | 'lot_lost' //            Лот проигран                 (text-cancelled)
   | 'deal_closed' //         Сделка закрыта               (text-sold)
   | 'auth_required'; //      Войдите, чтобы делать ставки (text-sold)
+
+export const ACTIVE_CATALOG_STATUSES: ReadonlySet<LotStatus> = new Set(['active', 'upcoming']);
+export const ENDED_CATALOG_STATUSES: ReadonlySet<LotStatus> = new Set([
+  'finished',
+  'sold',
+  'cancelled',
+]);
+export const DATE_VISIBLE_STATUSES: ReadonlySet<LotStatus> = new Set([
+  'active',
+  'upcoming',
+  'finished',
+]);
+export const BID_HISTORY_STATUSES: ReadonlySet<LotStatus> = new Set(['active', 'finished', 'sold']);

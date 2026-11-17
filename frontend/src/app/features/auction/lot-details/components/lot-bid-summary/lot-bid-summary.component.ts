@@ -1,5 +1,12 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
-import { BidStatusType, LotDetails, LotStatus } from '../../../../../core/models/lot.model';
+import {
+  ACTIVE_CATALOG_STATUSES,
+  BID_HISTORY_STATUSES,
+  BidStatusType,
+  DATE_VISIBLE_STATUSES,
+  LotDetails,
+  LotStatus,
+} from '../../../../../core/models/lot.model';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
 import { BidStatusBadgeComponent } from '../../../../../shared/components/bid-status-badge/bid-status-badge.component';
 import { LotTimerService } from '../../../../../core/services/lot-timer.service';
@@ -10,42 +17,31 @@ import { MaskPipe } from '../../../../../shared/pipes/mask-pipe';
 import { FinanceService } from '../../../../../core/services/finance.service';
 import { resolveBidStatus } from '../../utils/bid-status.util';
 import { LotAuctionRulesComponent } from '../lot-auction-rules/lot-auction-rules.component';
+import { LOT_STATUS_CONFIG } from '../../../../../shared/config/lot-status.config';
 
 interface BidSummaryConfig {
-  readonly text: string;
-  readonly container: string;
   readonly title: string;
   readonly subtitle: string;
 }
 
 const BID_SUMMARY_CONFIG: Readonly<Record<LotStatus, BidSummaryConfig>> = {
   upcoming: {
-    text: 'text-upcoming',
-    container: 'bg-upcoming-back border-upcoming',
     title: 'Начальная цена',
     subtitle: 'до старта',
   },
   active: {
-    text: 'text-active',
-    container: 'bg-active-back border-active',
     title: 'Текущая ставка',
     subtitle: 'осталось',
   },
   finished: {
-    text: 'text-finished',
-    container: 'bg-finished-back border-finished',
     title: 'Итоговая цена',
     subtitle: 'завершился',
   },
   sold: {
-    text: 'text-sold',
-    container: 'bg-sold-back border-sold',
     title: 'Итоговая цена',
     subtitle: '-',
   },
   cancelled: {
-    text: 'text-cancelled',
-    container: 'bg-cancelled-back border-cancelled',
     title: 'Последняя цена',
     subtitle: '-',
   },
@@ -77,6 +73,7 @@ export class LotBidSummaryComponent {
   protected readonly timerConfig = computed<BidSummaryConfig>(
     () => BID_SUMMARY_CONFIG[this.lot().status],
   );
+  protected readonly statusConfig = computed(() => LOT_STATUS_CONFIG[this.lot().status]);
   protected readonly bidStatus = computed<BidStatusType>(() =>
     resolveBidStatus(
       this.lot(),
@@ -91,10 +88,15 @@ export class LotBidSummaryComponent {
     return !!user && !!leaderBid && leaderBid.userId === user.id;
   });
 
+  protected readonly hasDateBlock = computed(() => DATE_VISIBLE_STATUSES.has(this.lot().status));
+  protected readonly hasLeader = computed(
+    () => BID_HISTORY_STATUSES.has(this.lot().status) && this.lot().bids.length > 0,
+  );
+
   constructor() {
     effect(() => {
       const currentLot = this.lot();
-      if (currentLot.status === 'active' || currentLot.status === 'upcoming') {
+      if (ACTIVE_CATALOG_STATUSES.has(currentLot.status)) {
         this.lotTimer.start(currentLot.endsAt);
       }
     });
