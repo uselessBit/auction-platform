@@ -22,7 +22,7 @@ export class ConfirmDialogComponent {
   readonly cancelLabel = input<string>('Отмена');
 
   readonly confirmed = output<void>();
-  readonly cancelled = output<void>();
+  readonly closed = output<void>();
 
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dlg');
 
@@ -42,6 +42,7 @@ export class ConfirmDialogComponent {
 
   protected onClose(): void {
     this.isClosing.set(false);
+    this.closed.emit();
   }
 
   protected onAnimationEnd(event: AnimationEvent): void {
@@ -57,12 +58,17 @@ export class ConfirmDialogComponent {
   }
 
   protected onConfirm(): void {
+    if (this.isClosing()) {
+      return;
+    }
     this.confirmed.emit();
     this.close();
   }
 
   protected onCancel(): void {
-    this.cancelled.emit();
+    if (this.isClosing()) {
+      return;
+    }
     this.close();
   }
 }

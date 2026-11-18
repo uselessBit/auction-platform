@@ -92,7 +92,7 @@
   [confirmLabel]="dialogConfig()?.confirmLabel ?? 'Подтвердить'"
   [cancelLabel]="dialogConfig()?.cancelLabel ?? 'Отмена'"
   (confirmed)="onDialogConfirm()"
-  (cancelled)="onDialogCancel()"
+  (closed)="onDialogClosed()"
 >
   @if (pendingAction(); as action) {
     @if (action.type === 'bid') {

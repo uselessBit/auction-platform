@@ -229,11 +229,9 @@ export class LotBidPanelComponent {
     if (action.type === 'deposit') {
       this.blockedAction.emit('deposit_required');
     }
-
-    this.pendingAction.set(null);
   }
 
-  protected onDialogCancel(): void {
+  protected onDialogClosed(): void {
     this.pendingAction.set(null);
   }
 }
