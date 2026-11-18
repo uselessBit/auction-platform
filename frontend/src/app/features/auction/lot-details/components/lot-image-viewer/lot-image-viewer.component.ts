@@ -102,6 +102,7 @@ export class LotImageViewerComponent {
       this.currentScale.set(this.currentScale() - this.scaleStep);
       return;
     }
+    this.dialog().nativeElement.focus();
     this.resetZoom();
   }
 
