@@ -1,0 +1,24 @@
+<dialog
+  #dlg
+  class="border-none bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
+  [class.is-closing]="isClosing()"
+  (animationend)="onAnimationEnd($event)"
+  (close)="onClose()"
+  (click)="onBackdropClick($event)"
+  (cancel)="$event.preventDefault(); close()"
+>
+  <div
+    class="dialog-stage relative flex max-w-dialog flex-col items-center gap-4 rounded-[2rem] border border-stroke bg-blocks p-6 text-center"
+  >
+    <h2 class="text-base font-semibold px-8">Вход</h2>
+
+    <div class="absolute right-4 top-4">
+      <button
+        tuiButton
+        appearance="brand-rounded-flat"
+        iconStart="/assets/icons/x.svg"
+        (click)="close()"
+      ></button>
+    </div>
+  </div>
+</dialog>

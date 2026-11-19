@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TuiButton } from '@taiga-ui/core';
+import { AuthModalService } from '../../core/services/auth-modal.service';
 
 interface NavItem {
   readonly label: string;
@@ -16,6 +17,8 @@ interface NavItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
+  private readonly authModal = inject(AuthModalService);
+
   protected readonly navItems: NavItem[] = [
     { label: 'Активные лоты', route: '/catalog' },
     { label: 'Завершённые лоты', route: '/catalog/ended' },
@@ -23,7 +26,6 @@ export class HeaderComponent {
     { label: 'Правила', route: '/rules' },
   ];
   protected readonly sliderPosition = signal({ left: 0, width: 0, opacity: 0 });
-
   private activeEl: HTMLElement | null = null;
 
   protected updateSlider(el: HTMLElement): void {
@@ -36,5 +38,9 @@ export class HeaderComponent {
       this.activeEl = null;
       this.sliderPosition.update((prev) => ({ ...prev, opacity: 0 }));
     }
+  }
+
+  protected openDialog(): void {
+    this.authModal.open();
   }
 }
