@@ -13,6 +13,7 @@
   (keydown.code.equal)="zoomIn()"
   (keydown.code.shift.equal)="zoomIn()"
   (keydown.code.numpadadd)="zoomIn()"
+  (keydown.escape)="$event.preventDefault(); close()"
   (mousemove)="isZoom() && mousemove($event)"
   (mouseup)="isZoom() && mouseup()"
   (mouseleave)="mouseup()"

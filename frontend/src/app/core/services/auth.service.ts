@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { API_CONFIG } from '../api/api-config.token';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthTokens, User } from '../models/auth.model';
-import { delay, map, Observable, of, tap, throwError } from 'rxjs';
-import { MOCK_AUTH_RESPONSE, MOCK_TOKENS, MOCK_USER_VERIFIED } from '../mock/users.mock';
+import { delay, map, Observable, of, switchMap, tap, throwError, timer } from 'rxjs';
+import { MOCK_PASSWORD, MOCK_TOKENS, MOCK_USERS } from '../mock/users.mock';
 import { FinanceService } from './finance.service';
 
 @Injectable({
@@ -17,7 +17,8 @@ export class AuthService {
 
   private readonly financeService = inject(FinanceService);
 
-  readonly currentUser = signal<User | null>(MOCK_USER_VERIFIED);
+  private readonly _currentUser = signal<User | null>(null);
+  readonly currentUser = this._currentUser.asReadonly();
   readonly isAuthenticated = computed(() => !!this.currentUser());
 
   getAccessToken(): string | null {
@@ -51,11 +52,22 @@ export class AuthService {
   }
 
   login(email: string, password: string): Observable<User> {
-    return of(MOCK_AUTH_RESPONSE).pipe(
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = MOCK_USERS.find((user) => user.email === normalizedEmail);
+
+    if (!user || password !== MOCK_PASSWORD) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Неверный email или пароль'))),
+      );
+    }
+    if (user.isBlocked) {
+      return timer(400).pipe(switchMap(() => throwError(() => new Error('Аккаунт заблокирован'))));
+    }
+    return of({ user, tokens: MOCK_TOKENS }).pipe(
       delay(400),
       tap((res) => {
         this.setTokens(res.tokens);
-        this.currentUser.set(res.user);
+        this._currentUser.set(res.user);
       }),
       map((res) => res.user),
     );
@@ -74,7 +86,7 @@ export class AuthService {
 
   logout(): void {
     this.clearTokens();
-    this.currentUser.set(null);
+    this._currentUser.set(null);
     this.financeService.clearHolds();
   }
 }
