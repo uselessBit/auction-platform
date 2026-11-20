@@ -1,0 +1,42 @@
+:root {
+  --header-height: 4rem;
+}
+
+body:has(dialog[open]) {
+  overflow: hidden;
+}
+
+@layer base {
+  :root,
+  [tuiTheme='dark'] {
+    --tui-background-base: #000000; /* Back */
+    --tui-background-neutral-1: #121212cc; /* Blocks */
+    --tui-background-neutral-2: #161616cc; /* BlocksSecond */
+
+    --tui-border-normal: #323232; /* Stroke */
+
+    --tui-text-primary: #f3fdf8; /* Text */
+
+    --tui-background-accent-1: #00bc7d; /* Accent */
+
+    --tui-status-positive: #00bc7d; /* Active */
+    --tui-status-warning: #fe9a00; /* Upcoming */
+    --tui-status-info: #2b7fff; /* Finished */
+    --tui-status-negative: #ff2056; /* Cancelled */
+
+    --tui-status-positive-pale: #002c22e6; /* ActiveBack */
+    --tui-status-warning-pale: #461901e6; /* UpcomingBack */
+    --tui-status-info-pale: #162456e6; /* FinishedBack */
+    --tui-status-negative-pale: #4d0218e6; /* CancelledBack */
+
+    --tui-text-negative: #ff2056;
+
+    --tui-typography-family-text: 'Inter', system-ui, sans-serif;
+    --tui-typography-family-display: 'Inter', system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-back text-text antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}

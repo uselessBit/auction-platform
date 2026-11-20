@@ -1,7 +1,7 @@
-import { EnvironmentProviders, makeEnvironmentProviders } from '@angular/core';
+import { EnvironmentProviders, makeEnvironmentProviders, signal } from '@angular/core';
 import { TUI_DEFAULT_LANGUAGE } from '@taiga-ui/i18n/tokens';
 import { TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n/languages/russian';
-import { tuiPasswordOptionsProvider } from '@taiga-ui/kit';
+import { TUI_PASSWORD_TEXTS, tuiPasswordOptionsProvider } from '@taiga-ui/kit';
 import { provideTaiga, tuiValidationErrorsProvider } from '@taiga-ui/core';
 
 export function provideAppTaiga(): EnvironmentProviders {
@@ -10,6 +10,10 @@ export function provideAppTaiga(): EnvironmentProviders {
     {
       provide: TUI_DEFAULT_LANGUAGE,
       useValue: TUI_RUSSIAN_LANGUAGE,
+    },
+    {
+      provide: TUI_PASSWORD_TEXTS,
+      useValue: signal(['', '']),
     },
     tuiPasswordOptionsProvider({
       icons: {

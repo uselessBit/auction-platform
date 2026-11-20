@@ -107,6 +107,12 @@ export class AuthModalComponent {
     }
   }
 
+  protected onBackdropMousedown(event: MouseEvent): void {
+    if (event.target === event.currentTarget) {
+      event.preventDefault();
+    }
+  }
+
   protected onSubmit(): void {
     if (this.isLoading()) {
       return;

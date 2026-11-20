@@ -10,7 +10,7 @@ import { LotDetails } from '../../../../../core/models/lot.model';
 import { LotStatusBadgeComponent } from '../../../../../shared/components/lot-status-badge/lot-status-badge.component';
 import { DecimalPipe, DOCUMENT, isPlatformBrowser, NgOptimizedImage } from '@angular/common';
 import { FavoriteButtonComponent } from '../../../../../shared/components/favorite-button/favorite-button.component';
-import { TuiButton, TuiCarousel, TuiIcon } from '@taiga-ui/core';
+import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { tuiCopyOptionsProvider } from '@taiga-ui/kit';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { FloatingBadgeComponent } from '../../../../../shared/components/floating-badge/floating-badge.component';
@@ -23,7 +23,6 @@ import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.co
     DecimalPipe,
     FavoriteButtonComponent,
     TuiButton,
-    TuiCarousel,
     NgOptimizedImage,
     FloatingBadgeComponent,
     LotImageViewerComponent,
@@ -85,6 +84,18 @@ export class LotGalleryComponent {
         this.clipboard.copy(this.win.location.href);
         this.copyLink();
       }
+    }
+  }
+
+  protected next(): void {
+    if (this.index() < this.lot().images.length - 1) {
+      this.index.set(this.index() + 1);
+    }
+  }
+
+  protected prev(): void {
+    if (this.index() > 0) {
+      this.index.set(this.index() - 1);
     }
   }
 }
