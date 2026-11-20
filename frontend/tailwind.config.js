@@ -7,9 +7,17 @@ module.exports = {
         layout: '1260px',
         dialog: '460px',
       },
+      fontFamily: {
+        brand: ["'NBRB'", "'Inter'", 'sans-serif'],
+      },
+      boxShadow: {
+        'btn-brand': '0 4px 16px -4px rgba(0, 188, 125, 0)',
+        'btn-brand-hover': '0 4px 18px -4px rgba(0, 188, 125, 0.35)',
+      },
       colors: {
         accent: {
           DEFAULT: '#00BC7D', // Accent
+          hover: '#05CF8B', // Accent hover
           second: '#002C22CC', // AccentSecond (80%)
         },
         text: '#F3FDF8', // Text
