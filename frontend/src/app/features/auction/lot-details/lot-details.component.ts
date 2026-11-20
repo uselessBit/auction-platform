@@ -13,6 +13,7 @@ import {
   LotBidPanelComponent,
 } from './components/lot-bid-panel/lot-bid-panel.component';
 import { BID_HISTORY_STATUSES } from '../../../core/models/lot.model';
+import { AuthModalService } from '../../../core/services/auth-modal.service';
 
 @Component({
   selector: 'app-lot-details',
@@ -31,8 +32,10 @@ import { BID_HISTORY_STATUSES } from '../../../core/models/lot.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LotDetailsComponent {
-  protected readonly id = input.required<string>({ alias: 'id' });
   private readonly lotsService = inject(LotsService);
+  private readonly authModal = inject(AuthModalService);
+
+  protected readonly id = input.required<string>({ alias: 'id' });
 
   protected readonly lot$ = toObservable(this.id).pipe(
     switchMap((id) => this.lotsService.getLotById(id)),
@@ -44,6 +47,8 @@ export class LotDetailsComponent {
   }
 
   protected onBlockedAction(status: BlockedBidStatus): void {
-    console.info('Запрошено действие для статуса:', status);
+    if (status === 'auth_required') {
+      this.authModal.open();
+    }
   }
 }

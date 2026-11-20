@@ -124,6 +124,20 @@ export const MOCK_TOKENS: AuthTokens = {
   refreshToken: 'mock-jwt-refresh-token-abc789xyz-valid-for-refresh',
 };
 
+export const MOCK_PASSWORD = 'password123';
+
+export const MOCK_USERS: readonly User[] = [
+  MOCK_USER_UNVERIFIED,
+  MOCK_USER_NO_KYC,
+  MOCK_USER_KYC_REJECTED,
+  MOCK_USER_NEW,
+  MOCK_USER_NO_DEPOSIT,
+  MOCK_USER_VERIFIED,
+  MOCK_USER_B2B,
+  MOCK_USER_BLOCKED,
+  MOCK_ADMIN,
+];
+
 export const MOCK_AUTH_RESPONSE: AuthResponse = {
   user: MOCK_USER_VERIFIED,
   tokens: MOCK_TOKENS,

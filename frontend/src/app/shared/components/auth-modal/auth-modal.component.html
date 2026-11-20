@@ -5,20 +5,54 @@
   (animationend)="onAnimationEnd($event)"
   (close)="onClose()"
   (click)="onBackdropClick($event)"
+  (keydown.escape)="$event.preventDefault(); close()"
   (cancel)="$event.preventDefault(); close()"
+  tabindex="-1"
 >
-  <div
-    class="dialog-stage relative flex max-w-dialog flex-col items-center gap-4 rounded-[2rem] border border-stroke bg-blocks p-6 text-center"
-  >
-    <h2 class="text-base font-semibold px-8">Вход</h2>
+  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <div
+      class="dialog-stage relative flex flex-col gap-4 rounded-[2rem] border border-stroke bg-blocks p-6"
+    >
+      <h2 class="px-8 text-center text-base font-semibold">Вход в аккаунт</h2>
 
-    <div class="absolute right-4 top-4">
-      <button
-        tuiButton
-        appearance="brand-rounded-flat"
-        iconStart="/assets/icons/x.svg"
-        (click)="close()"
-      ></button>
+      <div class="flex flex-col">
+        <tui-textfield tuiTextfieldSize="s" class="w-64" tuiTextfieldAppearance="brand-input">
+          <input placeholder="Email" tuiInput type="email" formControlName="email" />
+        </tui-textfield>
+
+        <tui-error formControlName="email" />
+      </div>
+
+      <div>
+        <tui-textfield tuiTextfieldSize="s" class="w-64" tuiTextfieldAppearance="brand-input">
+          <input placeholder="Пароль" tuiInput type="password" formControlName="password" />
+          <tui-icon tuiPassword />
+        </tui-textfield>
+
+        <tui-error formControlName="password" />
+      </div>
+
+      <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">
+        Войти
+      </button>
+
+      <button type="button" tuiButton appearance="brand-flat" class="flex-1">
+        Нет аккаунта? Зарегистрироваться
+      </button>
+
+      <div class="absolute right-4 top-4">
+        <button
+          tuiButton
+          type="button"
+          appearance="brand-rounded-flat"
+          iconStart="/assets/icons/x.svg"
+          (click)="close()"
+        ></button>
+      </div>
     </div>
-  </div>
+  </form>
+
+  <tui-popups>
+
+  </tui-popups>
 </dialog>

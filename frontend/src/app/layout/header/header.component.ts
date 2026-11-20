@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TuiButton } from '@taiga-ui/core';
 import { AuthModalService } from '../../core/services/auth-modal.service';
+import { AuthService } from '../../core/services/auth.service';
 
 interface NavItem {
   readonly label: string;
@@ -18,6 +19,9 @@ interface NavItem {
 })
 export class HeaderComponent {
   private readonly authModal = inject(AuthModalService);
+  private readonly authService = inject(AuthService);
+
+  protected readonly isAuthenticated = this.authService.isAuthenticated;
 
   protected readonly navItems: NavItem[] = [
     { label: 'Активные лоты', route: '/catalog' },

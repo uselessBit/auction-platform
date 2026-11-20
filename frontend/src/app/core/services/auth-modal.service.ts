@@ -4,14 +4,14 @@ import { Injectable, signal } from '@angular/core';
   providedIn: 'root',
 })
 export class AuthModalService {
-  private readonly isOpenLocal = signal<boolean>(false);
-  readonly isOpen = this.isOpenLocal.asReadonly();
+  private readonly _isOpen = signal<boolean>(false);
+  readonly isOpen = this._isOpen.asReadonly();
 
   open(): void {
-    this.isOpenLocal.set(true);
+    this._isOpen.set(true);
   }
 
   close(): void {
-    this.isOpenLocal.set(false);
+    this._isOpen.set(false);
   }
 }
