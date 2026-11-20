@@ -3,9 +3,11 @@
   class="border-none bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
   [class.is-closing]="isClosing()"
   (cancel)="$event.preventDefault(); onCancel()"
+  (keydown.escape)="$event.preventDefault(); onCancel()"
   (animationend)="onAnimationEnd($event)"
   (close)="onClose()"
   (click)="onBackdropClick($event)"
+  tabindex="-1"
 >
   <div
     class="dialog-stage relative flex max-w-dialog flex-col items-center gap-4 rounded-[2rem] border border-stroke bg-blocks p-6 text-center"
