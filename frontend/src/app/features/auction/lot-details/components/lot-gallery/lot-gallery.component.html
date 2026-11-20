@@ -1,23 +1,22 @@
 <article
   class="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-solid border-stroke"
 >
-  <tui-carousel
-    #carousel
-    [max]="lot().images.length - 1"
-    [min]="0"
-    [(index)]="index"
-    class="h-full w-full"
+  <div
+    class="flex h-full w-full transition-transform duration-300 ease-out"
+    [style.transform]="'translateX(-' + index() * 100 + '%)'"
   >
-    <section *tuiItem="let i" class="relative h-full w-full">
-      <img
-        [ngSrc]="lot().images[i]"
-        fill
-        alt="{{ lot().brand }} {{ lot().model }}, фото {{ i + 1 }}"
-        class="cursor-pointer object-cover object-center"
-        (click)="viewer.open(index())"
-      />
-    </section>
-  </tui-carousel>
+    @for (image of lot().images; track image) {
+      <div class="relative h-full w-full shrink-0">
+        <img
+          [ngSrc]="image"
+          fill
+          [alt]="lot().brand + ' ' + lot().model + ', фото ' + ($index + 1)"
+          class="cursor-pointer object-cover object-center"
+          (click)="viewer.open(index())"
+        />
+      </div>
+    }
+  </div>
 
   <div class="pointer-events-none absolute left-6 top-6 flex gap-2">
     <app-lot-status-badge [status]="lot().status"></app-lot-status-badge>
@@ -89,8 +88,8 @@
       type="button"
       iconStart="/assets/icons/arrow-left.svg"
       aria-label="Предыдущее фото"
-      [disabled]="index() === 0"
-      (click)="carousel.prev()"
+      [disabled]="index() <= 0"
+      (click)="prev()"
       class="pointer-events-auto"
     ></button>
 
@@ -100,8 +99,8 @@
       type="button"
       iconStart="/assets/icons/arrow-right.svg"
       aria-label="Следующее фото"
-      [disabled]="index() === lot().images.length - 1"
-      (click)="carousel.next()"
+      [disabled]="index() >= lot().images.length - 1"
+      (click)="next()"
       class="pointer-events-auto"
     ></button>
   </div>
