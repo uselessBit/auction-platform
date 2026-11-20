@@ -13,6 +13,15 @@
     @apply text-xs transition-transform duration-200 ease-out;
   }
 
+  &.brand-icon-shift:hover:not(:disabled) {
+    &::before {
+      @apply -translate-x-1;
+    }
+    &::after {
+      @apply translate-x-1;
+    }
+  }
+
   &:disabled:not([data-state]) {
     @apply cursor-not-allowed opacity-50;
 
