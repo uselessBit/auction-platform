@@ -4,6 +4,10 @@
   &--muted {
     @apply opacity-50;
   }
+
+  &--active {
+    @apply border-active bg-active-back text-active;
+  }
 }
 
 @keyframes fadeIn {

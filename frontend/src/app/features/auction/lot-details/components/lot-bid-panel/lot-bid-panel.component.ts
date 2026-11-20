@@ -10,7 +10,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
-import { BidStatusType, LotDetails } from '../../../../../core/models/lot.model';
+import { BidStatusType, BlockedBidStatus, LotDetails } from '../../../../../core/models/lot.model';
 import { AuthService } from '../../../../../core/services/auth.service';
 import { FinanceService } from '../../../../../core/services/finance.service';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
@@ -21,6 +21,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { resolveBidStatus } from '../../utils/bid-status.util';
 import { LotAuctionRulesComponent } from '../lot-auction-rules/lot-auction-rules.component';
 import { ConfirmDialogComponent } from '../../../../../shared/components/confirm-dialog/confirm-dialog.component';
+import { LotBidProgressComponent } from '../lot-bid-progress/lot-bid-progress.component';
 
 interface QuickBidConfig {
   readonly label: string;
@@ -34,60 +35,67 @@ const QUICK_BID_CONFIG: readonly QuickBidConfig[] = [
   { label: 'Десять шагов', steps: 10 },
 ];
 
-export type BlockedBidStatus = Extract<
-  BidStatusType,
-  'auth_required' | 'contacts_unverified' | 'kyc_required' | 'kyc_pending' | 'deposit_required'
->;
-
 interface BlockedBidConfig {
   readonly title: string;
   readonly description: string;
-  readonly extraNote?: string;
   readonly actionLabel: string;
   readonly hint: string;
-  readonly hintIcon: string;
+  readonly icon?: string;
+  readonly iconClass?: string;
+  readonly stepLabel: string;
+  readonly stepLabelClass?: string;
 }
-
-const KYC_BASE_CONFIG = {
-  title: 'Требуется верификация',
-  description:
-    'Согласно законодательству РБ, для внесения депозита и участия в торгах необходимо подтвердить личность паспортными данными',
-  extraNote: 'Проверка занимает от 15 до 30 минут',
-  hint: 'Ваши фото не сохраняются на сервере после проверки',
-  hintIcon: '/assets/icons/shield-check.svg',
-} as const;
 
 const BLOCKED_BID_CONFIG: Readonly<Record<BlockedBidStatus, BlockedBidConfig>> = {
   deposit_required: {
     title: 'Гарантийный депозит',
-    description: 'Для участия в торгах необходимо заморозить 10% от стартовой цены лота',
+    description: 'Для участия в торгах необходимо заморозить 10% от стартовой цены лота.',
     actionLabel: 'Внести депозит',
     hint: 'В случае проигрыша ваши средства разморозятся',
-    hintIcon: '/assets/icons/shield-check.svg',
+    stepLabel: 'Финальный шаг (4 из 4)',
+    stepLabelClass: 'text-active',
   },
   kyc_required: {
-    ...KYC_BASE_CONFIG,
-    actionLabel: 'Пройти верификацию',
+    title: 'Требуется верификация',
+    description:
+      'По законодательству РБ для участия в торгах нужно подтвердить личность паспортом.',
+    actionLabel: 'Пройти верификацию (KYC)',
+    hint: 'После ваши фото автоматически удаляются с сервера',
+    icon: '/assets/icons/shield-check.svg',
+    iconClass: 'text-active bg-active-back border-active',
+    stepLabel: 'Допуск: Шаг 3 из 4',
+    stepLabelClass: 'opacity-50',
   },
   kyc_pending: {
-    ...KYC_BASE_CONFIG,
-    actionLabel: 'Документы на проверке',
+    title: 'Проверяем документы',
+    description:
+      'Модератор сверяет анкету. Как только профиль подтвердят, откроется внесение депозита.',
+    actionLabel: 'Документы на проверке (15 - 30 минут)',
+    hint: 'Пришлем SMS-уведомление сразу после одобрения',
+    icon: '/assets/icons/time-forward.svg',
+    iconClass: 'text-upcoming bg-upcoming-back border-upcoming',
+    stepLabel: 'Проверка KYC...',
+    stepLabelClass: 'text-upcoming',
   },
   auth_required: {
     title: 'Требуется авторизация',
-    description:
-      'Войдите в аккаунт, чтобы увидеть полный VIN-код автомобиля и получить возможность делать ставки',
+    description: 'Войдите в аккаунт, чтобы увидеть полный VIN-код автомобиля и делать ставки.',
     actionLabel: 'Войти / Регистрация',
-    hint: 'Если у вас нет аккаунта, регистрация займет 1 минуту',
-    hintIcon: '/assets/icons/shield-interrogation.svg',
+    hint: 'Если нет аккаунта, регистрация займет 1 минуту',
+    icon: '/assets/icons/lock.svg',
+    iconClass: 'text-active bg-active-back border-active',
+    stepLabel: 'Допуск: Шаг 1 из 4',
+    stepLabelClass: 'opacity-50',
   },
   contacts_unverified: {
-    title: 'Требуется подтверждение контактов',
-    description:
-      'Для перехода к верификации профиля и участию в торгах необходимо подтвердить телефон и почту',
-    actionLabel: 'Ввести коды',
-    hint: 'Остался всего один шаг до полного доступа',
-    hintIcon: '/assets/icons/shield-interrogation.svg',
+    title: 'Подтвердите контакты',
+    description: 'Для перехода к верификации профиля необходимо подтвердить телефон и почту.',
+    actionLabel: 'Подтвердить контакты',
+    hint: 'Остался всего один шаг до верификации профиля',
+    icon: '/assets/icons/envelope.svg',
+    iconClass: 'text-active bg-active-back border-active',
+    stepLabel: 'Допуск: Шаг 2 из 4',
+    stepLabelClass: 'opacity-50',
   },
 };
 
@@ -124,6 +132,7 @@ const CONFIRM_DIALOG_CONFIG: Readonly<Record<ConfirmDialog, ConfirmDialogConfig>
     LotAuctionRulesComponent,
     ConfirmDialogComponent,
     FormsModule,
+    LotBidProgressComponent,
   ],
   standalone: true,
   templateUrl: './lot-bid-panel.component.html',
@@ -166,9 +175,12 @@ export class LotBidPanelComponent {
       this.bidStatus() === 'leading' ||
       this.bidStatus() === 'outbid',
   );
-  protected readonly blockedConfig = computed<BlockedBidConfig | null>(() => {
+  protected readonly blockedState = computed<{
+    status: BlockedBidStatus;
+    config: BlockedBidConfig;
+  } | null>(() => {
     const status = this.bidStatus();
-    return this.isBlockedStatus(status) ? BLOCKED_BID_CONFIG[status] : null;
+    return this.isBlockedStatus(status) ? { status, config: BLOCKED_BID_CONFIG[status] } : null;
   });
 
   private isBlockedStatus(status: BidStatusType): status is BlockedBidStatus {

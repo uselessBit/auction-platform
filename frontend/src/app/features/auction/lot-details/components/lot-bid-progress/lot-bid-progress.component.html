@@ -1,0 +1,5 @@
+<div class="grid grid-cols-4 gap-1">
+  @for (segment of segments(); track $index) {
+    <div class="h-1 rounded-full transition-colors duration-300" [class]="segment"></div>
+  }
+</div>

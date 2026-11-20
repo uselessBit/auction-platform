@@ -8,11 +8,8 @@ import { LotGalleryComponent } from './components/lot-gallery/lot-gallery.compon
 import { LotPriceChartComponent } from './components/lot-price-chart/lot-price-chart.component';
 import { LotBidSummaryComponent } from './components/lot-bid-summary/lot-bid-summary.component';
 import { LotBidsListComponent } from './components/lot-bids-list/lot-bids-list.component';
-import {
-  BlockedBidStatus,
-  LotBidPanelComponent,
-} from './components/lot-bid-panel/lot-bid-panel.component';
-import { BID_HISTORY_STATUSES } from '../../../core/models/lot.model';
+import { LotBidPanelComponent } from './components/lot-bid-panel/lot-bid-panel.component';
+import { BID_HISTORY_STATUSES, BlockedBidStatus } from '../../../core/models/lot.model';
 import { AuthModalService } from '../../../core/services/auth-modal.service';
 
 @Component({
