@@ -5,6 +5,7 @@
   (animationend)="onAnimationEnd($event)"
   (close)="onClose()"
   (click)="onBackdropClick($event)"
+  (mousedown)="onBackdropMousedown($event)"
   (keydown.escape)="$event.preventDefault(); close()"
   (cancel)="$event.preventDefault(); close()"
   tabindex="-1"
@@ -47,12 +48,11 @@
           appearance="brand-rounded-flat"
           iconStart="/assets/icons/x.svg"
           (click)="close()"
+          (mousedown)="$event.preventDefault()"
         ></button>
       </div>
     </div>
   </form>
 
-  <tui-popups>
-
-  </tui-popups>
+  <tui-popups />
 </dialog>
