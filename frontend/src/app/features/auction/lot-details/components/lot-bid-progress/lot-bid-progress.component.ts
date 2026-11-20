@@ -27,8 +27,10 @@ export class LotBidProgressComponent {
 
     for (let i = 1; i <= this.TOTAL_STEPS; i++) {
       if (i === statusId && this.status() === 'kyc_pending') {
-        classes.push('bg-upcoming animate-pulse');
-      } else if (i <= statusId) {
+        classes.push('bg-upcoming animate-pulse shadow-upcoming-glow');
+      } else if (i === statusId) {
+        classes.push('bg-active shadow-brand-glow brightness-110');
+      } else if (i < statusId) {
         classes.push('bg-active');
       } else {
         classes.push('bg-stroke');

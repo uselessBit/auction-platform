@@ -13,6 +13,8 @@ module.exports = {
       boxShadow: {
         'btn-brand': '0 4px 16px -4px rgba(0, 188, 125, 0)',
         'btn-brand-hover': '0 4px 18px -4px rgba(0, 188, 125, 0.35)',
+        'brand-glow': '0 0 10px 4px rgba(0, 188, 125, 0.25)',
+        'upcoming-glow': '0 0 10px 4px rgba(254, 154, 0, 0.25)',
       },
       colors: {
         accent: {
