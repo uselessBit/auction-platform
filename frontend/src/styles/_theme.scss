@@ -32,6 +32,8 @@ body:has(dialog[open]) {
 
     --tui-text-negative: #ff2056;
     --tui-border-focus: #00bc7d;
+    --tui-text-secondary: rgba(243, 253, 248, 0.5);
+    --tui-text-tertiary: rgba(243, 253, 248, 0.5);
 
     --tui-typography-family-text: 'Inter', system-ui, sans-serif;
     --tui-typography-family-display: 'Inter', system-ui, sans-serif;

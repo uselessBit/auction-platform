@@ -19,9 +19,9 @@
 
       <div class="flex flex-1 flex-col gap-2 p-4">
         <div>
-          <h3 class="text-xs opacity-50">Лот № {{ currentLot.id }}</h3>
+          <h3 class="truncate text-xs opacity-50">Лот № {{ currentLot.id }}</h3>
           <h2
-            class="text-xl font-bold transition-colors duration-300 ease-out"
+            class="truncate text-xl font-bold transition-colors duration-300 ease-out"
             [class]="statusConfig()?.hoverTextClass"
           >
             {{ currentLot.brand }} {{ currentLot.model }}, {{ currentLot.year }}

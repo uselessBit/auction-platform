@@ -31,7 +31,7 @@ const BLOCKED_BID_CONFIG: Readonly<Record<BlockedBidStatus, BlockedBidConfig>> =
     description:
       'По законодательству РБ для участия в торгах нужно подтвердить личность паспортом.',
     actionLabel: 'Пройти верификацию (KYC)',
-    hint: 'После ваши фото автоматически удаляются с сервера',
+    hint: 'Ваши фото автоматически удаляются с сервера',
     icon: '/assets/icons/shield-check.svg',
     iconClass: 'text-active bg-active-back border-active',
     stepLabel: 'Допуск: Шаг 3 из 4',

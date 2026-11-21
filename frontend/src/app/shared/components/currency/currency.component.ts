@@ -13,13 +13,7 @@ import { LOT_STATUS_CONFIG } from '../../config/lot-status.config';
 })
 export class CurrencyComponent {
   readonly value = input.required<number>();
-  readonly color = input<LotStatus | 'stroke'>('active');
+  readonly color = input<LotStatus>('active');
 
-  protected readonly colorClass = computed(() => {
-    const color = this.color();
-    if (color === 'stroke') {
-      return 'text-stroke';
-    }
-    return LOT_STATUS_CONFIG[color].textClass;
-  });
+  protected readonly colorClass = computed(() => LOT_STATUS_CONFIG[this.color()].textClass);
 }
