@@ -1,11 +1,18 @@
 import { ChangeDetectionStrategy, Component, computed, effect, input, output } from '@angular/core';
 import { LotDetails } from '../../../../../core/models/lot.model';
-import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
 import { DecimalPipe } from '@angular/common';
-import { TuiButton, TuiTextfieldComponent, TuiTextfieldOptionsDirective } from '@taiga-ui/core';
+import {
+  TuiButton,
+  TuiIcon,
+  TuiTextfieldComponent,
+  TuiTextfieldOptionsDirective,
+} from '@taiga-ui/core';
 import { TuiInputNumberDirective } from '@taiga-ui/kit';
+
+type AmountFormState = 'idle' | 'min' | 'required' | 'valid';
 
 interface QuickBidConfig {
   readonly label: string;
@@ -24,12 +31,12 @@ const QUICK_BID_CONFIG: readonly QuickBidConfig[] = [
   imports: [
     CurrencyComponent,
     DecimalPipe,
-    FormsModule,
     TuiButton,
     TuiInputNumberDirective,
     TuiTextfieldComponent,
     TuiTextfieldOptionsDirective,
     ReactiveFormsModule,
+    TuiIcon,
   ],
   standalone: true,
   templateUrl: './lot-bid-form.component.html',
@@ -40,28 +47,57 @@ export class LotBidFormComponent {
   readonly lot = input.required<LotDetails>();
   readonly bidRequested = output<number>();
 
-  protected readonly quickBids = computed(() =>
-    QUICK_BID_CONFIG.map((bid) => ({
-      label: bid.label,
-      amount: bid.steps * this.lot().bidStepByn,
-    })),
-  );
+  protected readonly quickBids = computed(() => {
+    const { bidStepByn, currentBidByn } = this.lot();
+
+    return QUICK_BID_CONFIG.map((bid) => {
+      const amount = bid.steps * bidStepByn;
+      return {
+        label: bid.label,
+        amount,
+        total: currentBidByn + amount,
+      };
+    });
+  });
   protected readonly minBid = computed(() => this.lot().currentBidByn + this.lot().bidStepByn);
   protected readonly amountControl = new FormControl<number | null>(null, [Validators.required]);
 
-  private readonly amountStatus = toSignal(this.amountControl.statusChanges, {
-    initialValue: this.amountControl.status,
+  private readonly amountEvents = toSignal(this.amountControl.events);
+  protected readonly bidFeedback = computed<AmountFormState>(() => {
+    this.amountEvents();
+
+    if (this.amountControl.valid && this.amountControl.value !== null) {
+      return 'valid';
+    }
+    if (this.amountControl.invalid && this.amountControl.touched) {
+      return this.amountControl.hasError('required') ? 'required' : 'min';
+    }
+    return 'idle';
   });
-  protected readonly isSubmitDisabled = computed(() => this.amountStatus() !== 'VALID');
+  protected readonly bidDifference = computed(() => {
+    this.amountEvents();
+    const value = this.amountControl.value;
+
+    return value === null ? 0 : value - this.lot().currentBidByn;
+  });
 
   constructor() {
     effect(() => {
       this.amountControl.setValidators([Validators.required, Validators.min(this.minBid())]);
       this.amountControl.updateValueAndValidity();
     });
+
+    this.amountControl.valueChanges.pipe(takeUntilDestroyed()).subscribe({
+      next: (value) => {
+        if (value === null) {
+          this.amountControl.markAsUntouched();
+        }
+      },
+    });
   }
 
   protected onCustomBid(): void {
+    this.amountControl.markAllAsTouched();
     if (this.amountControl.invalid || this.amountControl.value === null) {
       return;
     }

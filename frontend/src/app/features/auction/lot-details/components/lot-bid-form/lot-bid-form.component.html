@@ -2,8 +2,8 @@
   <div class="flex flex-col gap-2">
     <div class="flex justify-between gap-2">
       <h2 class="text-base font-semibold">Быстрая ставка</h2>
-      <div class="chip chip--active inline-flex items-center gap-1.5 font-semibold">
-        <span class="size-2 rounded-full bg-active"></span>
+      <div class="chip chip--active inline-flex items-center gap-1 font-semibold">
+        <tui-icon icon="/assets/icons/active.svg" class="animate-pulse text-xs" />
         Допуск открыт
       </div>
     </div>
@@ -12,10 +12,22 @@
       @for (bid of quickBids(); track bid.label) {
         <button
           type="button"
-          class="flex flex-col justify-center rounded-lg border border-stroke bg-blocks-second transition-[background-color,opacity] duration-300 ease-in-out hover:bg-stroke active:opacity-80"
+          class="group flex flex-col justify-center rounded-lg border border-stroke bg-blocks-second transition-[background-color,opacity] duration-300 ease-in-out hover:bg-stroke active:opacity-80"
           (click)="onQuickBid(bid.amount)"
         >
-          <span class="text-xs opacity-70">{{ bid.label }}</span>
+          <span class="h-4 overflow-hidden">
+            <span
+              class="flex flex-col transition-transform duration-300 ease-in-out group-hover:-translate-y-4"
+            >
+              <span
+                class="flex h-4 items-center justify-center whitespace-nowrap text-xs opacity-70"
+                >{{ bid.label }}</span
+              >
+              <span class="flex h-4 items-center justify-center whitespace-nowrap text-xs"
+                >Итого: {{ bid.total | number: '1.0-0' }} BYN</span
+              >
+            </span>
+          </span>
           <span class="text-xl font-semibold">+ <app-currency [value]="bid.amount" /></span>
         </button>
       }
@@ -27,19 +39,40 @@
   <div class="flex flex-col gap-1">
     <h2 class="text-base font-semibold">Своя ставка</h2>
 
-    <form (ngSubmit)="onCustomBid()" class="flex gap-2">
+    <form (submit)="$event.preventDefault(); onCustomBid()" class="flex gap-2">
       <tui-textfield tuiTextfieldSize="s" class="flex-1" tuiTextfieldAppearance="brand-input">
         <input
           [placeholder]="'От ' + (minBid() | number: '1.0-0') + ' BYN'"
           tuiInputNumber
           [formControl]="amountControl"
+          postfix=" BYN"
           [max]="1000000000"
         />
       </tui-textfield>
 
-      <button type="submit" tuiButton appearance="brand" [disabled]="isSubmitDisabled()">
-        Поставить
-      </button>
+      <button type="submit" tuiButton appearance="brand">Поставить</button>
     </form>
+
+    <div class="font-byn whitespace-nowrap pl-1 text-xs">
+      @switch (bidFeedback()) {
+        @case ('idle') {
+          <div class="opacity-50">
+            Шаг {{ lot().bidStepByn | number: '1.0-0' }} BYN · Минимум
+            {{ minBid() | number: '1.0-0' }} BYN
+          </div>
+        }
+        @case ('required') {
+          <div class="text-cancelled">Введите сумму ставки</div>
+        }
+        @case ('min') {
+          <div class="text-cancelled">Минимальная ставка: {{ minBid() | number: '1.0-0' }} BYN</div>
+        }
+        @case ('valid') {
+          <div class="text-active">
+            +{{ bidDifference() | number: '1.0-0' }} BYN к текущей ставке
+          </div>
+        }
+      }
+    </div>
   </div>
 </div>
