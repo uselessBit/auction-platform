@@ -1,5 +1,6 @@
 :root {
   --header-height: 4rem;
+  color-scheme: dark;
 }
 
 body:has(dialog[open]) {
@@ -30,6 +31,7 @@ body:has(dialog[open]) {
     --tui-status-negative-pale: #4d0218e6; /* CancelledBack */
 
     --tui-text-negative: #ff2056;
+    --tui-border-focus: #00bc7d;
 
     --tui-typography-family-text: 'Inter', system-ui, sans-serif;
     --tui-typography-family-display: 'Inter', system-ui, sans-serif;
@@ -38,5 +40,10 @@ body:has(dialog[open]) {
   body {
     @apply bg-back text-text antialiased;
     font-family: 'Inter', sans-serif;
+  }
+
+  a:focus-visible,
+  button:focus-visible {
+    @apply outline outline-2 outline-offset-2 outline-accent;
   }
 }

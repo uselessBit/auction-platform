@@ -67,3 +67,16 @@ export const DATE_VISIBLE_STATUSES: ReadonlySet<LotStatus> = new Set([
   'finished',
 ]);
 export const BID_HISTORY_STATUSES: ReadonlySet<LotStatus> = new Set(['active', 'finished', 'sold']);
+
+export const BLOCKED_BID_STATUSES: ReadonlySet<BidStatusType> = new Set([
+  'auth_required',
+  'contacts_unverified',
+  'kyc_required',
+  'kyc_pending',
+  'deposit_required',
+]);
+
+export type BlockedBidStatus = Extract<
+  BidStatusType,
+  'auth_required' | 'contacts_unverified' | 'kyc_required' | 'kyc_pending' | 'deposit_required'
+>;
