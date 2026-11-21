@@ -12,7 +12,7 @@
       @for (bid of quickBids(); track bid.label) {
         <button
           type="button"
-          class="group flex flex-col justify-center rounded-lg border border-stroke bg-blocks-second transition-[background-color,opacity] duration-300 ease-in-out hover:bg-stroke active:opacity-80"
+          class="font-byn group flex flex-col justify-center rounded-lg border border-stroke bg-blocks-second transition-[background-color,opacity] duration-300 ease-in-out hover:bg-stroke active:opacity-80"
           (click)="onQuickBid(bid.amount)"
         >
           <span class="h-4 overflow-hidden">
@@ -47,6 +47,7 @@
           [formControl]="amountControl"
           postfix=" BYN"
           [max]="1000000000"
+          class="font-byn"
         />
       </tui-textfield>
 

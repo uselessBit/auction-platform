@@ -8,7 +8,7 @@ module.exports = {
         dialog: '460px',
       },
       fontFamily: {
-        brand: ["'NBRB'", "'Inter'", 'sans-serif'],
+        brand: ["'Inter'", 'sans-serif'],
       },
       boxShadow: {
         'btn-brand': '0 4px 16px -4px rgba(0, 188, 125, 0)',

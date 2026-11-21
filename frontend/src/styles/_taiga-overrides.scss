@@ -178,8 +178,8 @@
     }
   }
 
-  input::placeholder {
-    @apply font-brand;
+  input.font-byn {
+    font-family: 'NBRB', 'Inter', sans-serif;
   }
 }
 

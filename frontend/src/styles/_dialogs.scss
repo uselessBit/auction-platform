@@ -5,6 +5,7 @@ dialog,
 dialog:focus,
 dialog:focus-visible {
   outline: none;
+  color: inherit;
 }
 
 dialog[open] {

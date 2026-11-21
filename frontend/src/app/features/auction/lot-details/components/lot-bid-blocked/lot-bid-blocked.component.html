@@ -4,9 +4,9 @@
     [startPriceByn]="lot().startPriceByn"
     [color]="lot().status"
   >
-        <span rulesHeader class="text-xs" [class]="config().stepLabelClass">{{
-            config().stepLabel
-          }}</span>
+    <span rulesHeader class="text-xs" [class]="config().stepLabelClass">{{
+      config().stepLabel
+    }}</span>
 
     <app-lot-bid-progress [status]="status()" class="mb-2" />
   </app-lot-auction-rules>
@@ -70,9 +70,11 @@
         class="my-1 flex items-center justify-center gap-2 rounded-lg border py-2 text-xs font-semibold"
         [class]="config().iconClass"
       >
-            <span class="relative size-2 rounded-full bg-upcoming">
-              <span class="inset-0 absolute size-2 animate-ping rounded-full bg-upcoming shadow-upcoming-glow"></span>
-            </span>
+        <span class="relative size-2 rounded-full bg-upcoming">
+          <span
+            class="absolute inset-0 size-2 animate-ping rounded-full bg-upcoming shadow-upcoming-glow"
+          ></span>
+        </span>
         {{ config().actionLabel }}
       </div>
     } @else {
@@ -84,11 +86,13 @@
         iconEnd="/assets/icons/arrow-small-right.svg"
         class="brand-icon-shift"
       >
-        {{
-          status() === 'deposit_required'
-            ?  config().actionLabel + ' ' + (depositAmount() | number: '1.0-0') + ' BYN'
-            : config().actionLabel
-        }}
+        @if (status() === 'deposit_required') {
+          <span class="font-byn">
+            {{ config().actionLabel + ' ' + (depositAmount() | number: '1.0-0') + ' BYN' }}
+          </span>
+        } @else {
+          {{ config().actionLabel }}
+        }
       </button>
     }
 
