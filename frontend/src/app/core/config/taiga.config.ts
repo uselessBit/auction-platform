@@ -2,7 +2,7 @@ import { EnvironmentProviders, makeEnvironmentProviders, signal } from '@angular
 import { TUI_DEFAULT_LANGUAGE } from '@taiga-ui/i18n/tokens';
 import { TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n/languages/russian';
 import { TUI_PASSWORD_TEXTS, tuiPasswordOptionsProvider } from '@taiga-ui/kit';
-import { provideTaiga, tuiValidationErrorsProvider } from '@taiga-ui/core';
+import { provideTaiga, tuiCommonIconsProvider, tuiValidationErrorsProvider } from '@taiga-ui/core';
 
 export function provideAppTaiga(): EnvironmentProviders {
   return makeEnvironmentProviders([
@@ -21,11 +21,15 @@ export function provideAppTaiga(): EnvironmentProviders {
         hide: '/assets/icons/eye-crossed.svg',
       },
     }),
+    tuiCommonIconsProvider({
+      close: '/assets/icons/x.svg',
+    }),
     tuiValidationErrorsProvider({
       required: 'Обязательное поле',
       email: 'Некорректный формат email',
       minlength: ({ requiredLength }: { requiredLength: number }) =>
         `Минимум ${requiredLength} символов`,
+      min: ({ min }: { min: number }) => `Минимальное значение: ${min}`,
     }),
   ]);
 }
