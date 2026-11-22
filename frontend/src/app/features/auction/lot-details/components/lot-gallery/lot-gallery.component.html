@@ -25,25 +25,29 @@
       <div class="chip pointer-events-auto flex gap-1 font-semibold">
         <span>VIN:</span>
 
-        <span class="group flex items-center justify-center">
-          <button
-            type="button"
-            aria-label="Скопировать VIN"
-            (click)="copyVin()"
-            class="transition-opacity duration-300 group-hover:opacity-70"
-          >
-            <span>{{ lot().vin }}</span>
-          </button>
+        @if (isAuthenticated()) {
+          <span class="group flex items-center justify-center">
+            <button
+              type="button"
+              aria-label="Скопировать VIN"
+              (click)="copyVin()"
+              class="transition-opacity duration-300 group-hover:opacity-70"
+            >
+              <span>{{ lot().vin }}</span>
+            </button>
 
-          <span
-            class="pointer-events-none absolute right-0 h-full w-1/2 rounded-lg bg-gradient-to-l from-blocks-second/100 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-          >
-            <tui-icon
-              icon="/assets/icons/copy.svg"
-              class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-            />
+            <span
+              class="pointer-events-none absolute right-0 h-full w-1/2 rounded-lg bg-gradient-to-l from-blocks-second/100 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            >
+              <tui-icon
+                icon="/assets/icons/copy.svg"
+                class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-xs opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+              />
+            </span>
           </span>
-        </span>
+        } @else {
+          <span>{{ lot().vin | mask: 8 : 9 : 'end' }}</span>
+        }
       </div>
 
       <app-floating-badge text="VIN скопирован" [visible]="isVinCopied()" />
@@ -81,33 +85,37 @@
     ></app-favorite-button>
   </div>
 
-  <div class="pointer-events-none absolute inset-y-0 flex w-full items-center justify-between px-6">
-    <button
-      tuiButton
-      appearance="brand-rounded"
-      type="button"
-      iconStart="/assets/icons/arrow-left.svg"
-      aria-label="Предыдущее фото"
-      [disabled]="index() <= 0"
-      (click)="prev()"
-      class="pointer-events-auto"
-    ></button>
+  @if (lot().images.length > 1) {
+    <div
+      class="pointer-events-none absolute inset-y-0 flex w-full items-center justify-between px-6"
+    >
+      <button
+        tuiButton
+        appearance="brand-rounded"
+        type="button"
+        iconStart="/assets/icons/arrow-left.svg"
+        aria-label="Предыдущее фото"
+        [disabled]="index() <= 0"
+        (click)="prev()"
+        class="pointer-events-auto"
+      ></button>
 
-    <button
-      tuiButton
-      appearance="brand-rounded"
-      type="button"
-      iconStart="/assets/icons/arrow-right.svg"
-      aria-label="Следующее фото"
-      [disabled]="index() >= lot().images.length - 1"
-      (click)="next()"
-      class="pointer-events-auto"
-    ></button>
-  </div>
+      <button
+        tuiButton
+        appearance="brand-rounded"
+        type="button"
+        iconStart="/assets/icons/arrow-right.svg"
+        aria-label="Следующее фото"
+        [disabled]="index() >= lot().images.length - 1"
+        (click)="next()"
+        class="pointer-events-auto"
+      ></button>
+    </div>
 
-  <div class="chip absolute left-1/2 top-6 w-14 -translate-x-1/2 text-center font-semibold">
-    {{ index() + 1 }}/{{ lot().images.length }}
-  </div>
+    <div class="chip absolute left-1/2 top-6 w-14 -translate-x-1/2 text-center font-semibold">
+      {{ index() + 1 }}/{{ lot().images.length }}
+    </div>
+  }
 
   <div
     class="pointer-events-none absolute bottom-0 left-0 flex w-full flex-col gap-2 bg-gradient-to-t from-back via-back/70 to-transparent p-6 pt-20"

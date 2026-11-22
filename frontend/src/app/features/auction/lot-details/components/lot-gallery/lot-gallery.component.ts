@@ -15,6 +15,8 @@ import { tuiCopyOptionsProvider } from '@taiga-ui/kit';
 import { Clipboard } from '@angular/cdk/clipboard';
 import { FloatingBadgeComponent } from '../../../../../shared/components/floating-badge/floating-badge.component';
 import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.component';
+import { AuthService } from '../../../../../core/services/auth.service';
+import { MaskPipe } from '../../../../../shared/pipes/mask-pipe';
 
 @Component({
   selector: 'app-lot-gallery',
@@ -27,6 +29,7 @@ import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.co
     FloatingBadgeComponent,
     LotImageViewerComponent,
     TuiIcon,
+    MaskPipe,
   ],
   standalone: true,
   providers: [tuiCopyOptionsProvider({ icon: '/assets/icons/copy.svg' })],
@@ -37,8 +40,11 @@ import { LotImageViewerComponent } from '../lot-image-viewer/lot-image-viewer.co
 export class LotGalleryComponent {
   private readonly document = inject(DOCUMENT);
   private readonly clipboard = inject(Clipboard);
+  private readonly authService = inject(AuthService);
 
   readonly lot = input.required<LotDetails>();
+
+  protected readonly isAuthenticated = this.authService.isAuthenticated;
 
   protected readonly index = signal<number>(0);
   protected readonly isLinkCopied = signal<boolean>(false);

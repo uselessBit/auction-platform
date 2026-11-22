@@ -7,8 +7,10 @@ import { Pipe, PipeTransform } from '@angular/core';
 export class MaskPipe implements PipeTransform {
   transform(
     value: string | number | null | undefined,
-    visibleCount = 2,
+    visibleCount: number = 2,
     fixedStars?: number,
+    maskPosition: 'start' | 'end' = 'start',
+    maskChar = '*',
   ): string {
     if (value === null || value === undefined) {
       return '';
@@ -20,10 +22,11 @@ export class MaskPipe implements PipeTransform {
       return str;
     }
 
-    const visiblePart = str.slice(-visibleCount);
+    const visiblePart =
+      maskPosition === 'start' ? str.slice(-visibleCount) : str.slice(0, visibleCount);
     const starsCount = fixedStars !== undefined ? fixedStars : str.length - visibleCount;
-    const maskedPart = '*'.repeat(starsCount);
+    const maskedPart = maskChar.repeat(starsCount);
 
-    return maskedPart + visiblePart;
+    return maskPosition === 'start' ? maskedPart + visiblePart : visiblePart + maskedPart;
   }
 }

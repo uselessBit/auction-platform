@@ -8,13 +8,12 @@ import {
   TuiLineChart,
   TuiLineHandler,
 } from '@taiga-ui/addon-charts';
-import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
 import { LotDetails, Bid } from '../../../../../core/models/lot.model';
 import { LOT_STATUS_CONFIG } from '../../../../../shared/config/lot-status.config';
 
 @Component({
   selector: 'app-lot-price-chart',
-  imports: [TuiAxes, TuiLineChart, CurrencyComponent, TuiChartHint],
+  imports: [TuiAxes, TuiLineChart, TuiChartHint],
   standalone: true,
   templateUrl: './lot-price-chart.component.html',
   styleUrl: './lot-price-chart.component.scss',

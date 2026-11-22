@@ -56,7 +56,7 @@
         {{ lot().status === 'active' ? 'Текущий лидер торгов' : 'Победитель торгов' }}
       </h2>
 
-      <div class="flex items-center gap-1">
+      <div class="flex items-center gap-1.5">
         <div
           class="flex size-8 items-center justify-center rounded-lg border border-stroke bg-blocks-second"
           [class]="statusConfig().textClass"
@@ -71,11 +71,11 @@
               @if (isLeaderCurrentUser()) {
                 <span [class]="statusConfig().textClass">(вы)</span>
               } @else {
-                <span class="text-stroke">(не вы)</span>
+                <span class="text-text/50">(не вы)</span>
               }
             }
           </span>
-          <span class="text-stroke">{{
+          <span class="text-text/50">{{
             lot().bids[0].createdAt | date: 'dd.MM.yyyy HH:mm:ss'
           }}</span>
         </div>

@@ -1,0 +1,101 @@
+@layer utilities {
+  .animate-slide-up {
+    animation: slide-up-in 0.35s var(--ease-out-expo);
+  }
+
+  .animate-slide-down {
+    animation: slide-down-in 0.35s var(--ease-out-expo);
+  }
+
+  .animate-slide-left {
+    animation: slide-left-in 0.35s var(--ease-out-expo);
+  }
+
+  .animate-slide-right {
+    animation: slide-right-in 0.35s var(--ease-out-expo);
+  }
+}
+
+@keyframes stage-in {
+  from {
+    opacity: 0;
+    scale: 0.92;
+    filter: blur(8px);
+  }
+}
+
+@keyframes stage-out {
+  to {
+    opacity: 0;
+    scale: 0.94;
+    filter: blur(6px);
+  }
+}
+
+@keyframes backdrop-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes backdrop-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes slide-down-in {
+  from {
+    opacity: 0;
+    translate: 0 -16px;
+  }
+}
+
+@keyframes slide-down-out {
+  to {
+    opacity: 0;
+    translate: 0 20px;
+  }
+}
+
+@keyframes slide-up-in {
+  from {
+    opacity: 0;
+    translate: 0 20px;
+  }
+}
+
+@keyframes slide-up-out {
+  to {
+    opacity: 0;
+    translate: 0 -16px;
+  }
+}
+
+@keyframes slide-right-in {
+  from {
+    opacity: 0;
+    translate: -16px 0;
+  }
+}
+
+@keyframes slide-right-out {
+  to {
+    opacity: 0;
+    translate: 20px 0;
+  }
+}
+
+@keyframes slide-left-in {
+  from {
+    opacity: 0;
+    translate: 20px 0;
+  }
+}
+
+@keyframes slide-left-out {
+  to {
+    opacity: 0;
+    translate: -16px 0;
+  }
+}

@@ -71,12 +71,14 @@ export class LotImageViewerComponent {
   protected prev(): void {
     if (this.index() > 0 && !this.isZoom()) {
       this.index.set(this.index() - 1);
+      this.dialog().nativeElement.focus();
     }
   }
 
   protected next(): void {
     if (this.index() < this.images().length - 1 && !this.isZoom()) {
       this.index.set(this.index() + 1);
+      this.dialog().nativeElement.focus();
     }
   }
 
@@ -94,6 +96,7 @@ export class LotImageViewerComponent {
   protected zoomIn(): void {
     if (this.currentScale() < this.maxScale) {
       this.currentScale.set(this.currentScale() + this.scaleStep);
+      this.dialog().nativeElement.focus();
     }
   }
 

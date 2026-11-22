@@ -1,6 +1,3 @@
-$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-$ease-in-quad: cubic-bezier(0.4, 0, 1, 1);
-
 dialog,
 dialog:focus,
 dialog:focus-visible {
@@ -9,69 +6,57 @@ dialog:focus-visible {
 }
 
 dialog[open] {
-  animation: backdrop-fade-in 0.35s $ease-out-expo;
+  animation: backdrop-fade-in 0.35s var(--ease-out-expo);
 
   &::backdrop {
-    animation: backdrop-fade-in 0.35s $ease-out-expo;
+    animation: backdrop-fade-in 0.35s var(--ease-out-expo);
   }
 
   .dialog-stage {
-    animation: stage-in 0.35s $ease-out-expo;
+    animation: stage-in 0.35s var(--ease-out-expo);
+  }
+
+  .viewer-top {
+    animation: slide-down-in 0.35s var(--ease-out-expo);
+  }
+
+  .viewer-bottom {
+    animation: slide-up-in 0.35s var(--ease-out-expo);
+  }
+
+  .viewer-left {
+    animation: slide-left-in 0.35s var(--ease-out-expo);
+  }
+
+  .viewer-right {
+    animation: slide-right-in 0.35s var(--ease-out-expo);
   }
 
   &.is-closing {
-    animation: backdrop-fade-out 0.22s $ease-in-quad forwards;
+    animation: backdrop-fade-out 0.22s var(--ease-in-quad) forwards;
 
     &::backdrop {
-      animation: backdrop-fade-out 0.22s $ease-in-quad forwards;
+      animation: backdrop-fade-out 0.22s var(--ease-in-quad) forwards;
     }
 
     .dialog-stage {
-      animation: stage-out 0.22s $ease-in-quad forwards;
+      animation: stage-out 0.22s var(--ease-in-quad) forwards;
     }
-  }
-}
 
-@keyframes stage-in {
-  from {
-    opacity: 0;
-    scale: 0.92;
-    filter: blur(8px);
-  }
-  to {
-    opacity: 1;
-    scale: 1;
-    filter: blur(0);
-  }
-}
+    .viewer-top {
+      animation: slide-up-out 0.22s var(--ease-in-quad) forwards;
+    }
 
-@keyframes stage-out {
-  from {
-    opacity: 1;
-    scale: 1;
-    filter: blur(0);
-  }
-  to {
-    opacity: 0;
-    scale: 0.94;
-    filter: blur(6px);
-  }
-}
+    .viewer-bottom {
+      animation: slide-down-out 0.22s var(--ease-in-quad) forwards;
+    }
 
-@keyframes backdrop-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
+    .viewer-left {
+      animation: slide-left-out 0.22s var(--ease-in-quad) forwards;
+    }
 
-@keyframes backdrop-fade-out {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
+    .viewer-right {
+      animation: slide-right-out 0.22s var(--ease-in-quad) forwards;
+    }
   }
 }
