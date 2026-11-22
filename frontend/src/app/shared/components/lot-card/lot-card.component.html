@@ -7,8 +7,13 @@
         <img
           [src]="currentLot.images[0]"
           [alt]="currentLot.brand"
+          (load)="isImageLoaded.set(true)"
+          [class.opacity-0]="!isImageLoaded()"
           class="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110"
         />
+        @if (!isImageLoaded()) {
+          <div class="absolute inset-0 animate-pulse bg-blocks-second"></div>
+        }
 
         <app-lot-status-badge class="absolute bottom-4 left-4" [status]="currentLot.status" />
         <app-favorite-button

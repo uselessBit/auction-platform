@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+} from '@angular/core';
 import {
   ACTIVE_CATALOG_STATUSES,
   DATE_VISIBLE_STATUSES,
@@ -43,6 +51,8 @@ export class LotCardComponent {
     const currentLot = this.lot();
     return currentLot ? LOT_STATUS_CONFIG[currentLot.status] : null;
   });
+
+  protected readonly isImageLoaded = signal(false);
 
   constructor() {
     effect(() => {
