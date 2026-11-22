@@ -6,7 +6,7 @@
 [tuiAppearance][data-appearance='brand'],
 [tuiAppearance][data-appearance='brand-secondary'],
 [tuiAppearance][data-appearance='brand-transparent'] {
-  @apply h-8 gap-2 rounded-lg px-6 py-2 font-brand text-xs transition-[transform,background-color,border-color,box-shadow,color,opacity] duration-200 ease-out;
+  @apply h-auto px-6 gap-2 rounded-lg font-brand text-xs transition-[transform,background-color,border-color,box-shadow,color,opacity] duration-200 ease-out;
 
   &::before,
   &::after {
@@ -158,7 +158,7 @@
 
 // Поле ввода: фон, фокус-обводка и красная подсветка при aria-invalid
 [tuiTextfieldAppearance][data-appearance='brand-input'] {
-  @apply rounded-lg border border-stroke bg-blocks-second text-xs outline outline-transparent transition-[outline-color,background-color] duration-200 ease-out;
+  @apply rounded-lg border border-stroke bg-back/30 text-xs outline outline-transparent transition-[outline-color,background-color] duration-200 ease-out;
 
   &:hover:not([data-state='disabled']):not(:focus-within) {
     @apply bg-stroke;
