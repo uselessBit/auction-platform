@@ -36,9 +36,14 @@ body:has(dialog[open]) {
     --tui-border-focus: #00bc7d;
     --tui-text-secondary: rgba(243, 253, 248, 0.5);
     --tui-text-tertiary: rgba(243, 253, 248, 0.5);
+    --tui-service-selection-background: var(--tui-background-accent-1);
 
     --tui-typography-family-text: 'Inter', system-ui, sans-serif;
     --tui-typography-family-display: 'Inter', system-ui, sans-serif;
+  }
+
+  ::selection {
+    @apply bg-accent text-back;
   }
 
   body {
