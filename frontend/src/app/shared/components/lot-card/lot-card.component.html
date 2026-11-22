@@ -1,5 +1,5 @@
 @if (lot(); as currentLot) {
-  <a [routerLink]="['/lots', currentLot.id]" class="animate-fade-in block h-full">
+  <a [routerLink]="['/lots', currentLot.id]" class="animate-slide-up block h-full">
     <article
       class="group flex h-full flex-col overflow-hidden rounded-[2rem] bg-blocks outline outline-1 outline-stroke transition-all duration-300 ease-out hover:-translate-y-1"
     >
@@ -7,9 +7,10 @@
         <img
           [src]="currentLot.images[0]"
           [alt]="currentLot.brand"
+          (error)="isImageLoaded.set(true)"
           (load)="isImageLoaded.set(true)"
           [class.opacity-0]="!isImageLoaded()"
-          class="h-full w-full object-cover object-center transition-transform duration-500 ease-out group-hover:scale-110"
+          class="h-full w-full object-cover object-center transition-[transform,opacity] duration-500 ease-out group-hover:scale-110"
         />
         @if (!isImageLoaded()) {
           <div class="absolute inset-0 animate-pulse bg-blocks-second"></div>

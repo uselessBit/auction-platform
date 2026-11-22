@@ -52,7 +52,7 @@ export class LotCardComponent {
     return currentLot ? LOT_STATUS_CONFIG[currentLot.status] : null;
   });
 
-  protected readonly isImageLoaded = signal(false);
+  protected readonly isImageLoaded = signal<boolean>(false);
 
   constructor() {
     effect(() => {
