@@ -136,7 +136,7 @@
                 iconStart="/assets/icons/arrow-left.svg"
                 aria-label="Предыдущее фото"
                 [disabled]="index() === 0"
-                class="pointer-events-auto"
+                class="viewer-left pointer-events-auto"
                 (click)="prev()"
               ></button>
 
@@ -147,7 +147,7 @@
                 iconStart="/assets/icons/arrow-right.svg"
                 aria-label="Следующее фото"
                 [disabled]="index() === images().length - 1"
-                class="pointer-events-auto"
+                class="viewer-right pointer-events-auto"
                 (click)="next()"
               ></button>
             </div>
