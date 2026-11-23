@@ -11,60 +11,26 @@
   tabindex="-1"
   autofocus
 >
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
+  @if (isOpen()) {
     <div
       class="dialog-stage relative flex flex-col gap-4 rounded-[2rem] border border-stroke bg-blocks p-6"
     >
-      <h2 class="px-8 text-center text-base font-semibold">Вход в аккаунт</h2>
-
-      <div class="flex flex-col">
-        <tui-textfield
-          #email
-          tuiTextfieldSize="s"
-          class="w-64"
-          tuiTextfieldAppearance="brand-input"
-        >
-          <input
-            [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
-            tuiInput
-            type="email"
-            formControlName="email"
-            aria-label="Email"
+      <h2 class="px-8 text-center text-base font-semibold">{{ title() }}</h2>
+      @switch (mode()) {
+        @case ('login') {
+          <app-login-form
+            [isLoading]="isLoading()"
+            (loginSubmitted)="onLogin($event)"
+            (switchToRegister)="switchMode('register')"
           />
-        </tui-textfield>
-
-        <tui-error formControlName="email" />
-      </div>
-
-      <div>
-        <tui-textfield tuiTextfieldSize="s" class="w-64" tuiTextfieldAppearance="brand-input">
-          <input
-            placeholder="Пароль"
-            tuiInput
-            type="password"
-            formControlName="password"
-            aria-label="Пароль"
-          />
-          <tui-icon tuiPassword />
-        </tui-textfield>
-
-        <tui-error formControlName="password" />
-      </div>
-
-      <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">
-        Войти
-      </button>
-
-      <button
-        type="button"
-        tuiButton
-        appearance="brand-transparent"
-        class="group flex-1"
-        iconEnd="/assets/icons/arrow-small-right.svg"
-      >
-        Нет аккаунта?
-        <span class="duration-200 ease-out transition-colors group-hover:text-accent font-semibold">Зарегистрироваться</span>
-      </button>
+        }
+        @case ('register') {
+          <app-register-form />
+        }
+        @case ('verify') {
+          <app-verify-codes-form />
+        }
+      }
 
       <div class="absolute right-4 top-4">
         <button
@@ -77,7 +43,6 @@
         ></button>
       </div>
     </div>
-  </form>
-
+  }
   <tui-popups />
 </dialog>

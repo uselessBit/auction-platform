@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   ElementRef,
@@ -9,32 +10,29 @@ import {
   viewChild,
 } from '@angular/core';
 import { AuthModalService } from '../../../core/services/auth-modal.service';
-import {
-  TuiButton,
-  TuiError,
-  TuiIcon,
-  TuiInput,
-  TuiNotificationService,
-  TuiPopups,
-  TuiPopupService,
-} from '@taiga-ui/core';
+import { TuiButton, TuiNotificationService, TuiPopups, TuiPopupService } from '@taiga-ui/core';
 import { AuthService } from '../../../core/services/auth.service';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
-import { TuiButtonLoading, TuiPassword } from '@taiga-ui/kit';
+import { LoginFormComponent } from './components/login-form/login-form.component';
+import { RegisterFormComponent } from './components/register-form/register-form.component';
+import { VerifyCodesFormComponent } from './components/verify-codes-form/verify-codes-form.component';
+import { AuthModalMode, LoginPayload } from '../../../core/models/auth.model';
+
+const TITLE_CONFIG: Readonly<Record<AuthModalMode, string>> = {
+  login: 'Вход в аккаунт',
+  register: 'Создание аккаунта',
+  verify: 'Подтверждение',
+};
 
 @Component({
   selector: 'app-auth-modal',
   imports: [
-    TuiButton,
-    ReactiveFormsModule,
-    TuiInput,
-    TuiIcon,
-    TuiPassword,
-    TuiButtonLoading,
-    TuiError,
     TuiPopups,
+    LoginFormComponent,
+    RegisterFormComponent,
+    VerifyCodesFormComponent,
+    TuiButton,
   ],
   standalone: true,
   providers: [
@@ -52,20 +50,23 @@ import { TuiButtonLoading, TuiPassword } from '@taiga-ui/kit';
 export class AuthModalComponent {
   private readonly authService = inject(AuthService);
   private readonly authModal = inject(AuthModalService);
-  private readonly fb = inject(NonNullableFormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly notifications = inject(TuiNotificationService);
   private readonly globalNotifications = inject(TuiNotificationService, { skipSelf: true });
+
+  protected readonly mode = this.authModal.mode;
 
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dlg');
 
   protected readonly isClosing = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);
+  protected readonly isOpen = signal<boolean>(false);
 
-  protected readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-  });
+  protected switchMode(mode: AuthModalMode): void {
+    this.authModal.setMode(mode);
+  }
+
+  protected readonly title = computed(() => TITLE_CONFIG[this.mode()]);
 
   constructor() {
     effect(() => {
@@ -80,6 +81,7 @@ export class AuthModalComponent {
 
   protected open(): void {
     this.dialog().nativeElement.showModal();
+    this.isOpen.set(true);
   }
 
   protected close(): void {
@@ -92,7 +94,7 @@ export class AuthModalComponent {
   protected onClose(): void {
     this.isClosing.set(false);
     this.authModal.close();
-    this.form.reset();
+    this.isOpen.set(false);
   }
 
   protected onAnimationEnd(event: AnimationEvent): void {
@@ -113,21 +115,15 @@ export class AuthModalComponent {
     }
   }
 
-  protected onSubmit(): void {
+  protected onLogin(payload: LoginPayload): void {
     if (this.isLoading()) {
-      return;
-    }
-
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
       return;
     }
 
     this.isLoading.set(true);
 
-    const { email, password } = this.form.getRawValue();
     this.authService
-      .login(email, password)
+      .login(payload)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isLoading.set(false)),
