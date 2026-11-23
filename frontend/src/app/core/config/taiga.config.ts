@@ -45,6 +45,7 @@ export function provideAppTaiga(): EnvironmentProviders {
     }),
     tuiInputPhoneOptionsProvider({ mask: '+375 (##) ###-##-##' }),
     tuiCheckboxOptionsProvider({
+      appearance: () => 'brand-checkbox',
       icons: { checked: () => '/assets/icons/check.svg', indeterminate: () => '' },
     }),
   ]);

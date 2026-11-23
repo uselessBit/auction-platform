@@ -1,1 +1,91 @@
-<p>register-form works!</p>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col">
+      <tui-textfield tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+        <input
+          placeholder="Телефон"
+          mask="+375 (##) ###-##-##"
+          tuiInputPhone
+          autocomplete="tel"
+          type="tel"
+          formControlName="phone"
+          aria-label="Телефон"
+        />
+      </tui-textfield>
+
+      <tui-error formControlName="phone" />
+    </div>
+
+    <div class="flex flex-col">
+      <tui-textfield #email tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+        <input
+          [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
+          tuiInput
+          type="email"
+          formControlName="email"
+          aria-label="Email"
+        />
+      </tui-textfield>
+
+      <tui-error formControlName="email" />
+    </div>
+
+    <div>
+      <tui-textfield tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+        <input
+          placeholder="Пароль"
+          tuiInput
+          type="password"
+          formControlName="password"
+          aria-label="Пароль"
+        />
+        <tui-icon tuiPassword />
+      </tui-textfield>
+
+      <tui-error formControlName="password" />
+    </div>
+
+    <div class="flex gap-1">
+      @for (rule of passwordRules(); track rule.label) {
+        <div
+          class="chip flex flex-1 items-center justify-center gap-1 transition-all duration-300 ease-out"
+          [class]="rule.valid ? 'chip--active' : 'text-text/50'"
+        >
+          <tui-icon
+            [icon]="rule.valid ? '/assets/icons/check.svg' : '/assets/icons/x.svg'"
+            class="text-xs"
+          />
+          {{ rule.label }}
+        </div>
+      }
+    </div>
+  </div>
+
+  <label class="flex cursor-pointer items-start gap-2 text-xs leading-tight">
+    <input tuiCheckbox size="s" type="checkbox" formControlName="acceptTerms" class="peer mt-0.5" />
+    <span
+      class="flex flex-col text-text/50 transition-colors duration-200 ease-out peer-checked:text-text"
+    >
+      <span>Я принимаю условия</span>
+      <span class="text-accent hover:underline">Пользовательского соглашения</span>
+    </span>
+  </label>
+
+  <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">
+    Продолжить
+  </button>
+
+  <button
+    type="button"
+    tuiButton
+    appearance="brand-transparent"
+    class="group flex-1"
+    iconEnd="/assets/icons/arrow-small-right.svg"
+    (click)="switchToLogin.emit()"
+  >
+    Есть аккаунт?
+    <span class="font-semibold transition-colors duration-200 ease-out group-hover:text-accent"
+      >Войти</span
+    >
+  </button>
+</form>

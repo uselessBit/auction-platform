@@ -25,7 +25,11 @@
           />
         }
         @case ('register') {
-          <app-register-form />
+          <app-register-form
+            [isLoading]="isLoading()"
+            (registerSubmitted)="onRegister($event)"
+            (switchToLogin)="switchMode('login')"
+          />
         }
         @case ('verify') {
           <app-verify-codes-form />

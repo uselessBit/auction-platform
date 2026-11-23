@@ -75,7 +75,7 @@
 
 // Прозрачная текстовая кнопка-ссылка со сдвигом иконок при наведении
 [tuiAppearance][data-appearance='brand-transparent'] {
-  @apply p-0 font-normal opacity-50;
+  @apply py-0 font-normal opacity-50 px-2;
 
   &:hover:not(:disabled) {
     @apply opacity-80;
@@ -186,10 +186,10 @@
 // Текст ошибки под полями формы (размер шрифта и компактный отступ сверху)
 tui-error {
   @apply pl-2;
-  --tui-typography-body-s: 400 0.75rem/1rem var(--tui-typography-family-text);
+  --tui-typography-body-s: 400 0.75rem/1.2rem var(--tui-typography-family-text);
 
   .t-content::before {
-    line-height: 1.25rem !important;
+    line-height: 1.2rem !important;
   }
 }
 
@@ -219,5 +219,29 @@ tui-notification-alert [tuiNotification] {
 
   &[data-size='m']::before {
     font-size: 1rem;
+  }
+}
+
+[tuiCheckbox][data-appearance='brand-checkbox'] {
+  @apply bg-back/30 border border-stroke transition-[background-color,border-color,box-shadow] duration-200 ease-out;
+
+  &:hover:not(:disabled) {
+    @apply bg-stroke;
+  }
+
+  &:checked {
+    @apply bg-accent border-accent shadow-btn-brand;
+
+    &:hover:not(:disabled) {
+      @apply border-accent-hover bg-accent-hover shadow-btn-brand-hover;
+    }
+
+    &::before {
+      font-size: 0.75rem;
+    }
+  }
+
+  &.ng-invalid.ng-touched {
+    @apply border-cancelled;
   }
 }

@@ -1,31 +1,33 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4 ">
-  <div class="flex flex-col">
-    <tui-textfield #email tuiTextfieldSize="s" class="w-64" tuiTextfieldAppearance="brand-input">
-      <input
-        [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
-        tuiInput
-        type="email"
-        formControlName="email"
-        aria-label="Email"
-      />
-    </tui-textfield>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col">
+      <tui-textfield #email tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+        <input
+          [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
+          tuiInput
+          type="email"
+          formControlName="email"
+          aria-label="Email"
+        />
+      </tui-textfield>
 
-    <tui-error formControlName="email" />
-  </div>
+      <tui-error formControlName="email" />
+    </div>
 
-  <div>
-    <tui-textfield tuiTextfieldSize="s" class="w-64" tuiTextfieldAppearance="brand-input">
-      <input
-        placeholder="Пароль"
-        tuiInput
-        type="password"
-        formControlName="password"
-        aria-label="Пароль"
-      />
-      <tui-icon tuiPassword />
-    </tui-textfield>
+    <div>
+      <tui-textfield tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+        <input
+          placeholder="Пароль"
+          tuiInput
+          type="password"
+          formControlName="password"
+          aria-label="Пароль"
+        />
+        <tui-icon tuiPassword />
+      </tui-textfield>
 
-    <tui-error formControlName="password" />
+      <tui-error formControlName="password" />
+    </div>
   </div>
 
   <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">

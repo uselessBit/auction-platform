@@ -17,7 +17,7 @@ import { finalize } from 'rxjs';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { RegisterFormComponent } from './components/register-form/register-form.component';
 import { VerifyCodesFormComponent } from './components/verify-codes-form/verify-codes-form.component';
-import { AuthModalMode, LoginPayload } from '../../../core/models/auth.model';
+import { AuthModalMode, LoginPayload, RegisterPayload } from '../../../core/models/auth.model';
 
 const TITLE_CONFIG: Readonly<Record<AuthModalMode, string>> = {
   login: 'Вход в аккаунт',
@@ -145,6 +145,45 @@ export class AuthModalComponent {
           this.notifications
             .open(error.message, {
               label: 'Ошибка входа',
+              appearance: 'negative',
+              icon: '/assets/icons/exclamation.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
+      });
+  }
+
+  protected onRegister(payload: RegisterPayload): void {
+    if (this.isLoading()) {
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    this.authService
+      .register(payload)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.switchMode('verify');
+          this.notifications
+            .open('Подтвердите контакты для участия в торгах', {
+              label: 'Аккаунт успешно создан',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
+        },
+        error: (error: Error) =>
+          this.notifications
+            .open(error.message, {
+              label: 'Ошибка регистрации',
               appearance: 'negative',
               icon: '/assets/icons/exclamation.svg',
               closable: false,
