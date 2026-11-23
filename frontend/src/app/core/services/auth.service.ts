@@ -2,9 +2,9 @@ import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { API_CONFIG } from '../api/api-config.token';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthTokens, User } from '../models/auth.model';
+import { AuthTokens, LoginPayload, RegisterPayload, User } from '../models/auth.model';
 import { delay, map, Observable, of, switchMap, tap, throwError, timer } from 'rxjs';
-import { MOCK_PASSWORD, MOCK_TOKENS, MOCK_USERS } from '../mock/users.mock';
+import { MOCK_PASSWORD, MOCK_TOKENS, MOCK_USERS, MOCK_VERIFY_CODE } from '../mock/users.mock';
 import { FinanceService } from './finance.service';
 
 @Injectable({
@@ -20,6 +20,8 @@ export class AuthService {
   private readonly _currentUser = signal<User | null>(null);
   readonly currentUser = this._currentUser.asReadonly();
   readonly isAuthenticated = computed(() => !!this.currentUser());
+
+  private readonly users: User[] = [...MOCK_USERS];
 
   getAccessToken(): string | null {
     if (!this.isBrowser) {
@@ -51,11 +53,11 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
   }
 
-  login(email: string, password: string): Observable<User> {
-    const normalizedEmail = email.trim().toLowerCase();
-    const user = MOCK_USERS.find((user) => user.email === normalizedEmail);
+  login(payload: LoginPayload): Observable<User> {
+    const normalizedEmail = payload.email.trim().toLowerCase();
+    const user = this.users.find((user) => user.email === normalizedEmail);
 
-    if (!user || password !== MOCK_PASSWORD) {
+    if (!user || payload.password !== MOCK_PASSWORD) {
       return timer(400).pipe(
         switchMap(() => throwError(() => new Error('Неверный email или пароль'))),
       );
@@ -82,6 +84,76 @@ export class AuthService {
         tap((tokens) => this.setTokens(tokens)),
       );
     }
+  }
+
+  register(payload: RegisterPayload): Observable<User> {
+    const normalizedEmail = payload.email.trim().toLowerCase();
+    const normalizedPhone = payload.phone.replace(/[^\d+]/g, '');
+
+    if (this.users.some((user) => user.email === normalizedEmail)) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Аккаунт с таким email уже существует'))),
+      );
+    }
+    if (this.users.some((user) => user.phone === normalizedPhone)) {
+      return timer(400).pipe(
+        switchMap(() =>
+          throwError(() => new Error('Аккаунт с таким номером телефона уже существует')),
+        ),
+      );
+    }
+
+    const user: User = {
+      id: crypto.randomUUID(),
+      email: normalizedEmail,
+      phone: normalizedPhone,
+      role: 'user',
+      kycStatus: 'none',
+      isPhoneVerified: false,
+      isEmailVerified: false,
+      isBlocked: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    return of(user).pipe(
+      delay(600),
+      tap(() => {
+        this.users.push(user);
+        this.setTokens(MOCK_TOKENS);
+        this._currentUser.set(user);
+      }),
+    );
+  }
+
+  verifyContacts(smsCode: string, emailCode: string): Observable<User> {
+    const currentUser = this._currentUser();
+    if (!currentUser) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Пользователь не авторизован'))),
+      );
+    }
+
+    if (smsCode !== MOCK_VERIFY_CODE || emailCode !== MOCK_VERIFY_CODE) {
+      return timer(400).pipe(switchMap(() => throwError(() => new Error('Коды не верны'))));
+    }
+
+    const updatedUser: User = {
+      ...currentUser,
+      isPhoneVerified: true,
+      isEmailVerified: true,
+    };
+
+    return of(updatedUser).pipe(
+      delay(400),
+      tap(() => {
+        this._currentUser.set(updatedUser);
+
+        const index = this.users.findIndex((u) => u.id === updatedUser.id);
+        if (index !== -1) {
+          this.users[index] = updatedUser;
+        }
+      }),
+    );
   }
 
   logout(): void {

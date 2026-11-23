@@ -1,5 +1,6 @@
 export type KycStatus = 'none' | 'pending' | 'approved' | 'rejected';
 export type UserRole = 'user' | 'admin' | 'b2b';
+export type AuthModalMode = 'login' | 'register' | 'verify';
 
 export interface User {
   readonly id: string;
@@ -21,4 +22,15 @@ export interface AuthTokens {
 export interface AuthResponse {
   readonly user: User;
   readonly tokens: AuthTokens;
+}
+
+export interface LoginPayload {
+  readonly email: string;
+  readonly password: string;
+}
+
+export interface RegisterPayload {
+  readonly email: string;
+  readonly phone: string;
+  readonly password: string;
 }

@@ -126,6 +126,8 @@ export const MOCK_TOKENS: AuthTokens = {
 
 export const MOCK_PASSWORD = 'password123';
 
+export const MOCK_VERIFY_CODE = '1234';
+
 export const MOCK_USERS: readonly User[] = [
   MOCK_USER_UNVERIFIED,
   MOCK_USER_NO_KYC,
