@@ -14,6 +14,10 @@ dialog[open] {
 
   .dialog-stage {
     animation: stage-in 0.35s var(--ease-out-expo);
+
+    &.is-switching {
+      animation: stage-out 0.22s var(--ease-in-quad) forwards;
+    }
   }
 
   .viewer-top {

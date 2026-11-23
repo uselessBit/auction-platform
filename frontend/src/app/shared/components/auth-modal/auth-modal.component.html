@@ -1,6 +1,6 @@
 <dialog
   #dlg
-  class="border-none bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
+  class="overflow-visible border-none bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
   [class.is-closing]="isClosing()"
   (animationend)="onAnimationEnd($event)"
   (close)="onClose()"
@@ -12,41 +12,46 @@
   autofocus
 >
   @if (isOpen()) {
-    <div
-      class="dialog-stage relative flex flex-col gap-4 rounded-[2rem] border border-stroke bg-blocks p-6"
-    >
-      <h2 class="px-8 text-center text-base font-semibold">{{ title() }}</h2>
-      @switch (mode()) {
-        @case ('login') {
-          <app-login-form
-            [isLoading]="isLoading()"
-            (loginSubmitted)="onLogin($event)"
-            (switchToRegister)="switchMode('register')"
-          />
-        }
-        @case ('register') {
-          <app-register-form
-            [isLoading]="isLoading()"
-            (registerSubmitted)="onRegister($event)"
-            (switchToLogin)="switchMode('login')"
-          />
-        }
-        @case ('verify') {
-          <app-verify-codes-form />
-        }
-      }
+    @for (currentMode of [mode()]; track currentMode) {
+      <div
+        class="dialog-stage relative flex flex-col gap-4 rounded-[2rem] border border-stroke bg-blocks p-6"
+        [class.is-switching]="isSwitching()"
+        (animationend)="onStageAnimationEnd($event)"
+      >
+        <h2 class="px-8 py-1 text-center text-base font-semibold">{{ title() }}</h2>
 
-      <div class="absolute right-4 top-4">
-        <button
-          tuiButton
-          type="button"
-          appearance="brand-rounded-flat"
-          iconStart="/assets/icons/x.svg"
-          (click)="close()"
-          (mousedown)="$event.preventDefault()"
-        ></button>
+        @switch (mode()) {
+          @case ('login') {
+            <app-login-form
+              [isLoading]="isLoading()"
+              (loginSubmitted)="onLogin($event)"
+              (switchToRegister)="switchMode('register')"
+            />
+          }
+          @case ('register') {
+            <app-register-form
+              [isLoading]="isLoading()"
+              (registerSubmitted)="onRegister($event)"
+              (switchToLogin)="switchMode('login')"
+            />
+          }
+          @case ('verify') {
+            <app-verify-codes-form />
+          }
+        }
+
+        <div class="absolute right-6 top-6">
+          <button
+            tuiButton
+            type="button"
+            appearance="brand-flat"
+            iconStart="/assets/icons/x.svg"
+            (click)="close()"
+            aria-label="Закрыть"
+          ></button>
+        </div>
       </div>
-    </div>
+    }
   }
   <tui-popups />
 </dialog>

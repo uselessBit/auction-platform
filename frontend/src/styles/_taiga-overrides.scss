@@ -6,7 +6,7 @@
 [tuiAppearance][data-appearance='brand'],
 [tuiAppearance][data-appearance='brand-secondary'],
 [tuiAppearance][data-appearance='brand-transparent'] {
-  @apply h-auto px-6 gap-2 rounded-lg font-brand text-xs transition-[transform,background-color,border-color,box-shadow,color,opacity] duration-200 ease-out;
+  @apply h-auto gap-2 rounded-lg px-6 font-brand text-xs transition-[transform,background-color,border-color,box-shadow,color,opacity] duration-200 ease-out;
 
   &::before,
   &::after {
@@ -75,7 +75,7 @@
 
 // Прозрачная текстовая кнопка-ссылка со сдвигом иконок при наведении
 [tuiAppearance][data-appearance='brand-transparent'] {
-  @apply py-0 font-normal opacity-50 px-2;
+  @apply px-2 py-0 font-normal opacity-50;
 
   &:hover:not(:disabled) {
     @apply opacity-80;
@@ -95,17 +95,38 @@
 }
 
 // ============================================================================
-// КНОПКИ: КРУГЛЫЕ ИКОНОЧНЫЕ (brand-rounded, brand-rounded-flat)
+// КНОПКИ: ИКОНОЧНЫЕ (brand-flat, brand-rounded)
 // ============================================================================
 
-// Общая база круглых кнопок: масштаб при hover/active, disabled и активный цвет
-[tuiAppearance][data-appearance='brand-rounded-flat'],
+// Квадратная плоская кнопка без рамки (крестики закрытия в модалках)
+[tuiAppearance][data-appearance='brand-flat'] {
+  @apply size-8 rounded-lg p-0 opacity-80 transition-[background-color,opacity,transform] duration-200 ease-out;
+
+  &::before,
+  &::after {
+    @apply text-xs transition-transform duration-200 ease-out;
+  }
+
+  &:hover:not(:disabled) {
+    @apply bg-stroke opacity-100;
+  }
+
+  &:active:not(:disabled) {
+    @apply scale-90 bg-stroke/80;
+  }
+}
+
+// Круглая кнопка с фоном и рамкой (стрелки галереи, избранное, шаринг)
 [tuiAppearance][data-appearance='brand-rounded'] {
-  @apply rounded-full p-0 transition-[transform,background-color,border-color,opacity,box-shadow] duration-300 ease-out;
+  @apply size-10 rounded-full border border-solid border-stroke bg-blocks-second p-0 shadow-md shadow-black/25 backdrop-blur-sm transition-[transform,background-color,border-color,opacity,box-shadow] duration-300 ease-out;
 
   &::before,
   &::after {
     @apply text-base;
+  }
+
+  &:hover:not(:disabled):not(.brand-rounded-active) {
+    @apply bg-stroke;
   }
 
   &:hover:not(:disabled) {
@@ -134,26 +155,8 @@
   }
 }
 
-// Круглая кнопка с фоном и рамкой (стрелки галереи, избранное, шаринг)
-[tuiAppearance][data-appearance='brand-rounded'] {
-  @apply size-10 border border-solid border-stroke bg-blocks-second shadow-md shadow-black/25 backdrop-blur-sm;
-
-  &:hover:not(:disabled):not(.brand-rounded-active) {
-    @apply bg-stroke;
-  }
-}
-
-// Круглая плоская кнопка без рамки (крестики закрытия в модалках)
-[tuiAppearance][data-appearance='brand-rounded-flat'] {
-  @apply size-8;
-
-  &:hover:not(:disabled) {
-    @apply bg-stroke/20;
-  }
-}
-
 // ============================================================================
-// ПОЛЯ ВВОДА И ОШИБКИ ВАЛИДАЦИИ (brand-input, tui-error)
+// ЭЛЕМЕНТЫ ФОРМ И ОШИБКИ ВАЛИДАЦИИ (brand-input, brand-checkbox, tui-error)
 // ============================================================================
 
 // Поле ввода: фон, фокус-обводка и красная подсветка при aria-invalid
@@ -180,6 +183,31 @@
 
   input.font-byn {
     font-family: 'NBRB', 'Inter', sans-serif;
+  }
+}
+
+// Чекбокс: фон, акцентное состояние checked и красная рамка при ошибке валидации
+[tuiCheckbox][data-appearance='brand-checkbox'] {
+  @apply border border-stroke bg-back/30 transition-[background-color,border-color,box-shadow] duration-200 ease-out;
+
+  &:hover:not(:disabled) {
+    @apply bg-stroke;
+  }
+
+  &:checked {
+    @apply border-accent bg-accent shadow-btn-brand;
+
+    &:hover:not(:disabled) {
+      @apply border-accent-hover bg-accent-hover shadow-btn-brand-hover;
+    }
+
+    &::before {
+      font-size: 0.75rem;
+    }
+  }
+
+  &.ng-invalid.ng-touched {
+    @apply border-cancelled;
   }
 }
 
@@ -219,29 +247,5 @@ tui-notification-alert [tuiNotification] {
 
   &[data-size='m']::before {
     font-size: 1rem;
-  }
-}
-
-[tuiCheckbox][data-appearance='brand-checkbox'] {
-  @apply bg-back/30 border border-stroke transition-[background-color,border-color,box-shadow] duration-200 ease-out;
-
-  &:hover:not(:disabled) {
-    @apply bg-stroke;
-  }
-
-  &:checked {
-    @apply bg-accent border-accent shadow-btn-brand;
-
-    &:hover:not(:disabled) {
-      @apply border-accent-hover bg-accent-hover shadow-btn-brand-hover;
-    }
-
-    &::before {
-      font-size: 0.75rem;
-    }
-  }
-
-  &.ng-invalid.ng-touched {
-    @apply border-cancelled;
   }
 }

@@ -57,14 +57,12 @@ export class AuthModalComponent {
   protected readonly mode = this.authModal.mode;
 
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dlg');
+  private pendingMode: AuthModalMode | null = null;
 
   protected readonly isClosing = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);
   protected readonly isOpen = signal<boolean>(false);
-
-  protected switchMode(mode: AuthModalMode): void {
-    this.authModal.setMode(mode);
-  }
+  protected readonly isSwitching = signal<boolean>(false);
 
   protected readonly title = computed(() => TITLE_CONFIG[this.mode()]);
 
@@ -77,6 +75,15 @@ export class AuthModalComponent {
         this.close();
       }
     });
+  }
+
+  protected switchMode(nextMode: AuthModalMode): void {
+    if (this.mode() === nextMode || this.isSwitching() || this.isClosing()) {
+      return;
+    }
+
+    this.pendingMode = nextMode;
+    this.isSwitching.set(true);
   }
 
   protected open(): void {
@@ -95,6 +102,24 @@ export class AuthModalComponent {
     this.isClosing.set(false);
     this.authModal.close();
     this.isOpen.set(false);
+    this.isSwitching.set(false);
+    this.pendingMode = null;
+  }
+
+  protected onStageAnimationEnd(event: AnimationEvent): void {
+    if (
+      event.target !== event.currentTarget ||
+      !this.isSwitching() ||
+      this.isClosing() ||
+      !this.pendingMode
+    ) {
+      return;
+    }
+
+    const nextMode = this.pendingMode;
+    this.pendingMode = null;
+    this.isSwitching.set(false);
+    this.authModal.setMode(nextMode);
   }
 
   protected onAnimationEnd(event: AnimationEvent): void {

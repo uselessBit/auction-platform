@@ -35,13 +35,13 @@ export function provideAppTaiga(): EnvironmentProviders {
     }),
     tuiValidationErrorsProvider({
       required: 'Обязательное поле',
-      email: 'Некорректный формат email',
+      email: 'Некорректный email',
       minlength: ({ requiredLength }: { requiredLength: number }) =>
         `Минимум ${requiredLength} символов`,
       min: ({ min }: { min: number }) => `Минимальное значение: ${min}`,
       belarusPhone: 'Некорректный номер телефона',
-      upperAndDigit: 'Должен содержать заглавную букву и цифру',
-      specialChar: 'Должен содержать спецсимвол (! @ # $ % _)',
+      upperAndDigit: 'Добавьте заглавную букву и цифру',
+      specialChar: 'Добавьте спецсимвол (! @ # $ % _)',
     }),
     tuiInputPhoneOptionsProvider({ mask: '+375 (##) ###-##-##' }),
     tuiCheckboxOptionsProvider({

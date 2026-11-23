@@ -134,7 +134,9 @@ export class AuthService {
     }
 
     if (smsCode !== MOCK_VERIFY_CODE || emailCode !== MOCK_VERIFY_CODE) {
-      return timer(400).pipe(switchMap(() => throwError(() => new Error('Коды не верны'))));
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Неверный код подтверждения'))),
+      );
     }
 
     const updatedUser: User = {
