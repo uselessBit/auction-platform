@@ -240,21 +240,33 @@ tui-hint[tuiAppearance][role='tooltip'] {
 }
 
 // Тосты-уведомления в углу экрана (обводка в цвет статуса и размер иконки)
-tui-notification-alert [tuiNotification] {
-  &[data-appearance='negative'] {
-    outline: 1px solid var(--tui-status-negative);
-  }
-  &[data-appearance='positive'] {
-    outline: 1px solid var(--tui-status-positive);
-  }
-  &[data-appearance='warning'] {
-    outline: 1px solid var(--tui-status-warning);
-  }
-  &[data-appearance='info'] {
-    outline: 1px solid var(--tui-status-info);
+tui-notification-alert[role='alert'] {
+  inline-size: 22rem;
+  max-inline-size: calc(100vw - 2rem);
+
+  .t-wrapper {
+    @apply backdrop-blur-sm;
+    background: transparent;
   }
 
-  &[data-size='m']::before {
-    font-size: 1rem;
+  [tuiNotification] {
+    outline-offset: -1px;
+
+    &[data-appearance='negative'] {
+      outline: 1px solid var(--tui-status-negative);
+    }
+    &[data-appearance='positive'] {
+      outline: 1px solid var(--tui-status-positive);
+    }
+    &[data-appearance='warning'] {
+      outline: 1px solid var(--tui-status-warning);
+    }
+    &[data-appearance='info'] {
+      outline: 1px solid var(--tui-status-info);
+    }
+
+    &[data-size='m']::before {
+      font-size: 1rem;
+    }
   }
 }
