@@ -1,7 +1,11 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex w-[calc(100vw-5rem)] max-w-xs flex-col gap-4"
+>
   <div class="flex flex-col gap-2">
-    <div class="flex flex-col">
-      <tui-textfield tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield>
         <input
           placeholder="Телефон"
           mask="+375 (##) ###-##-##"
@@ -16,8 +20,8 @@
       <tui-error formControlName="phone" />
     </div>
 
-    <div class="flex flex-col">
-      <tui-textfield #email tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield #email>
         <input
           [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
           tuiInput
@@ -30,8 +34,8 @@
       <tui-error formControlName="email" />
     </div>
 
-    <div>
-      <tui-textfield tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield>
         <input
           placeholder="Пароль"
           tuiInput
@@ -45,7 +49,7 @@
       <tui-error formControlName="password" />
     </div>
 
-    <div class="flex gap-1">
+    <div class="flex flex-wrap gap-1">
       @for (rule of passwordRules(); track rule.label) {
         <div
           class="chip flex flex-1 items-center justify-center gap-1 backdrop-blur-none transition-all duration-300 ease-out"
@@ -73,15 +77,29 @@
     </div>
   </div>
 
-  <label class="flex cursor-pointer items-start gap-2 text-xs leading-tight">
-    <input tuiCheckbox size="s" type="checkbox" formControlName="acceptTerms" class="peer mt-0.5" />
+  <div class="flex items-start gap-2 text-xs leading-tight">
+    <input
+      id="accept-terms"
+      tuiCheckbox
+      size="s"
+      type="checkbox"
+      formControlName="acceptTerms"
+      class="peer mt-0.5"
+    />
     <span
       class="flex flex-col text-text/50 transition-colors duration-200 ease-out peer-checked:text-text"
     >
-      <span>Я принимаю условия</span>
-      <span class="text-accent hover:underline">Пользовательского соглашения</span>
+      <label for="accept-terms" class="cursor-pointer">Я принимаю условия</label>
+      <a
+        target="_blank"
+        routerLink="/rules"
+        tuiButton
+        appearance="brand-inline"
+        rel="noopener noreferrer"
+        >Пользовательского соглашения</a
+      >
     </span>
-  </label>
+  </div>
 
   <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">
     Продолжить

@@ -13,11 +13,11 @@ import {
   TuiIcon,
   TuiInputDirective,
   TuiTextfieldComponent,
-  TuiTextfieldOptionsDirective,
 } from '@taiga-ui/core';
 import { TuiButtonLoading, TuiInputPhone, TuiPassword } from '@taiga-ui/kit';
 import { RegisterPayload } from '../../../../../core/models/auth.model';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 
 interface PasswordRulesConfig {
   readonly label: string;
@@ -42,9 +42,9 @@ const PASSWORD_RULES_CONFIG: PasswordRulesConfig[] = [
     TuiInputDirective,
     TuiPassword,
     TuiTextfieldComponent,
-    TuiTextfieldOptionsDirective,
     TuiInputPhone,
     TuiCheckbox,
+    RouterLink,
   ],
   standalone: true,
   templateUrl: './register-form.component.html',

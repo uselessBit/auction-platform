@@ -75,10 +75,10 @@
 
 // Прозрачная текстовая кнопка-ссылка со сдвигом иконок при наведении
 [tuiAppearance][data-appearance='brand-transparent'] {
-  @apply px-2 py-0 font-normal opacity-50;
+  @apply px-2 py-0 font-normal text-text/50;
 
   &:hover:not(:disabled) {
-    @apply opacity-80;
+    @apply text-text/80;
 
     &::before {
       @apply -translate-x-1;
@@ -90,7 +90,26 @@
   }
 
   &:active:not(:disabled) {
-    @apply opacity-100;
+    @apply text-text;
+  }
+}
+
+[tuiAppearance][data-appearance='brand-inline'] {
+  @apply h-auto shrink-0 rounded-none p-0 text-xs font-normal text-accent underline decoration-transparent transition-[color,text-decoration-color,transform] duration-200 ease-out;
+  --t-margin: 0rem;
+  --t-gap: 0.25rem;
+
+  &::before,
+  &::after {
+    @apply text-[8px] transition-colors duration-200 ease-out;
+  }
+
+  &:hover:not(:disabled) {
+    @apply text-accent-hover decoration-current;
+  }
+
+  &:active:not(:disabled) {
+    @apply scale-[0.97];
   }
 }
 
@@ -156,29 +175,15 @@
 }
 
 // ============================================================================
-// ЭЛЕМЕНТЫ ФОРМ И ОШИБКИ ВАЛИДАЦИИ (brand-input, brand-checkbox, tui-error)
+// ЭЛЕМЕНТЫ ФОРМ И ОШИБКИ ВАЛИДАЦИИ (textfield, brand-checkbox, tui-error)
 // ============================================================================
 
 // Поле ввода: фон, фокус-обводка и красная подсветка при aria-invalid
-[tuiTextfieldAppearance][data-appearance='brand-input'] {
-  @apply rounded-lg border border-stroke bg-back/30 text-xs outline outline-transparent transition-[outline-color,background-color] duration-200 ease-out;
+[tuiTheme='dark'] [tuiAppearance][data-appearance='textfield'] {
+  @apply rounded-lg bg-back/30 text-xs;
 
-  &:hover:not([data-state='disabled']):not(:focus-within) {
+  &:hover:not([data-state='disabled']):not([data-focus='true']):not(:focus-within) {
     @apply bg-stroke;
-  }
-
-  &[data-focus='true'],
-  &:focus-within {
-    @apply outline-2 -outline-offset-2 outline-accent;
-  }
-
-  &:has(input[aria-invalid='true']) {
-    @apply border-cancelled;
-
-    &[data-focus='true'],
-    &:focus-within {
-      @apply outline-cancelled;
-    }
   }
 
   input.font-byn {
@@ -214,10 +219,14 @@
 // Текст ошибки под полями формы (размер шрифта и компактный отступ сверху)
 tui-error {
   @apply pl-2;
-  --tui-typography-body-s: 400 0.75rem/1.2rem var(--tui-typography-family-text);
+  --tui-typography-body-s: 400 0.75rem/1rem var(--tui-typography-family-text);
+
+  .t-content {
+    margin-block-end: 0;
+  }
 
   .t-content::before {
-    line-height: 1.2rem !important;
+    display: none;
   }
 }
 

@@ -10,6 +10,7 @@ import {
   provideTaiga,
   tuiCheckboxOptionsProvider,
   tuiCommonIconsProvider,
+  tuiTextfieldOptionsProvider,
   tuiValidationErrorsProvider,
 } from '@taiga-ui/core';
 
@@ -48,5 +49,6 @@ export function provideAppTaiga(): EnvironmentProviders {
       appearance: () => 'brand-checkbox',
       icons: { checked: () => '/assets/icons/check.svg', indeterminate: () => '' },
     }),
+    tuiTextfieldOptionsProvider({ size: signal('s') }),
   ]);
 }

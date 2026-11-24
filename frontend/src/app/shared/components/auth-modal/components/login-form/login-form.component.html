@@ -1,7 +1,11 @@
-<form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="max-w-64 flex w-[calc(100vw-5rem)] flex-col gap-4"
+>
   <div class="flex flex-col gap-2">
-    <div class="flex flex-col">
-      <tui-textfield #email tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield #email>
         <input
           [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
           tuiInput
@@ -14,8 +18,8 @@
       <tui-error formControlName="email" />
     </div>
 
-    <div>
-      <tui-textfield tuiTextfieldSize="s" tuiTextfieldAppearance="brand-input">
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield>
         <input
           placeholder="Пароль"
           tuiInput

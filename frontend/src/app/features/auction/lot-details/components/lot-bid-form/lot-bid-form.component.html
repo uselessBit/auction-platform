@@ -40,7 +40,7 @@
     <h2 class="text-base font-semibold">Своя ставка</h2>
 
     <form (submit)="$event.preventDefault(); onCustomBid()" class="flex gap-2">
-      <tui-textfield tuiTextfieldSize="s" class="flex-1" tuiTextfieldAppearance="brand-input">
+      <tui-textfield class="flex-1">
         <input
           [placeholder]="'От ' + (minBid() | number: '1.0-0') + ' BYN'"
           tuiInputNumber
