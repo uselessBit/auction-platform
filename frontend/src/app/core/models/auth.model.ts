@@ -39,3 +39,14 @@ export interface VerifyCodesPayload {
   readonly smsCode: string;
   readonly emailCode: string;
 }
+
+export interface VerifyCodesFieldErrors {
+  readonly smsInvalid: boolean;
+  readonly emailInvalid: boolean;
+}
+
+export class VerifyCodesError extends Error {
+  constructor(readonly fields: VerifyCodesFieldErrors) {
+    super('Неверный код подтверждения');
+  }
+}

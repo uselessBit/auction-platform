@@ -2,7 +2,14 @@ import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { API_CONFIG } from '../api/api-config.token';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthTokens, LoginPayload, RegisterPayload, User } from '../models/auth.model';
+import {
+  AuthTokens,
+  LoginPayload,
+  RegisterPayload,
+  User,
+  VerifyCodesError,
+  VerifyCodesPayload,
+} from '../models/auth.model';
 import { delay, map, Observable, of, switchMap, tap, throwError, timer } from 'rxjs';
 import { MOCK_PASSWORD, MOCK_TOKENS, MOCK_USERS, MOCK_VERIFY_CODE } from '../mock/users.mock';
 import { FinanceService } from './finance.service';
@@ -125,7 +132,7 @@ export class AuthService {
     );
   }
 
-  verifyContacts(smsCode: string, emailCode: string): Observable<User> {
+  verifyContacts(payload: VerifyCodesPayload): Observable<User> {
     const currentUser = this._currentUser();
     if (!currentUser) {
       return timer(400).pipe(
@@ -133,9 +140,12 @@ export class AuthService {
       );
     }
 
-    if (smsCode !== MOCK_VERIFY_CODE || emailCode !== MOCK_VERIFY_CODE) {
+    const smsInvalid: boolean = payload.smsCode !== MOCK_VERIFY_CODE;
+    const emailInvalid: boolean = payload.emailCode !== MOCK_VERIFY_CODE;
+
+    if (emailInvalid || smsInvalid) {
       return timer(400).pipe(
-        switchMap(() => throwError(() => new Error('Неверный код подтверждения'))),
+        switchMap(() => throwError(() => new VerifyCodesError({ smsInvalid, emailInvalid }))),
       );
     }
 

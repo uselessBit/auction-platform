@@ -17,7 +17,14 @@ import { finalize } from 'rxjs';
 import { LoginFormComponent } from './components/login-form/login-form.component';
 import { RegisterFormComponent } from './components/register-form/register-form.component';
 import { VerifyCodesFormComponent } from './components/verify-codes-form/verify-codes-form.component';
-import { AuthModalMode, LoginPayload, RegisterPayload } from '../../../core/models/auth.model';
+import {
+  AuthModalMode,
+  LoginPayload,
+  RegisterPayload,
+  VerifyCodesError,
+  VerifyCodesFieldErrors,
+  VerifyCodesPayload,
+} from '../../../core/models/auth.model';
 
 const TITLE_CONFIG: Readonly<Record<AuthModalMode, string>> = {
   login: 'Вход в аккаунт',
@@ -68,6 +75,8 @@ export class AuthModalComponent {
 
   protected readonly currentUser = this.authService.currentUser;
 
+  protected readonly verifyFieldErrors = signal<VerifyCodesFieldErrors | null>(null);
+
   constructor() {
     effect(() => {
       if (this.authModal.isOpen() && !this.dialog().nativeElement.open) {
@@ -106,6 +115,7 @@ export class AuthModalComponent {
     this.isOpen.set(false);
     this.isSwitching.set(false);
     this.pendingMode = null;
+    this.verifyFieldErrors.set(null);
   }
 
   protected onStageAnimationEnd(event: AnimationEvent): void {
@@ -217,6 +227,51 @@ export class AuthModalComponent {
             })
             .pipe(takeUntilDestroyed(this.destroyRef))
             .subscribe(),
+      });
+  }
+
+  protected onVerify(payload: VerifyCodesPayload): void {
+    if (this.isLoading()) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.verifyFieldErrors.set(null);
+
+    this.authService
+      .verifyContacts(payload)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.close();
+          this.globalNotifications
+            .open('Теперь доступен следующий шаг допуска к торгам', {
+              label: 'Контакты подтверждены',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
+        },
+        error: (error: Error) => {
+          if (error instanceof VerifyCodesError) {
+            this.verifyFieldErrors.set(error.fields);
+          } else {
+            this.notifications
+              .open(error.message, {
+                label: 'Ошибка подтверждения',
+                appearance: 'negative',
+                icon: '/assets/icons/exclamation.svg',
+                closable: false,
+              })
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe();
+          }
+        },
       });
   }
 }

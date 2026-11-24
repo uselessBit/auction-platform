@@ -36,7 +36,14 @@
             />
           }
           @case ('verify') {
-            <app-verify-codes-form (closeModal)="close()" [email]="currentUser()?.email ?? ''" [phone]="currentUser()?.phone ?? ''" />
+            <app-verify-codes-form
+              (closeModal)="close()"
+              [email]="currentUser()?.email ?? ''"
+              [phone]="currentUser()?.phone ?? ''"
+              [isLoading]="isLoading()"
+              [fieldErrors]="verifyFieldErrors()"
+              (verifySubmitted)="onVerify($event)"
+            />
           }
         }
 

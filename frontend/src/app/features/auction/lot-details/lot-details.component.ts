@@ -44,6 +44,9 @@ export class LotDetailsComponent {
   }
 
   protected onBlockedAction(status: BlockedBidStatus): void {
+    if (status === 'contacts_unverified') {
+      this.authModal.open('verify');
+    }
     if (status === 'auth_required') {
       this.authModal.open();
     }

@@ -1,21 +1,22 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output } from '@angular/core';
 import {
-  FormsModule,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import { TuiButton, TuiErrorComponent, TuiErrorDirective, TuiTextfield } from '@taiga-ui/core';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+} from '@angular/core';
+import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TuiButton, TuiErrorComponent, TuiErrorDirective } from '@taiga-ui/core';
 import { TuiButtonLoading, TuiInputPin } from '@taiga-ui/kit';
 import { PhonePipe } from '../../../../pipes/phone-pipe';
-import { VerifyCodesPayload } from '../../../../../core/models/auth.model';
+import { VerifyCodesFieldErrors, VerifyCodesPayload } from '../../../../../core/models/auth.model';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-verify-codes-form',
   imports: [
-    FormsModule,
-    TuiTextfield,
     TuiInputPin,
     ReactiveFormsModule,
     TuiButton,
@@ -35,6 +36,7 @@ export class VerifyCodesFormComponent {
   readonly isLoading = input<boolean>(false);
   readonly email = input<string>('');
   readonly phone = input<string>('');
+  readonly fieldErrors = input<VerifyCodesFieldErrors | null>(null);
   readonly verifySubmitted = output<VerifyCodesPayload>();
   readonly closeModal = output<void>();
 
@@ -47,6 +49,21 @@ export class VerifyCodesFormComponent {
     initialValue: this.form.status,
   });
   protected readonly canSubmit = computed(() => this.formStatus() === 'VALID');
+
+  constructor() {
+    effect(() => {
+      const errors = this.fieldErrors();
+
+      if (errors?.smsInvalid) {
+        this.form.controls.smsCode.setErrors({ invalidCode: true });
+        this.form.controls.smsCode.markAsTouched();
+      }
+      if (errors?.emailInvalid) {
+        this.form.controls.emailCode.setErrors({ invalidCode: true });
+        this.form.controls.emailCode.markAsTouched();
+      }
+    });
+  }
 
   protected onSubmit(): void {
     if (this.isLoading()) {

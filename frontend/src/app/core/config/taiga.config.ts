@@ -43,6 +43,7 @@ export function provideAppTaiga(): EnvironmentProviders {
       belarusPhone: 'Некорректный номер телефона',
       upperAndDigit: 'Добавьте заглавную букву и цифру',
       specialChar: 'Добавьте спецсимвол (! @ # $ % _)',
+      invalidCode: 'Неверный код',
     }),
     tuiInputPhoneOptionsProvider({ mask: '+375 (##) ###-##-##' }),
     tuiCheckboxOptionsProvider({
