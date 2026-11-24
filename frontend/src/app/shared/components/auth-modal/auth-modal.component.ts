@@ -66,6 +66,8 @@ export class AuthModalComponent {
 
   protected readonly title = computed(() => TITLE_CONFIG[this.mode()]);
 
+  protected readonly currentUser = this.authService.currentUser;
+
   constructor() {
     effect(() => {
       if (this.authModal.isOpen() && !this.dialog().nativeElement.open) {

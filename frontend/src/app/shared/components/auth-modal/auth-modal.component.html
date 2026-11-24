@@ -18,7 +18,7 @@
         [class.is-switching]="isSwitching()"
         (animationend)="onStageAnimationEnd($event)"
       >
-        <h2 class="px-8 py-1 text-center text-base font-semibold">{{ title() }}</h2>
+        <h2 class="px-12 py-1 text-center text-base font-semibold">{{ title() }}</h2>
 
         @switch (mode()) {
           @case ('login') {
@@ -36,7 +36,7 @@
             />
           }
           @case ('verify') {
-            <app-verify-codes-form />
+            <app-verify-codes-form (closeModal)="close()" [email]="currentUser()?.email ?? ''" [phone]="currentUser()?.phone ?? ''" />
           }
         }
 

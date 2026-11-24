@@ -1,1 +1,89 @@
-<p>verify-codes-form works!</p>
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex w-[calc(100vw-5rem)] max-w-xs flex-col gap-4"
+>
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-between gap-3">
+      <label for="email-code" class="min-w-0 truncate text-xs" [title]="email()"
+        >Код из Email
+        @if (email()) {
+          <span class="text-text/50">{{ email() }}</span>
+        }
+      </label>
+
+      <button type="button" tuiButton appearance="brand-inline">Изменить</button>
+    </div>
+
+    <tui-textfield class="min-w-0 flex-1 gap-1">
+      <input id="email-code" placeholder="••••" tuiInputPin formControlName="emailCode" />
+    </tui-textfield>
+
+    <div class="flex justify-between gap-3">
+      <button
+        type="button"
+        tuiButton
+        appearance="brand-inline"
+        iconStart="/assets/icons/rotate-right.svg"
+        class="shrink-0"
+      >
+        Отправить повторно
+      </button>
+
+      <tui-error formControlName="emailCode" class="text-right" />
+    </div>
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <div class="flex justify-between gap-3">
+      <label for="sms-code" class="min-w-0 truncate text-xs" [title]="phone()"
+        >Код из SMS
+        @if (phone()) {
+          <span class="text-text/50">{{ phone() | phone }}</span>
+        }
+      </label>
+
+      <button type="button" tuiButton appearance="brand-inline">Изменить</button>
+    </div>
+
+    <tui-textfield class="min-w-0 flex-1 gap-1">
+      <input id="sms-code" placeholder="••••" tuiInputPin formControlName="smsCode" />
+    </tui-textfield>
+
+    <div class="flex justify-between gap-3">
+      <button
+        type="button"
+        tuiButton
+        appearance="brand-inline"
+        iconStart="/assets/icons/rotate-right.svg"
+        class="shrink-0"
+      >
+        Отправить повторно
+      </button>
+
+      <tui-error formControlName="smsCode" class="text-right" />
+    </div>
+  </div>
+
+  <button
+    type="submit"
+    tuiButton
+    appearance="brand"
+    class="flex-1"
+    [disabled]="!canSubmit()"
+    [loading]="isLoading()"
+  >
+    Завершить регистрацию
+  </button>
+
+  <button
+    type="button"
+    tuiButton
+    appearance="brand-transparent"
+    class="group flex-1"
+    iconEnd="/assets/icons/arrow-small-right.svg"
+    (click)="closeModal.emit()"
+  >
+    Подтвердить позже в профиле
+  </button>
+</form>

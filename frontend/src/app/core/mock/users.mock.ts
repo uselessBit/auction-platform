@@ -124,7 +124,7 @@ export const MOCK_TOKENS: AuthTokens = {
   refreshToken: 'mock-jwt-refresh-token-abc789xyz-valid-for-refresh',
 };
 
-export const MOCK_PASSWORD = 'password123';
+export const MOCK_PASSWORD = '12345678';
 
 export const MOCK_VERIFY_CODE = '1234';
 

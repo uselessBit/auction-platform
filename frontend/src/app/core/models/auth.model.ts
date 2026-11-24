@@ -34,3 +34,8 @@ export interface RegisterPayload {
   readonly phone: string;
   readonly password: string;
 }
+
+export interface VerifyCodesPayload {
+  readonly smsCode: string;
+  readonly emailCode: string;
+}
