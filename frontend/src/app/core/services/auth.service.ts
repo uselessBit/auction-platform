@@ -7,6 +7,7 @@ import {
   LoginPayload,
   RegisterPayload,
   User,
+  VerificationChannel,
   VerifyCodesError,
   VerifyCodesPayload,
 } from '../models/auth.model';
@@ -24,11 +25,25 @@ export class AuthService {
 
   private readonly financeService = inject(FinanceService);
 
-  private readonly _currentUser = signal<User | null>(null);
+  private readonly _currentUser = signal<User | null>(this.restoreUser());
   readonly currentUser = this._currentUser.asReadonly();
   readonly isAuthenticated = computed(() => !!this.currentUser());
 
   private readonly users: User[] = [...MOCK_USERS];
+
+  constructor() {
+    const restored = this._currentUser();
+
+    if (restored) {
+      const index = this.users.findIndex((user) => user.id === restored.id);
+
+      if (index !== -1) {
+        this.users[index] = restored;
+      } else {
+        this.users.push(restored);
+      }
+    }
+  }
 
   getAccessToken(): string | null {
     if (!this.isBrowser) {
@@ -77,6 +92,7 @@ export class AuthService {
       tap((res) => {
         this.setTokens(res.tokens);
         this._currentUser.set(res.user);
+        this.saveSessions(res.user);
       }),
       map((res) => res.user),
     );
@@ -128,6 +144,7 @@ export class AuthService {
         this.users.push(user);
         this.setTokens(MOCK_TOKENS);
         this._currentUser.set(user);
+        this.saveSessions(user);
       }),
     );
   }
@@ -164,6 +181,8 @@ export class AuthService {
         if (index !== -1) {
           this.users[index] = updatedUser;
         }
+
+        this.saveSessions(updatedUser);
       }),
     );
   }
@@ -172,5 +191,34 @@ export class AuthService {
     this.clearTokens();
     this._currentUser.set(null);
     this.financeService.clearHolds();
+
+    if (this.isBrowser) {
+      localStorage.removeItem('auth_user');
+    }
+  }
+
+  private saveSessions(user: User): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    localStorage.setItem('auth_user', JSON.stringify(user));
+  }
+
+  private restoreUser(): User | null {
+    if (!this.isBrowser || !this.getAccessToken() || !this.getRefreshToken()) {
+      return null;
+    }
+
+    try {
+      const raw = localStorage.getItem('auth_user');
+      if (!raw) {
+        return null;
+      }
+      return JSON.parse(raw) as User;
+    } catch (e) {
+      localStorage.removeItem('auth_user');
+      1;
+      return null;
+    }
   }
 }
