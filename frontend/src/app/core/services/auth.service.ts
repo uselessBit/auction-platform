@@ -197,6 +197,17 @@ export class AuthService {
     }
   }
 
+  resendVerificationCode(channel: VerificationChannel): Observable<void> {
+    const currentUser = this._currentUser();
+    if (!currentUser) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Пользователь не авторизован'))),
+      );
+    }
+
+    return of(undefined).pipe(delay(300));
+  }
+
   private saveSessions(user: User): void {
     if (!this.isBrowser) {
       return;

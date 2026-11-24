@@ -43,6 +43,7 @@
               [isLoading]="isLoading()"
               [fieldErrors]="verifyFieldErrors()"
               (verifySubmitted)="onVerify($event)"
+              (resendRequested)="onResendCode($event)"
             />
           }
         }

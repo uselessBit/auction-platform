@@ -20,15 +20,22 @@
     </tui-textfield>
 
     <div class="flex justify-between gap-3">
-      <button
-        type="button"
-        tuiButton
-        appearance="brand-inline"
-        iconStart="/assets/icons/rotate-right.svg"
-        class="shrink-0"
-      >
-        Отправить повторно
-      </button>
+      @if (emailCooldown() > 0) {
+        <div class="text-xs text-text/50">
+          Отправить повторно через <span class="tabular-nums">{{ formatCooldown(emailCooldown()) }}</span>
+        </div>
+      } @else {
+        <button
+          type="button"
+          tuiButton
+          appearance="brand-inline"
+          iconStart="/assets/icons/rotate-right.svg"
+          class="shrink-0"
+          (click)="onResend('email')"
+        >
+          Отправить повторно
+        </button>
+      }
 
       <tui-error formControlName="emailCode" class="text-right" />
     </div>
@@ -51,15 +58,22 @@
     </tui-textfield>
 
     <div class="flex justify-between gap-3">
-      <button
-        type="button"
-        tuiButton
-        appearance="brand-inline"
-        iconStart="/assets/icons/rotate-right.svg"
-        class="shrink-0"
-      >
-        Отправить повторно
-      </button>
+      @if (smsCooldown() > 0) {
+        <div class="text-xs text-text/50">
+          Отправить повторно через <span class="tabular-nums">{{ formatCooldown(smsCooldown()) }}</span>
+        </div>
+      } @else {
+        <button
+          type="button"
+          tuiButton
+          appearance="brand-inline"
+          iconStart="/assets/icons/rotate-right.svg"
+          class="shrink-0"
+          (click)="onResend('phone')"
+        >
+          Отправить повторно
+        </button>
+      }
 
       <tui-error formControlName="smsCode" class="text-right" />
     </div>

@@ -21,6 +21,7 @@ import {
   AuthModalMode,
   LoginPayload,
   RegisterPayload,
+  VerificationChannel,
   VerifyCodesError,
   VerifyCodesFieldErrors,
   VerifyCodesPayload,
@@ -272,6 +273,35 @@ export class AuthModalComponent {
               .subscribe();
           }
         },
+      });
+  }
+
+  protected onResendCode(channel: VerificationChannel): void {
+    this.authService
+      .resendVerificationCode(channel)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () =>
+          this.notifications
+            .open('Повторная отправка через 1 минуту', {
+              label:
+                channel === 'phone' ? 'Новый код отправлен в SMS' : 'Новый код отправлен на Email',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
+        error: (error: Error) =>
+          this.notifications
+            .open(error.message, {
+              label: 'Ошибка отправки кода',
+              appearance: 'negative',
+              icon: '/assets/icons/exclamation.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
       });
   }
 }

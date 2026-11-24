@@ -1,6 +1,7 @@
 export type KycStatus = 'none' | 'pending' | 'approved' | 'rejected';
 export type UserRole = 'user' | 'admin' | 'b2b';
 export type AuthModalMode = 'login' | 'register' | 'verify';
+export type VerificationChannel = 'phone' | 'email';
 
 export interface User {
   readonly id: string;
