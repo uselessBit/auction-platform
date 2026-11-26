@@ -185,10 +185,9 @@
   &:hover:not([data-state='disabled']):not([data-focus='true']):not(:focus-within) {
     @apply bg-stroke;
   }
-
-  input.font-byn {
-    font-family: 'NBRB', 'Inter', sans-serif;
-  }
+}
+tui-textfield [tuiInput].font-byn {
+  font-family: 'NBRB', 'Inter', sans-serif;
 }
 
 // Чекбокс: фон, акцентное состояние checked и красная рамка при ошибке валидации

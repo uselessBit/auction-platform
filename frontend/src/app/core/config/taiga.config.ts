@@ -16,7 +16,7 @@ import {
 
 export function provideAppTaiga(): EnvironmentProviders {
   return makeEnvironmentProviders([
-    provideTaiga(),
+    provideTaiga({ mode: 'dark' }),
     {
       provide: TUI_DEFAULT_LANGUAGE,
       useValue: TUI_RUSSIAN_LANGUAGE,
