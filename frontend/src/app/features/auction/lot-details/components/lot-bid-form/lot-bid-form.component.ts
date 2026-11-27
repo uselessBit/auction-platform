@@ -4,12 +4,7 @@ import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { CurrencyComponent } from '../../../../../shared/components/currency/currency.component';
 import { DecimalPipe } from '@angular/common';
-import {
-  TuiButton,
-  TuiIcon,
-  TuiTextfieldComponent,
-  TuiTextfieldOptionsDirective,
-} from '@taiga-ui/core';
+import { TuiButton, TuiIcon, TuiTextfieldComponent } from '@taiga-ui/core';
 import { TuiInputNumberDirective } from '@taiga-ui/kit';
 
 type AmountFormState = 'idle' | 'min' | 'required' | 'valid';
@@ -34,7 +29,6 @@ const QUICK_BID_CONFIG: readonly QuickBidConfig[] = [
     TuiButton,
     TuiInputNumberDirective,
     TuiTextfieldComponent,
-    TuiTextfieldOptionsDirective,
     ReactiveFormsModule,
     TuiIcon,
   ],

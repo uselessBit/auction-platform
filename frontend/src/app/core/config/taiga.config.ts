@@ -1,12 +1,22 @@
 import { EnvironmentProviders, makeEnvironmentProviders, signal } from '@angular/core';
 import { TUI_DEFAULT_LANGUAGE } from '@taiga-ui/i18n/tokens';
 import { TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n/languages/russian';
-import { TUI_PASSWORD_TEXTS, tuiPasswordOptionsProvider } from '@taiga-ui/kit';
-import { provideTaiga, tuiCommonIconsProvider, tuiValidationErrorsProvider } from '@taiga-ui/core';
+import {
+  TUI_PASSWORD_TEXTS,
+  tuiInputPhoneOptionsProvider,
+  tuiPasswordOptionsProvider,
+} from '@taiga-ui/kit';
+import {
+  provideTaiga,
+  tuiCheckboxOptionsProvider,
+  tuiCommonIconsProvider,
+  tuiTextfieldOptionsProvider,
+  tuiValidationErrorsProvider,
+} from '@taiga-ui/core';
 
 export function provideAppTaiga(): EnvironmentProviders {
   return makeEnvironmentProviders([
-    provideTaiga(),
+    provideTaiga({ mode: 'dark' }),
     {
       provide: TUI_DEFAULT_LANGUAGE,
       useValue: TUI_RUSSIAN_LANGUAGE,
@@ -26,10 +36,20 @@ export function provideAppTaiga(): EnvironmentProviders {
     }),
     tuiValidationErrorsProvider({
       required: 'Обязательное поле',
-      email: 'Некорректный формат email',
+      email: 'Некорректный email',
       minlength: ({ requiredLength }: { requiredLength: number }) =>
         `Минимум ${requiredLength} символов`,
       min: ({ min }: { min: number }) => `Минимальное значение: ${min}`,
+      belarusPhone: 'Некорректный номер телефона',
+      upperAndDigit: 'Добавьте заглавную букву и цифру',
+      specialChar: 'Добавьте спецсимвол (! @ # $ % _)',
+      invalidCode: 'Неверный код',
     }),
+    tuiInputPhoneOptionsProvider({ mask: '+375 (##) ###-##-##' }),
+    tuiCheckboxOptionsProvider({
+      appearance: () => 'brand-checkbox',
+      icons: { checked: () => '/assets/icons/check.svg', indeterminate: () => '' },
+    }),
+    tuiTextfieldOptionsProvider({ size: signal('s') }),
   ]);
 }

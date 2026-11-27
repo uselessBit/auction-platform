@@ -2,9 +2,18 @@ import { computed, inject, Injectable, PLATFORM_ID, signal } from '@angular/core
 import { HttpClient } from '@angular/common/http';
 import { API_CONFIG } from '../api/api-config.token';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthTokens, User } from '../models/auth.model';
+import {
+  AuthTokens,
+  LoginPayload,
+  RegisterPayload,
+  UpdateContactPayload,
+  User,
+  VerificationChannel,
+  VerifyCodesError,
+  VerifyCodesPayload,
+} from '../models/auth.model';
 import { delay, map, Observable, of, switchMap, tap, throwError, timer } from 'rxjs';
-import { MOCK_PASSWORD, MOCK_TOKENS, MOCK_USERS } from '../mock/users.mock';
+import { MOCK_PASSWORD, MOCK_TOKENS, MOCK_USERS, MOCK_VERIFY_CODE } from '../mock/users.mock';
 import { FinanceService } from './finance.service';
 
 @Injectable({
@@ -17,9 +26,25 @@ export class AuthService {
 
   private readonly financeService = inject(FinanceService);
 
-  private readonly _currentUser = signal<User | null>(null);
+  private readonly _currentUser = signal<User | null>(this.restoreUser());
   readonly currentUser = this._currentUser.asReadonly();
   readonly isAuthenticated = computed(() => !!this.currentUser());
+
+  private readonly users: User[] = [...MOCK_USERS];
+
+  constructor() {
+    const restored = this._currentUser();
+
+    if (restored) {
+      const index = this.users.findIndex((user) => user.id === restored.id);
+
+      if (index !== -1) {
+        this.users[index] = restored;
+      } else {
+        this.users.push(restored);
+      }
+    }
+  }
 
   getAccessToken(): string | null {
     if (!this.isBrowser) {
@@ -51,11 +76,11 @@ export class AuthService {
     localStorage.removeItem('refreshToken');
   }
 
-  login(email: string, password: string): Observable<User> {
-    const normalizedEmail = email.trim().toLowerCase();
-    const user = MOCK_USERS.find((user) => user.email === normalizedEmail);
+  login(payload: LoginPayload): Observable<User> {
+    const normalizedEmail = payload.email.trim().toLowerCase();
+    const user = this.users.find((user) => user.email === normalizedEmail);
 
-    if (!user || password !== MOCK_PASSWORD) {
+    if (!user || payload.password !== MOCK_PASSWORD) {
       return timer(400).pipe(
         switchMap(() => throwError(() => new Error('Неверный email или пароль'))),
       );
@@ -68,6 +93,7 @@ export class AuthService {
       tap((res) => {
         this.setTokens(res.tokens);
         this._currentUser.set(res.user);
+        this.saveSessions(res.user);
       }),
       map((res) => res.user),
     );
@@ -84,9 +110,183 @@ export class AuthService {
     }
   }
 
+  register(payload: RegisterPayload): Observable<User> {
+    const normalizedEmail = payload.email.trim().toLowerCase();
+    const normalizedPhone = payload.phone.replace(/[^\d+]/g, '');
+
+    if (this.users.some((user) => user.email === normalizedEmail)) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Аккаунт с таким email уже существует'))),
+      );
+    }
+    if (this.users.some((user) => user.phone === normalizedPhone)) {
+      return timer(400).pipe(
+        switchMap(() =>
+          throwError(() => new Error('Аккаунт с таким номером телефона уже существует')),
+        ),
+      );
+    }
+
+    const user: User = {
+      id: crypto.randomUUID(),
+      email: normalizedEmail,
+      phone: normalizedPhone,
+      role: 'user',
+      kycStatus: 'none',
+      isPhoneVerified: false,
+      isEmailVerified: false,
+      isBlocked: false,
+      createdAt: new Date().toISOString(),
+    };
+
+    return of(user).pipe(
+      delay(600),
+      tap(() => {
+        this.users.push(user);
+        this.setTokens(MOCK_TOKENS);
+        this._currentUser.set(user);
+        this.saveSessions(user);
+      }),
+    );
+  }
+
+  verifyContacts(payload: VerifyCodesPayload): Observable<User> {
+    const currentUser = this._currentUser();
+    if (!currentUser) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Пользователь не авторизован'))),
+      );
+    }
+
+    const smsInvalid: boolean = payload.smsCode !== MOCK_VERIFY_CODE;
+    const emailInvalid: boolean = payload.emailCode !== MOCK_VERIFY_CODE;
+
+    if (emailInvalid || smsInvalid) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new VerifyCodesError({ smsInvalid, emailInvalid }))),
+      );
+    }
+
+    const updatedUser: User = {
+      ...currentUser,
+      isPhoneVerified: true,
+      isEmailVerified: true,
+    };
+
+    return of(updatedUser).pipe(
+      delay(400),
+      tap(() => {
+        this._currentUser.set(updatedUser);
+
+        const index = this.users.findIndex((u) => u.id === updatedUser.id);
+        if (index !== -1) {
+          this.users[index] = updatedUser;
+        }
+
+        this.saveSessions(updatedUser);
+      }),
+    );
+  }
+
   logout(): void {
     this.clearTokens();
     this._currentUser.set(null);
     this.financeService.clearHolds();
+
+    if (this.isBrowser) {
+      localStorage.removeItem('auth_user');
+    }
+  }
+
+  resendVerificationCode(channel: VerificationChannel): Observable<void> {
+    const currentUser = this._currentUser();
+    if (!currentUser) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Пользователь не авторизован'))),
+      );
+    }
+
+    return of(undefined).pipe(delay(300));
+  }
+
+  private saveSessions(user: User): void {
+    if (!this.isBrowser) {
+      return;
+    }
+    localStorage.setItem('auth_user', JSON.stringify(user));
+  }
+
+  private restoreUser(): User | null {
+    if (!this.isBrowser || !this.getAccessToken() || !this.getRefreshToken()) {
+      return null;
+    }
+
+    try {
+      const raw = localStorage.getItem('auth_user');
+      if (!raw) {
+        return null;
+      }
+      return JSON.parse(raw) as User;
+    } catch (e) {
+      localStorage.removeItem('auth_user');
+      return null;
+    }
+  }
+
+  updateContact(payload: UpdateContactPayload): Observable<User> {
+    const currentUser = this._currentUser();
+    if (!currentUser) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Пользователь не авторизован'))),
+      );
+    }
+
+    const normalizedValue =
+      payload.channel === 'email'
+        ? payload.value.trim().toLowerCase()
+        : payload.value.replace(/[^\d+]/g, '');
+
+    if (payload.channel === 'email') {
+      if (this.users.some((user) => user.email === normalizedValue && user.id !== currentUser.id)) {
+        return timer(400).pipe(
+          switchMap(() => throwError(() => new Error('Аккаунт с таким email уже существует'))),
+        );
+      }
+    } else {
+      if (this.users.some((user) => user.phone === normalizedValue && user.id !== currentUser.id)) {
+        return timer(400).pipe(
+          switchMap(() =>
+            throwError(() => new Error('Аккаунт с таким номером телефона уже существует')),
+          ),
+        );
+      }
+    }
+
+    const updatedUser: User =
+      payload.channel === 'email'
+        ? {
+            ...currentUser,
+            email: normalizedValue,
+            isEmailVerified: false,
+          }
+        : {
+            ...currentUser,
+            phone: normalizedValue,
+            isPhoneVerified: false,
+          };
+
+    return of(updatedUser).pipe(
+      delay(400),
+      tap(() => {
+        this._currentUser.set(updatedUser);
+
+        const index = this.users.findIndex((u) => u.id === updatedUser.id);
+        if (index !== -1) {
+          this.users[index] = updatedUser;
+        }
+
+        this.saveSessions(updatedUser);
+      }),
+    );
   }
 }

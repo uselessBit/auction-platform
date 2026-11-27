@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   DestroyRef,
   effect,
   ElementRef,
@@ -9,32 +10,38 @@ import {
   viewChild,
 } from '@angular/core';
 import { AuthModalService } from '../../../core/services/auth-modal.service';
-import {
-  TuiButton,
-  TuiError,
-  TuiIcon,
-  TuiInput,
-  TuiNotificationService,
-  TuiPopups,
-  TuiPopupService,
-} from '@taiga-ui/core';
+import { TuiButton, TuiNotificationService, TuiPopups, TuiPopupService } from '@taiga-ui/core';
 import { AuthService } from '../../../core/services/auth.service';
-import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
-import { TuiButtonLoading, TuiPassword } from '@taiga-ui/kit';
+import { LoginFormComponent } from './components/login-form/login-form.component';
+import { RegisterFormComponent } from './components/register-form/register-form.component';
+import { VerifyCodesFormComponent } from './components/verify-codes-form/verify-codes-form.component';
+import {
+  AuthModalMode,
+  LoginPayload,
+  RegisterPayload,
+  UpdateContactPayload,
+  VerificationChannel,
+  VerifyCodesError,
+  VerifyCodesFieldErrors,
+  VerifyCodesPayload,
+} from '../../../core/models/auth.model';
+
+const TITLE_CONFIG: Readonly<Record<AuthModalMode, string>> = {
+  login: 'Вход в аккаунт',
+  register: 'Создание аккаунта',
+  verify: 'Подтверждение',
+};
 
 @Component({
   selector: 'app-auth-modal',
   imports: [
-    TuiButton,
-    ReactiveFormsModule,
-    TuiInput,
-    TuiIcon,
-    TuiPassword,
-    TuiButtonLoading,
-    TuiError,
     TuiPopups,
+    LoginFormComponent,
+    RegisterFormComponent,
+    VerifyCodesFormComponent,
+    TuiButton,
   ],
   standalone: true,
   providers: [
@@ -52,20 +59,27 @@ import { TuiButtonLoading, TuiPassword } from '@taiga-ui/kit';
 export class AuthModalComponent {
   private readonly authService = inject(AuthService);
   private readonly authModal = inject(AuthModalService);
-  private readonly fb = inject(NonNullableFormBuilder);
   private readonly destroyRef = inject(DestroyRef);
   private readonly notifications = inject(TuiNotificationService);
   private readonly globalNotifications = inject(TuiNotificationService, { skipSelf: true });
 
+  protected readonly mode = this.authModal.mode;
+
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dlg');
+  private pendingMode: AuthModalMode | null = null;
+  private readonly verifyForm = viewChild(VerifyCodesFormComponent);
 
   protected readonly isClosing = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);
+  protected readonly isOpen = signal<boolean>(false);
+  protected readonly isSwitching = signal<boolean>(false);
+  protected readonly isUpdatingContact = signal<boolean>(false);
 
-  protected readonly form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(6)]],
-  });
+  protected readonly title = computed(() => TITLE_CONFIG[this.mode()]);
+
+  protected readonly currentUser = this.authService.currentUser;
+
+  protected readonly verifyFieldErrors = signal<VerifyCodesFieldErrors | null>(null);
 
   constructor() {
     effect(() => {
@@ -78,8 +92,18 @@ export class AuthModalComponent {
     });
   }
 
+  protected switchMode(nextMode: AuthModalMode): void {
+    if (this.mode() === nextMode || this.isSwitching() || this.isClosing()) {
+      return;
+    }
+
+    this.pendingMode = nextMode;
+    this.isSwitching.set(true);
+  }
+
   protected open(): void {
     this.dialog().nativeElement.showModal();
+    this.isOpen.set(true);
   }
 
   protected close(): void {
@@ -92,7 +116,26 @@ export class AuthModalComponent {
   protected onClose(): void {
     this.isClosing.set(false);
     this.authModal.close();
-    this.form.reset();
+    this.isOpen.set(false);
+    this.isSwitching.set(false);
+    this.pendingMode = null;
+    this.verifyFieldErrors.set(null);
+  }
+
+  protected onStageAnimationEnd(event: AnimationEvent): void {
+    if (
+      event.target !== event.currentTarget ||
+      !this.isSwitching() ||
+      this.isClosing() ||
+      !this.pendingMode
+    ) {
+      return;
+    }
+
+    const nextMode = this.pendingMode;
+    this.pendingMode = null;
+    this.isSwitching.set(false);
+    this.authModal.setMode(nextMode);
   }
 
   protected onAnimationEnd(event: AnimationEvent): void {
@@ -113,21 +156,15 @@ export class AuthModalComponent {
     }
   }
 
-  protected onSubmit(): void {
+  protected onLogin(payload: LoginPayload): void {
     if (this.isLoading()) {
-      return;
-    }
-
-    if (this.form.invalid) {
-      this.form.markAllAsTouched();
       return;
     }
 
     this.isLoading.set(true);
 
-    const { email, password } = this.form.getRawValue();
     this.authService
-      .login(email, password)
+      .login(payload)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.isLoading.set(false)),
@@ -149,6 +186,157 @@ export class AuthModalComponent {
           this.notifications
             .open(error.message, {
               label: 'Ошибка входа',
+              appearance: 'negative',
+              icon: '/assets/icons/exclamation.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
+      });
+  }
+
+  protected onRegister(payload: RegisterPayload): void {
+    if (this.isLoading()) {
+      return;
+    }
+
+    this.isLoading.set(true);
+
+    this.authService
+      .register(payload)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.switchMode('verify');
+          this.notifications
+            .open('Подтвердите контакты для участия в торгах', {
+              label: 'Аккаунт успешно создан',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
+        },
+        error: (error: Error) =>
+          this.notifications
+            .open(error.message, {
+              label: 'Ошибка регистрации',
+              appearance: 'negative',
+              icon: '/assets/icons/exclamation.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
+      });
+  }
+
+  protected onVerify(payload: VerifyCodesPayload): void {
+    if (this.isLoading()) {
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.verifyFieldErrors.set(null);
+
+    this.authService
+      .verifyContacts(payload)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isLoading.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.close();
+          this.globalNotifications
+            .open('Теперь доступен следующий шаг допуска к торгам', {
+              label: 'Контакты подтверждены',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
+        },
+        error: (error: Error) => {
+          if (error instanceof VerifyCodesError) {
+            this.verifyFieldErrors.set(error.fields);
+          } else {
+            this.notifications
+              .open(error.message, {
+                label: 'Ошибка подтверждения',
+                appearance: 'negative',
+                icon: '/assets/icons/exclamation.svg',
+                closable: false,
+              })
+              .pipe(takeUntilDestroyed(this.destroyRef))
+              .subscribe();
+          }
+        },
+      });
+  }
+
+  protected onResendCode(channel: VerificationChannel): void {
+    this.authService
+      .resendVerificationCode(channel)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: () =>
+          this.notifications
+            .open('Повторная отправка через 1 минуту', {
+              label:
+                channel === 'phone' ? 'Новый код отправлен в SMS' : 'Новый код отправлен на Email',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
+        error: (error: Error) =>
+          this.notifications
+            .open(error.message, {
+              label: 'Ошибка отправки кода',
+              appearance: 'negative',
+              icon: '/assets/icons/exclamation.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
+      });
+  }
+
+  protected onUpdateContact(payload: UpdateContactPayload): void {
+    if (this.isUpdatingContact()) {
+      return;
+    }
+
+    this.isUpdatingContact.set(true);
+    this.authService
+      .updateContact(payload)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isUpdatingContact.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.verifyForm()?.completeContactEdit(payload.channel);
+          this.notifications
+            .open('Повторная отправка через 1 минуту', {
+              label: 'Новый код отправлен',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
+        },
+        error: (error: Error) =>
+          this.notifications
+            .open(error.message, {
+              label: 'Ошибка изменения контакта',
               appearance: 'negative',
               icon: '/assets/icons/exclamation.svg',
               closable: false,

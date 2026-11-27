@@ -1,6 +1,6 @@
 <dialog
   #dlg
-  class="border-none bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
+  class="overflow-visible border-none bg-transparent p-0 backdrop:bg-black/80 backdrop:backdrop-blur-lg"
   [class.is-closing]="isClosing()"
   (animationend)="onAnimationEnd($event)"
   (close)="onClose()"
@@ -11,73 +11,57 @@
   tabindex="-1"
   autofocus
 >
-  <form [formGroup]="form" (ngSubmit)="onSubmit()">
-    <div
-      class="dialog-stage relative flex flex-col gap-4 rounded-[2rem] border border-stroke bg-blocks p-6"
-    >
-      <h2 class="px-8 text-center text-base font-semibold">Вход в аккаунт</h2>
-
-      <div class="flex flex-col">
-        <tui-textfield
-          #email
-          tuiTextfieldSize="s"
-          class="w-64"
-          tuiTextfieldAppearance="brand-input"
-        >
-          <input
-            [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
-            tuiInput
-            type="email"
-            formControlName="email"
-            aria-label="Email"
-          />
-        </tui-textfield>
-
-        <tui-error formControlName="email" />
-      </div>
-
-      <div>
-        <tui-textfield tuiTextfieldSize="s" class="w-64" tuiTextfieldAppearance="brand-input">
-          <input
-            placeholder="Пароль"
-            tuiInput
-            type="password"
-            formControlName="password"
-            aria-label="Пароль"
-          />
-          <tui-icon tuiPassword />
-        </tui-textfield>
-
-        <tui-error formControlName="password" />
-      </div>
-
-      <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">
-        Войти
-      </button>
-
-      <button
-        type="button"
-        tuiButton
-        appearance="brand-transparent"
-        class="group flex-1"
-        iconEnd="/assets/icons/arrow-small-right.svg"
+  @if (isOpen()) {
+    @for (currentMode of [mode()]; track currentMode) {
+      <div
+        class="dialog-stage relative flex flex-col gap-4 rounded-[2rem] border border-stroke bg-blocks p-6"
+        [class.is-switching]="isSwitching()"
+        (animationend)="onStageAnimationEnd($event)"
       >
-        Нет аккаунта?
-        <span class="duration-200 ease-out transition-colors group-hover:text-accent font-semibold">Зарегистрироваться</span>
-      </button>
+        <h2 class="px-12 py-1 text-center text-base font-semibold">{{ title() }}</h2>
 
-      <div class="absolute right-4 top-4">
-        <button
-          tuiButton
-          type="button"
-          appearance="brand-rounded-flat"
-          iconStart="/assets/icons/x.svg"
-          (click)="close()"
-          (mousedown)="$event.preventDefault()"
-        ></button>
+        @switch (mode()) {
+          @case ('login') {
+            <app-login-form
+              [isLoading]="isLoading()"
+              (loginSubmitted)="onLogin($event)"
+              (switchToRegister)="switchMode('register')"
+            />
+          }
+          @case ('register') {
+            <app-register-form
+              [isLoading]="isLoading()"
+              (registerSubmitted)="onRegister($event)"
+              (switchToLogin)="switchMode('login')"
+            />
+          }
+          @case ('verify') {
+            <app-verify-codes-form
+              (closeModal)="close()"
+              [email]="currentUser()?.email ?? ''"
+              [phone]="currentUser()?.phone ?? ''"
+              [isLoading]="isLoading()"
+              [fieldErrors]="verifyFieldErrors()"
+              (verifySubmitted)="onVerify($event)"
+              (resendRequested)="onResendCode($event)"
+              [isUpdatingContact]="isUpdatingContact()"
+              (contactChanged)="onUpdateContact($event)"
+            />
+          }
+        }
+
+        <div class="absolute right-6 top-6">
+          <button
+            tuiButton
+            type="button"
+            appearance="brand-flat"
+            iconStart="/assets/icons/x.svg"
+            (click)="close()"
+            aria-label="Закрыть"
+          ></button>
+        </div>
       </div>
-    </div>
-  </form>
-
+    }
+  }
   <tui-popups />
 </dialog>

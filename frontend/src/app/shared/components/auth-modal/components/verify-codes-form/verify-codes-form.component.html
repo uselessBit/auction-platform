@@ -1,0 +1,209 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex w-[calc(100vw-5rem)] max-w-sm flex-col gap-4"
+>
+  <div class="flex flex-col gap-2">
+    @if (editingChannel() === 'email') {
+      <div class="flex justify-between gap-3">
+        <label for="edit-email" class="min-w-0 truncate text-xs"
+          >Новый email
+        </label>
+
+        <button type="button" tuiButton appearance="brand-inline" (click)="cancelEdit()">
+          Отмена
+        </button>
+      </div>
+
+      <div class="flex gap-2">
+        <tui-textfield #emailInput class="flex-1">
+          <input
+            [placeholder]="emailInput.focused() ? 'example@gmail.com' : 'Email'"
+            tuiInput
+            id="edit-email"
+            type="email"
+            [formControl]="editEmailControl"
+            aria-label="Изменить email"
+            (keydown.enter)="$event.preventDefault(); saveContact('email')"
+          />
+        </tui-textfield>
+
+        <button
+          type="button"
+          tuiButton
+          appearance="brand"
+          class="shrink-0"
+          [loading]="isUpdatingContact()"
+          (click)="saveContact('email')"
+          [disabled]="emailCooldown() > 0"
+        >
+          Выслать код
+        </button>
+      </div>
+
+      @if (emailCooldown() > 0) {
+        <div class="text-xs text-text/50">
+          Изменить через
+          <span class="tabular-nums">{{ formatCooldown(emailCooldown()) }}</span>
+        </div>
+      } @else if (editEmailControl.valid) {
+        <div class="text-xs text-text/50">Старый код будет аннулирован</div>
+      } @else {
+        <tui-error [formControl]="editEmailControl" class="h-4 px-0" />
+      }
+    } @else {
+      <div class="flex justify-between gap-3">
+        <label for="email-code" class="min-w-0 truncate text-xs" [title]="email()"
+          >Код из Email
+          @if (email()) {
+            <span class="text-text/50">{{ email() }}</span>
+          }
+        </label>
+
+        <button type="button" tuiButton appearance="brand-inline" (click)="startEdit('email')">
+          Изменить
+        </button>
+      </div>
+
+      <tui-textfield class="min-w-0 flex-1 gap-1">
+        <input id="email-code" placeholder="••••" tuiInputPin formControlName="emailCode" />
+      </tui-textfield>
+
+      <div class="flex justify-between gap-3">
+        @if (emailCooldown() > 0) {
+          <div class="text-xs text-text/50">
+            Отправить повторно через
+            <span class="tabular-nums">{{ formatCooldown(emailCooldown()) }}</span>
+          </div>
+        } @else {
+          <button
+            type="button"
+            tuiButton
+            appearance="brand-inline"
+            iconStart="/assets/icons/rotate-right.svg"
+            class="shrink-0"
+            (click)="onResend('email')"
+          >
+            Отправить повторно
+          </button>
+        }
+
+        <tui-error formControlName="emailCode" class="text-right" />
+      </div>
+    }
+  </div>
+
+  <div class="flex flex-col gap-2">
+    @if (editingChannel() === 'phone') {
+      <div class="flex justify-between gap-3">
+        <label for="edit-phone" class="min-w-0 truncate text-xs"
+          >Новый телефон
+        </label>
+
+        <button type="button" tuiButton appearance="brand-inline" (click)="cancelEdit()">
+          Отмена
+        </button>
+      </div>
+
+      <div class="flex gap-2">
+        <tui-textfield class="flex-1">
+          <input
+            placeholder="Телефон"
+            mask="+375 (##) ###-##-##"
+            tuiInputPhone
+            id="edit-phone"
+            autocomplete="tel"
+            type="tel"
+            [formControl]="editPhoneControl"
+            aria-label="Изменить телефон"
+            (keydown.enter)="$event.preventDefault(); saveContact('phone')"
+          />
+        </tui-textfield>
+
+        <button
+          type="button"
+          tuiButton
+          appearance="brand"
+          class="shrink-0"
+          [loading]="isUpdatingContact()"
+          (click)="saveContact('phone')"
+          [disabled]="smsCooldown() > 0"
+        >
+          Выслать код
+        </button>
+      </div>
+
+      @if (smsCooldown() > 0) {
+        <div class="text-xs text-text/50">
+          Изменить через
+          <span class="tabular-nums">{{ formatCooldown(smsCooldown()) }}</span>
+        </div>
+      } @else if (editPhoneControl.valid) {
+        <div class="text-xs text-text/50">Старый код будет аннулирован</div>
+      } @else {
+        <tui-error [formControl]="editPhoneControl" class="h-4 px-0" />
+      }
+    } @else {
+      <div class="flex justify-between gap-3">
+        <label for="sms-code" class="min-w-0 truncate text-xs" [title]="phone()"
+          >Код из SMS
+          @if (phone()) {
+            <span class="text-text/50">{{ phone() | phone }}</span>
+          }
+        </label>
+
+        <button type="button" tuiButton appearance="brand-inline" (click)="startEdit('phone')">
+          Изменить
+        </button>
+      </div>
+
+      <tui-textfield class="min-w-0 flex-1 gap-1">
+        <input id="sms-code" placeholder="••••" tuiInputPin formControlName="smsCode" />
+      </tui-textfield>
+
+      <div class="flex justify-between gap-3">
+        @if (smsCooldown() > 0) {
+          <div class="text-xs text-text/50">
+            Отправить повторно через
+            <span class="tabular-nums">{{ formatCooldown(smsCooldown()) }}</span>
+          </div>
+        } @else {
+          <button
+            type="button"
+            tuiButton
+            appearance="brand-inline"
+            iconStart="/assets/icons/rotate-right.svg"
+            class="shrink-0"
+            (click)="onResend('phone')"
+          >
+            Отправить повторно
+          </button>
+        }
+
+        <tui-error formControlName="smsCode" class="text-right" />
+      </div>
+    }
+  </div>
+
+  <button
+    type="submit"
+    tuiButton
+    appearance="brand"
+    class="flex-1"
+    [disabled]="!canSubmit()"
+    [loading]="isLoading()"
+  >
+    Завершить регистрацию
+  </button>
+
+  <button
+    type="button"
+    tuiButton
+    appearance="brand-transparent"
+    class="group flex-1"
+    iconEnd="/assets/icons/arrow-small-right.svg"
+    (click)="closeModal.emit()"
+  >
+    Подтвердить позже в профиле
+  </button>
+</form>

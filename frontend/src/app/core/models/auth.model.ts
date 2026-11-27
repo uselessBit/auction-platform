@@ -1,5 +1,7 @@
 export type KycStatus = 'none' | 'pending' | 'approved' | 'rejected';
 export type UserRole = 'user' | 'admin' | 'b2b';
+export type AuthModalMode = 'login' | 'register' | 'verify';
+export type VerificationChannel = 'phone' | 'email';
 
 export interface User {
   readonly id: string;
@@ -21,4 +23,36 @@ export interface AuthTokens {
 export interface AuthResponse {
   readonly user: User;
   readonly tokens: AuthTokens;
+}
+
+export interface LoginPayload {
+  readonly email: string;
+  readonly password: string;
+}
+
+export interface RegisterPayload {
+  readonly email: string;
+  readonly phone: string;
+  readonly password: string;
+}
+
+export interface UpdateContactPayload {
+  readonly channel: VerificationChannel;
+  readonly value: string;
+}
+
+export interface VerifyCodesPayload {
+  readonly smsCode: string;
+  readonly emailCode: string;
+}
+
+export interface VerifyCodesFieldErrors {
+  readonly smsInvalid: boolean;
+  readonly emailInvalid: boolean;
+}
+
+export class VerifyCodesError extends Error {
+  constructor(readonly fields: VerifyCodesFieldErrors) {
+    super('Неверный код подтверждения');
+  }
 }

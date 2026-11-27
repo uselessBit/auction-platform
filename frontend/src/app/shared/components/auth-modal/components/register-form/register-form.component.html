@@ -1,0 +1,121 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="flex w-[calc(100vw-5rem)] max-w-xs flex-col gap-4"
+>
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield>
+        <input
+          placeholder="Телефон"
+          mask="+375 (##) ###-##-##"
+          tuiInputPhone
+          autocomplete="tel"
+          type="tel"
+          formControlName="phone"
+          aria-label="Телефон"
+        />
+      </tui-textfield>
+
+      <tui-error formControlName="phone" />
+    </div>
+
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield #email>
+        <input
+          [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
+          tuiInput
+          type="email"
+          formControlName="email"
+          aria-label="Email"
+        />
+      </tui-textfield>
+
+      <tui-error formControlName="email" />
+    </div>
+
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield>
+        <input
+          placeholder="Пароль"
+          tuiInput
+          type="password"
+          formControlName="password"
+          aria-label="Пароль"
+        />
+        <tui-icon tuiPassword />
+      </tui-textfield>
+
+      <tui-error formControlName="password" />
+    </div>
+
+    <div class="flex flex-wrap gap-1">
+      @for (rule of passwordRules(); track rule.label) {
+        <div
+          class="chip flex flex-1 items-center justify-center gap-1 backdrop-blur-none transition-all duration-300 ease-out"
+          [class]="rule.valid ? 'chip--active' : 'text-text/50'"
+        >
+          <span class="relative size-3 shrink-0">
+            <tui-icon
+              icon="/assets/icons/x.svg"
+              class="absolute inset-0 text-xs transition-[opacity,transform] duration-200 ease-out"
+              [class]="
+                rule.valid ? '-rotate-45 scale-0 opacity-0' : 'rotate-0 scale-100 opacity-100'
+              "
+            />
+            <tui-icon
+              icon="/assets/icons/check.svg"
+              class="absolute inset-0 text-xs transition-[opacity,transform] duration-200 ease-out"
+              [class]="
+                rule.valid ? 'rotate-0 scale-100 opacity-100' : 'rotate-45 scale-0 opacity-0'
+              "
+            />
+          </span>
+          {{ rule.label }}
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="flex items-start gap-2 text-xs leading-tight">
+    <input
+      id="accept-terms"
+      tuiCheckbox
+      size="s"
+      type="checkbox"
+      formControlName="acceptTerms"
+      class="peer mt-0.5"
+    />
+    <span
+      class="flex flex-col text-text/50 transition-colors duration-200 ease-out peer-checked:text-text"
+    >
+      <label for="accept-terms" class="cursor-pointer">Я принимаю условия</label>
+      <a
+        target="_blank"
+        routerLink="/rules"
+        tuiButton
+        appearance="brand-inline"
+        rel="noopener noreferrer"
+        >Пользовательского соглашения</a
+      >
+    </span>
+  </div>
+
+  <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">
+    Продолжить
+  </button>
+
+  <button
+    type="button"
+    tuiButton
+    appearance="brand-transparent"
+    class="group flex-1"
+    iconEnd="/assets/icons/arrow-small-right.svg"
+    (click)="switchToLogin.emit()"
+  >
+    Есть аккаунт?
+    <span class="font-semibold transition-colors duration-200 ease-out group-hover:text-accent"
+      >Войти</span
+    >
+  </button>
+</form>

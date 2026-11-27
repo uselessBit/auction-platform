@@ -1,0 +1,54 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="onSubmit()"
+  class="max-w-64 flex w-[calc(100vw-5rem)] flex-col gap-4"
+>
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield #email>
+        <input
+          [placeholder]="email.focused() ? 'example@gmail.com' : 'Email'"
+          tuiInput
+          type="email"
+          formControlName="email"
+          aria-label="Email"
+        />
+      </tui-textfield>
+
+      <tui-error formControlName="email" />
+    </div>
+
+    <div class="flex flex-col gap-0.5">
+      <tui-textfield>
+        <input
+          placeholder="Пароль"
+          tuiInput
+          type="password"
+          formControlName="password"
+          aria-label="Пароль"
+        />
+        <tui-icon tuiPassword />
+      </tui-textfield>
+
+      <tui-error formControlName="password" />
+    </div>
+  </div>
+
+  <button type="submit" tuiButton appearance="brand" [loading]="isLoading()" class="flex-1">
+    Войти
+  </button>
+
+  <button
+    type="button"
+    tuiButton
+    appearance="brand-transparent"
+    class="group flex-1"
+    iconEnd="/assets/icons/arrow-small-right.svg"
+    (click)="switchToRegister.emit()"
+  >
+    Нет аккаунта?
+    <span class="font-semibold transition-colors duration-200 ease-out group-hover:text-accent"
+      >Зарегистрироваться</span
+    >
+  </button>
+</form>
