@@ -44,6 +44,8 @@
               [fieldErrors]="verifyFieldErrors()"
               (verifySubmitted)="onVerify($event)"
               (resendRequested)="onResendCode($event)"
+              [isUpdatingContact]="isUpdatingContact()"
+              (contactChanged)="onUpdateContact($event)"
             />
           }
         }

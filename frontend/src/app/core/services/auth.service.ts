@@ -6,6 +6,7 @@ import {
   AuthTokens,
   LoginPayload,
   RegisterPayload,
+  UpdateContactPayload,
   User,
   VerificationChannel,
   VerifyCodesError,
@@ -228,8 +229,64 @@ export class AuthService {
       return JSON.parse(raw) as User;
     } catch (e) {
       localStorage.removeItem('auth_user');
-      1;
       return null;
     }
+  }
+
+  updateContact(payload: UpdateContactPayload): Observable<User> {
+    const currentUser = this._currentUser();
+    if (!currentUser) {
+      return timer(400).pipe(
+        switchMap(() => throwError(() => new Error('Пользователь не авторизован'))),
+      );
+    }
+
+    const normalizedValue =
+      payload.channel === 'email'
+        ? payload.value.trim().toLowerCase()
+        : payload.value.replace(/[^\d+]/g, '');
+
+    if (payload.channel === 'email') {
+      if (this.users.some((user) => user.email === normalizedValue && user.id !== currentUser.id)) {
+        return timer(400).pipe(
+          switchMap(() => throwError(() => new Error('Аккаунт с таким email уже существует'))),
+        );
+      }
+    } else {
+      if (this.users.some((user) => user.phone === normalizedValue && user.id !== currentUser.id)) {
+        return timer(400).pipe(
+          switchMap(() =>
+            throwError(() => new Error('Аккаунт с таким номером телефона уже существует')),
+          ),
+        );
+      }
+    }
+
+    const updatedUser: User =
+      payload.channel === 'email'
+        ? {
+            ...currentUser,
+            email: normalizedValue,
+            isEmailVerified: false,
+          }
+        : {
+            ...currentUser,
+            phone: normalizedValue,
+            isPhoneVerified: false,
+          };
+
+    return of(updatedUser).pipe(
+      delay(400),
+      tap(() => {
+        this._currentUser.set(updatedUser);
+
+        const index = this.users.findIndex((u) => u.id === updatedUser.id);
+        if (index !== -1) {
+          this.users[index] = updatedUser;
+        }
+
+        this.saveSessions(updatedUser);
+      }),
+    );
   }
 }

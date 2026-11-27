@@ -7,13 +7,15 @@ import {
   input,
   output,
   PLATFORM_ID,
+  signal,
   Signal,
 } from '@angular/core';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TuiButton, TuiErrorComponent, TuiErrorDirective } from '@taiga-ui/core';
-import { TuiButtonLoading, TuiInputPin } from '@taiga-ui/kit';
+import { TuiButton, TuiErrorComponent, TuiErrorDirective, TuiInput } from '@taiga-ui/core';
+import { TuiButtonLoading, TuiInputPhoneDirective, TuiInputPin } from '@taiga-ui/kit';
 import { PhonePipe } from '../../../../pipes/phone-pipe';
 import {
+  UpdateContactPayload,
   VerificationChannel,
   VerifyCodesFieldErrors,
   VerifyCodesPayload,
@@ -21,6 +23,7 @@ import {
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map, Observable, of, startWith, Subject, switchMap, take, timer } from 'rxjs';
 import { isPlatformBrowser } from '@angular/common';
+import { belarusPhoneValidator } from '../../../../validators/auth.validators';
 
 const RESEND_COOLDOWN_SECONDS = 59;
 
@@ -34,6 +37,8 @@ const RESEND_COOLDOWN_SECONDS = 59;
     TuiErrorDirective,
     TuiButtonLoading,
     PhonePipe,
+    TuiInput,
+    TuiInputPhoneDirective,
   ],
   standalone: true,
   templateUrl: './verify-codes-form.component.html',
@@ -45,27 +50,41 @@ export class VerifyCodesFormComponent {
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   readonly isLoading = input<boolean>(false);
+  readonly isUpdatingContact = input<boolean>(false);
   readonly email = input<string>('');
   readonly phone = input<string>('');
   readonly fieldErrors = input<VerifyCodesFieldErrors | null>(null);
   readonly verifySubmitted = output<VerifyCodesPayload>();
   readonly closeModal = output<void>();
   readonly resendRequested = output<VerificationChannel>();
+  readonly contactChanged = output<UpdateContactPayload>();
 
   protected readonly form = this.fb.group({
     smsCode: ['', [Validators.required, Validators.minLength(4)]],
     emailCode: ['', [Validators.required, Validators.minLength(4)]],
   });
+  protected readonly editEmailControl = this.fb.control('', [
+    Validators.required,
+    Validators.email,
+  ]);
+  protected readonly editPhoneControl = this.fb.control('', [
+    Validators.required,
+    belarusPhoneValidator(),
+  ]);
 
   protected readonly formStatus = toSignal(this.form.statusChanges, {
     initialValue: this.form.status,
   });
-  protected readonly canSubmit = computed(() => this.formStatus() === 'VALID');
+  protected readonly canSubmit = computed(
+    () => this.formStatus() === 'VALID' && this.editingChannel() === null,
+  );
 
   private readonly emailResend$ = new Subject<void>();
   private readonly smsResend$ = new Subject<void>();
   protected readonly emailCooldown = this.createCooldownSignal(this.emailResend$);
   protected readonly smsCooldown = this.createCooldownSignal(this.smsResend$);
+
+  protected readonly editingChannel = signal<VerificationChannel | null>(null);
 
   constructor() {
     effect(() => {
@@ -125,5 +144,55 @@ export class VerifyCodesFormComponent {
     }
 
     this.verifySubmitted.emit(this.form.getRawValue());
+  }
+
+  protected startEdit(channel: VerificationChannel): void {
+    if (channel === 'email') {
+      this.editEmailControl.setValue(this.email());
+      this.editEmailControl.markAsUntouched();
+    }
+    if (channel === 'phone') {
+      this.editPhoneControl.setValue(this.phone());
+      this.editPhoneControl.markAsUntouched();
+    }
+
+    this.editingChannel.set(channel);
+  }
+
+  protected cancelEdit(): void {
+    this.editingChannel.set(null);
+  }
+
+  protected saveContact(channel: VerificationChannel): void {
+    if (this.isUpdatingContact()) {
+      return;
+    }
+
+    const cooldown = channel === 'email' ? this.emailCooldown() : this.smsCooldown();
+    if (cooldown > 0) {
+      return;
+    }
+
+    const control = channel === 'email' ? this.editEmailControl : this.editPhoneControl;
+
+    if (control.invalid) {
+      control.markAsTouched();
+      return;
+    }
+
+    this.contactChanged.emit({ channel, value: control.getRawValue() });
+  }
+
+  completeContactEdit(channel: VerificationChannel): void {
+    this.editingChannel.set(null);
+
+    if (channel === 'email') {
+      this.form.controls.emailCode.reset();
+      this.emailResend$.next();
+    }
+    if (channel === 'phone') {
+      this.form.controls.smsCode.reset();
+      this.smsResend$.next();
+    }
   }
 }

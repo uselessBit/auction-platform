@@ -36,6 +36,11 @@ export interface RegisterPayload {
   readonly password: string;
 }
 
+export interface UpdateContactPayload {
+  readonly channel: VerificationChannel;
+  readonly value: string;
+}
+
 export interface VerifyCodesPayload {
   readonly smsCode: string;
   readonly emailCode: string;

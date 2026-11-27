@@ -21,6 +21,7 @@ import {
   AuthModalMode,
   LoginPayload,
   RegisterPayload,
+  UpdateContactPayload,
   VerificationChannel,
   VerifyCodesError,
   VerifyCodesFieldErrors,
@@ -66,11 +67,13 @@ export class AuthModalComponent {
 
   private readonly dialog = viewChild.required<ElementRef<HTMLDialogElement>>('dlg');
   private pendingMode: AuthModalMode | null = null;
+  private readonly verifyForm = viewChild(VerifyCodesFormComponent);
 
   protected readonly isClosing = signal<boolean>(false);
   protected readonly isLoading = signal<boolean>(false);
   protected readonly isOpen = signal<boolean>(false);
   protected readonly isSwitching = signal<boolean>(false);
+  protected readonly isUpdatingContact = signal<boolean>(false);
 
   protected readonly title = computed(() => TITLE_CONFIG[this.mode()]);
 
@@ -296,6 +299,44 @@ export class AuthModalComponent {
           this.notifications
             .open(error.message, {
               label: 'Ошибка отправки кода',
+              appearance: 'negative',
+              icon: '/assets/icons/exclamation.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe(),
+      });
+  }
+
+  protected onUpdateContact(payload: UpdateContactPayload): void {
+    if (this.isUpdatingContact()) {
+      return;
+    }
+
+    this.isUpdatingContact.set(true);
+    this.authService
+      .updateContact(payload)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.isUpdatingContact.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          this.verifyForm()?.completeContactEdit(payload.channel);
+          this.notifications
+            .open('Повторная отправка через 1 минуту', {
+              label: 'Новый код отправлен',
+              appearance: 'positive',
+              icon: '/assets/icons/check.svg',
+              closable: false,
+            })
+            .pipe(takeUntilDestroyed(this.destroyRef))
+            .subscribe();
+        },
+        error: (error: Error) =>
+          this.notifications
+            .open(error.message, {
+              label: 'Ошибка изменения контакта',
               appearance: 'negative',
               icon: '/assets/icons/exclamation.svg',
               closable: false,
